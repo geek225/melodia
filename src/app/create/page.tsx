@@ -92,6 +92,7 @@ export default function NewCreatePage() {
     try {
       setIsGenerating(true);
       setErrorMsg("");
+      setStep(5); // Show the big loading screen
 
       const finalFormData = {
         title: formData.title || "Ma Musique",
@@ -107,6 +108,7 @@ export default function NewCreatePage() {
       
       if (result && !result.success) {
         setIsGenerating(false);
+        setStep(4); // Go back to show error
         if (result.error === 'INSUFFICIENT_FUNDS') {
           setShowFundsModal(true);
         } else {
@@ -121,6 +123,7 @@ export default function NewCreatePage() {
     } catch (error) {
       console.error(error);
       setIsGenerating(false);
+      setStep(4); // Go back to show error
       setErrorMsg(error instanceof Error ? error.message : "Erreur de connexion au serveur");
     }
   };
