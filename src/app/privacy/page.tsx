@@ -42,11 +42,11 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">2. Les données que nous collectons</h2>
-            <p className="mb-2">Nous pouvons collecter les types d'informations suivants :</p>
+            <p className="mb-2">Nous pouvons collecter les types d&apos;informations suivants :</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Informations d'identification (nom, email) lors de l'inscription.</li>
+              <li>Informations d&apos;identification (nom, email) lors de l&apos;inscription.</li>
               <li>Données de création musicale (fichiers audio, prompts, préférences de style).</li>
-              <li>Données d'utilisation (logs, interactions avec l'interface).</li>
+              <li>Données d&apos;utilisation (logs, interactions avec l&apos;interface).</li>
             </ul>
           </section>
 
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">4. Protection de vos créations</h2>
             <p>
-              Les musiques que vous générez sur Melodia restent privées par défaut, sauf si vous décidez de les partager dans la section Playlist publique ou sur d'autres plateformes.
+              Les musiques que vous générez sur Melodia restent privées par défaut, sauf si vous décidez de les partager dans la section Playlist publique ou sur d&apos;autres plateformes.
             </p>
           </section>
 

@@ -29,14 +29,14 @@ export default function CGUPage() {
           Retour
         </Link>
         
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Conditions Générales d'Utilisation (CGU)</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Conditions Générales d&apos;Utilisation (CGU)</h1>
         <p className="text-sm text-gray-500 mb-10">Dernière mise à jour : 04 Janvier 2026</p>
 
         <div className="space-y-8 text-gray-700 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">1. Acceptation des conditions</h2>
             <p>
-              En accédant et en utilisant la plateforme Melodia, vous acceptez d'être lié par les présentes Conditions Générales d'Utilisation.
+              En accédant et en utilisant la plateforme Melodia, vous acceptez d&apos;être lié par les présentes Conditions Générales d&apos;Utilisation.
             </p>
           </section>
 
@@ -53,7 +53,7 @@ export default function CGUPage() {
               <strong>Vos Créations :</strong> Sous réserve du respect des présentes conditions, vous conservez la pleine propriété et les droits commerciaux des musiques que vous générez via Melodia. Vous êtes libre de les distribuer, de les vendre et de les diffuser.
             </p>
             <p>
-              <strong>Technologie Melodia :</strong> Le logiciel, les algorithmes et l'interface utilisateur restent la propriété exclusive de Melodia.
+              <strong>Technologie Melodia :</strong> Le logiciel, les algorithmes et l&apos;interface utilisateur restent la propriété exclusive de Melodia.
             </p>
           </section>
 
@@ -63,14 +63,14 @@ export default function CGUPage() {
             <ul className="list-disc pl-5 space-y-1">
               <li>Générer du contenu haineux, diffamatoire ou illégal.</li>
               <li>Tenter de pirater ou de perturber le fonctionnement du site.</li>
-              <li>Revendre l'accès à votre compte.</li>
+              <li>Revendre l&apos;accès à votre compte.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">5. Limitation de responsabilité</h2>
             <p>
-              Melodia fournit le service "tel quel". Nous ne garantissons pas que la génération musicale répondra toujours exactement à vos attentes spécifiques, la créativité de l'IA comportant une part d'aléatoire.
+              Melodia fournit le service &quot;tel quel&quot;. Nous ne garantissons pas que la génération musicale répondra toujours exactement à vos attentes spécifiques, la créativité de l&apos;IA comportant une part d&apos;aléatoire.
             </p>
           </section>
         </div>
