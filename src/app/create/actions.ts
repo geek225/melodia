@@ -103,6 +103,12 @@ export async function createTrack(formData: TrackFormData) {
     
     const enrichedStyle = styleEnrichments[validData.style] || validData.style;
 
+    const voicePrompt = validData.voice === "Homme" ? "voix masculine (homme)" : validData.voice === "Femme" ? "voix féminine (femme)" : "voix au choix";
+    
+    // Pour l'API Suno/Treblo, la description claire garantit le style et la voix.
+    // On utilise gpt_description_prompt pour demander à l'IA de générer les paroles ET la musique.
+    const description = `Une chanson de style ${enrichedStyle} avec une ${voicePrompt} en Français. Le sujet et l'histoire de la chanson : ${validData.prompt}`;
+
     const apiRes = await fetch("https://api.treblo.com/v1/generations/v3", {
       method: "POST",
       headers: {
@@ -110,7 +116,9 @@ export async function createTrack(formData: TrackFormData) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        prompt: `[Genre: ${enrichedStyle}] [Mood: ${validData.mood || 'Vibrant'}] [Vocals: ${validData.voice || 'Vocals'}, ${validData.language || 'French'} language] Theme: ${validData.prompt}`,
+        gpt_description_prompt: description,
+        prompt: description, // On envoie les deux au cas où l'API Treblo préfère l'un ou l'autre
+        make_instrumental: false,
         length_range: lengthRange
       })
     });

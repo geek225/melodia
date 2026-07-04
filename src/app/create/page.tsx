@@ -51,6 +51,7 @@ export default function NewCreatePage() {
     title: "",
     prompt: "",
     style: "",
+    voice: "",
   });
 
   // Audio Player State
@@ -96,11 +97,11 @@ export default function NewCreatePage() {
 
       const finalFormData = {
         title: formData.title || "Ma Musique",
-        prompt: `Raison: ${formData.reason}. ${formData.prompt}`,
+        prompt: formData.prompt, // send just the prompt, actions.ts will format it
         style: formData.style,
         mood: "Énergique",
         language: "Français",
-        voice: "Duo",
+        voice: formData.voice || "Duo", // use selected voice
         duration: "1min30s"
       };
 
@@ -131,7 +132,7 @@ export default function NewCreatePage() {
   const isNextDisabled = () => {
     if (step === 1 && !formData.reason) return true;
     if (step === 2 && (!formData.title || !formData.prompt)) return true;
-    if (step === 3 && !formData.style) return true;
+    if (step === 3 && (!formData.style || !formData.voice)) return true;
     return false;
   };
 
@@ -357,7 +358,7 @@ export default function NewCreatePage() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Quel style de musique <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">préfères-tu</span> ?</h2>
                 <p className="text-gray-500 text-sm md:text-base">Tu pourras changer à chaque chanson.</p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-10">
                 {STYLE_OPTIONS.map((style) => (
                   <div 
                     key={style.id}
@@ -370,6 +371,28 @@ export default function NewCreatePage() {
                     <p className="text-gray-500 text-[10px] md:text-xs">{style.desc}</p>
                   </div>
                 ))}
+              </div>
+              
+              <div className="text-center mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">Choisis la <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">voix</span> 🎤</h2>
+              </div>
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                <div 
+                  onClick={() => updateForm('voice', 'Homme')}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
+                    ${formData.voice === 'Homme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
+                >
+                  <div className="text-4xl mb-3">👨🏽‍🎤</div>
+                  <h3 className="font-bold text-lg">Homme</h3>
+                </div>
+                <div 
+                  onClick={() => updateForm('voice', 'Femme')}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
+                    ${formData.voice === 'Femme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
+                >
+                  <div className="text-4xl mb-3">👩🏽‍🎤</div>
+                  <h3 className="font-bold text-lg">Femme</h3>
+                </div>
               </div>
             </motion.div>
           )}
@@ -385,8 +408,13 @@ export default function NewCreatePage() {
                     {STYLE_OPTIONS.find(s => s.id === formData.style)?.icon || "🎵"}
                   </div>
                   <h3 className="text-2xl font-bold">{formData.title}</h3>
-                  <div className="inline-block bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-semibold mb-4">
-                    {formData.style}
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <div className="inline-block bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-semibold">
+                      {formData.style}
+                    </div>
+                    <div className="inline-block bg-orange-50 text-[#FF6B00] px-3 py-1 rounded-full text-sm font-semibold">
+                      Voix : {formData.voice}
+                    </div>
                   </div>
                   <p className="text-gray-500 text-sm italic border-t pt-4">&quot;{formData.prompt}&quot;</p>
                   {errorMsg && (
