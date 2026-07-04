@@ -9,10 +9,22 @@ import { signup } from "../actions";
 import { Suspense } from "react";
 import { AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 function RegisterContent() {
   const searchParams = useSearchParams();
   const errorMsg = searchParams.get("error");
+
+  const handleGoogleLogin = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      }
+    });
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md border-none shadow-sm rounded-[20px] bg-card p-4">
@@ -31,7 +43,7 @@ function RegisterContent() {
               <p>{errorMsg}</p>
             </div>
           )}
-          <Button variant="outline" className="w-full rounded-2xl h-12 border-border text-foreground hover:bg-muted/50">
+          <Button onClick={handleGoogleLogin} variant="outline" className="w-full rounded-2xl h-12 border-border text-foreground hover:bg-muted/50">
             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
