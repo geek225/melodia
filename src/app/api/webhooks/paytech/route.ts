@@ -9,15 +9,23 @@ const supabaseAdmin = createClient(
 
 export async function POST(req: Request) {
   try {
-    // PayTech IPN sends form-urlencoded data
-    const text = await req.text();
-    const params = new URLSearchParams(text);
+    let body: any = {};
+    const contentType = req.headers.get('content-type') || '';
     
-    // Convert to object for easier handling
-    const body: Record<string, string> = {};
-    params.forEach((value, key) => {
-      body[key] = value;
-    });
+    // PayTech IPN usually sends JSON, but might send form-urlencoded
+    if (contentType.includes('application/json')) {
+      body = await req.json();
+    } else {
+      const text = await req.text();
+      try {
+        body = JSON.parse(text);
+      } catch {
+        const params = new URLSearchParams(text);
+        params.forEach((value, key) => {
+          body[key] = value;
+        });
+      }
+    }
 
     const {
       type_event,
