@@ -35,17 +35,18 @@ export async function buyMelodies(melodies: number, price: number, packName: str
       packName
     })
 
-    const payload = new URLSearchParams()
-    payload.append('item_name', packName)
-    payload.append('item_price', price.toString())
-    payload.append('command_name', `Achat de ${packName}`)
-    payload.append('ref_command', ref_command)
-    payload.append('env', paytechEnv)
-    payload.append('currency', 'XOF')
-    payload.append('ipn_url', `${origin}/api/webhooks/paytech`)
-    payload.append('success_url', `${origin}/credits?payment=success`)
-    payload.append('cancel_url', `${origin}/credits?payment=cancelled`)
-    payload.append('custom_field', custom_field)
+    const payload = {
+      item_name: packName,
+      item_price: price,
+      command_name: `Achat de ${packName}`,
+      ref_command,
+      env: paytechEnv,
+      currency: 'XOF',
+      ipn_url: `${origin}/api/webhooks/paytech`,
+      success_url: `${origin}/credits?payment=success`,
+      cancel_url: `${origin}/credits?payment=cancelled`,
+      custom_field
+    }
 
     const response = await fetch('https://paytech.sn/api/payment/request-payment', {
       method: 'POST',
@@ -53,19 +54,21 @@ export async function buyMelodies(melodies: number, price: number, packName: str
         'Accept': 'application/json',
         'API_KEY': paytechApiKey,
         'API_SECRET': paytechApiSecret,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: payload.toString()
+      body: JSON.stringify(payload)
     })
 
     const data = await response.json()
 
-    if (data.success === 1) {
+    if (data.success === 1 || data.success === true) {
       // Return the redirect URL to the client
-      return { success: true, redirectUrl: data.redirect_url }
+      return { success: true, redirectUrl: data.redirect_url || data.redirectUrl }
     } else {
       console.error('PayTech Error:', data)
-      return { success: false, error: 'Erreur lors de la création du paiement chez PayTech' }
+      // Return the exact error to display it in the UI
+      const errorMessage = data.message || JSON.stringify(data) || 'Erreur lors de la création du paiement chez PayTech'
+      return { success: false, error: errorMessage }
     }
 
   } catch (err) {
