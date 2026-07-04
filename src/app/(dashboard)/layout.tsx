@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import SidebarPlayer from "@/components/SidebarPlayer";
 import {
   DropdownMenu,
@@ -82,6 +83,43 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             setUserInitial(profile.full_name.charAt(0).toUpperCase());
           }
         }
+        
+        // Listen to track generation updates
+        const channel = supabase
+          .channel('tracks-updates')
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'tracks',
+              filter: `user_id=eq.${user.id}`,
+            },
+            (payload) => {
+              const newStatus = payload.new.status;
+              const oldStatus = payload.old.status;
+              
+              if (newStatus === 'completed' && oldStatus !== 'completed') {
+                toast.success(`Votre musique "${payload.new.title}" est prête !`, {
+                  description: "Vous pouvez l'écouter dès maintenant.",
+                  duration: 6000,
+                });
+                
+                // Fetch updated credits if a track was completed 
+                // (though technically credits are deducted on creation)
+              } else if (newStatus === 'failed' && oldStatus !== 'failed') {
+                toast.error(`Échec de la génération de "${payload.new.title}"`, {
+                  description: "Un problème technique est survenu.",
+                  duration: 6000,
+                });
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       }
     };
     fetchProfile();
