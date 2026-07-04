@@ -340,11 +340,17 @@ export default function LandingPage() {
 
       {/* ─── FOOTER ─── */}
       <footer className="py-10 px-6 md:px-12 border-t border-gray-100 text-center">
-        <div className="flex items-center justify-center gap-2 mb-4 text-gray-400">
-          <Shield className="w-4 h-4" />
-          <p className="text-sm">Tes données sont sécurisées et ne seront jamais partagées.</p>
+        <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto gap-4">
+          <div className="flex items-center gap-2 text-gray-400">
+            <Shield className="w-4 h-4" />
+            <p className="text-sm">Tes données sont sécurisées et ne seront jamais partagées.</p>
+          </div>
+          <div className="flex items-center gap-6 text-sm text-gray-500">
+            <Link href="/cgu" className="hover:text-gray-900 transition-colors">CGU</Link>
+            <Link href="/privacy" className="hover:text-gray-900 transition-colors">Politique de Confidentialité</Link>
+          </div>
+          <p className="text-sm text-gray-400">© 2026 Melodia AI. Tous droits réservés.</p>
         </div>
-        <p className="text-sm text-gray-400">© 2026 Melodia AI. Tous droits réservés.</p>
       </footer>
     </div>
   );
