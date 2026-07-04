@@ -54,6 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [credits, setCredits] = useState<number | null>(null);
   const [userInitial, setUserInitial] = useState("U");
   const [userName, setUserName] = useState("Utilisateur");
+  const [userRole, setUserRole] = useState("user");
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -75,6 +76,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           .single();
         if (profile) {
           setCredits(profile.credits || 0);
+          setUserRole(profile.role || "user");
           if (profile.full_name) {
             setUserName(profile.full_name);
             setUserInitial(profile.full_name.charAt(0).toUpperCase());
@@ -126,6 +128,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             );
           })}
+          
+          {(userRole === 'admin' || userRole === 'super_admin') && (
+            <Link 
+              href="/admin"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden text-red-400 hover:text-white hover:bg-red-500/10 mt-4"
+            >
+              <Settings className="w-5 h-5 relative z-10 transition-colors group-hover:text-red-400" />
+              <span className="relative z-10 font-bold">Administration</span>
+            </Link>
+          )}
         </nav>
         
         {/* Sidebar Player */}

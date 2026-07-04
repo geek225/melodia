@@ -24,7 +24,7 @@ export async function login(formData: FormData) {
 
   revalidatePath('/', 'layout')
   
-  if (profile?.role === 'admin') {
+  if (profile?.role === 'admin' || profile?.role === 'super_admin') {
     redirect('/admin')
   } else {
     redirect('/dashboard')
@@ -49,7 +49,7 @@ export async function signup(formData: FormData) {
 
   revalidatePath('/', 'layout')
   
-  if (profile?.role === 'admin') {
+  if (profile?.role === 'admin' || profile?.role === 'super_admin') {
     redirect('/admin')
   } else {
     redirect('/dashboard')
