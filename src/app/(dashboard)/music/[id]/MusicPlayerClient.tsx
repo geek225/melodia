@@ -345,13 +345,13 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                     <div className="absolute inset-0 bg-white/20 animate-pulse" />
                   </div>
                 </div>
-                <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center px-4 max-w-sm mx-auto">
+                <div className="flex flex-col items-center justify-center h-full min-h-75 text-center px-4 max-w-sm mx-auto">
                   <Loader2 className="w-12 h-12 text-[#FF6B00] animate-spin mb-6" />
                   <h3 className="text-xl font-bold text-slate-800 mb-3 text-balance">
                     Génération en cours... {progress}%
                   </h3>
                   <p className="text-slate-500 text-sm text-balance">
-                    Nous sommes en train de composer <span className="font-semibold text-slate-700">"{currentTrack.title}"</span>.
+                    Nous sommes en train de composer <span className="font-semibold text-slate-700">&quot;{currentTrack.title}&quot;</span>.
                     Cela prend généralement entre 2 et 3 minutes.
                   </p>
                 </div>
