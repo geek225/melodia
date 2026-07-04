@@ -326,7 +326,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                   Génération en cours... {progress}%
                 </p>
                 <p className="text-sm text-gray-500 mt-2 text-center">
-                  L'IA compose votre chef-d'œuvre. Cela prend généralement 1 à 2 minutes.
+                  L&apos;IA compose votre chef-d&apos;œuvre. Cela prend généralement 1 à 2 minutes.
                 </p>
               </div>
             ) : (
