@@ -6,8 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Music, Check, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { buyMelodies } from "./actions";
+import { Suspense, useState } from "react";
 
-export default function CreditsPage() {
+function CreditsContent() {
   const searchParams = useSearchParams();
   const paymentStatus = searchParams.get("payment");
 
@@ -109,5 +110,13 @@ export default function CreditsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function CreditsPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center p-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+      <CreditsContent />
+    </Suspense>
   );
 }
