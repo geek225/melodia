@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Music, Check, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { buyMelodies } from "./actions";
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 
 function CreditsContent() {
   const searchParams = useSearchParams();
