@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { login } from "../actions";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Suspense, useState } from "react";
+import { Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const errorMsg = searchParams.get("error");
+  const successMsg = searchParams.get("message");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -23,6 +27,18 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {errorMsg && (
+            <div className="bg-red-500/10 border border-red-500/50 text-red-600 p-3 rounded-xl flex items-start gap-2 text-sm animate-in fade-in">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <p>{errorMsg}</p>
+            </div>
+          )}
+          {successMsg && (
+            <div className="bg-green-500/10 border border-green-500/50 text-green-600 p-3 rounded-xl flex items-start gap-2 text-sm animate-in fade-in">
+              <CheckCircle2 className="w-5 h-5 shrink-0" />
+              <p>{successMsg}</p>
+            </div>
+          )}
           <Button variant="outline" className="w-full rounded-2xl h-12 border-border text-foreground hover:bg-muted/50">
             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -90,5 +106,13 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-background px-4">Chargement...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

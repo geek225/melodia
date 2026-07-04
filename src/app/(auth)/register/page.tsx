@@ -4,8 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { signup } from "../actions";
+import { Suspense } from "react";
+import { AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
-export default function RegisterPage() {
+function RegisterContent() {
+  const searchParams = useSearchParams();
+  const errorMsg = searchParams.get("error");
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md border-none shadow-sm rounded-[20px] bg-card p-4">
@@ -18,6 +23,12 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {errorMsg && (
+            <div className="bg-red-500/10 border border-red-500/50 text-red-600 p-3 rounded-xl flex items-start gap-2 text-sm animate-in fade-in">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <p>{errorMsg}</p>
+            </div>
+          )}
           <Button variant="outline" className="w-full rounded-2xl h-12 border-border text-foreground hover:bg-muted/50">
             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -86,5 +97,13 @@ export default function RegisterPage() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-background px-4">Chargement...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }

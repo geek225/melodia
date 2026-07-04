@@ -45,6 +45,11 @@ export async function signup(formData: FormData) {
     redirect('/register?error=Impossible de créer le compte')
   }
 
+  // If the user needs to confirm their email, Supabase won't return a session
+  if (!authData.session) {
+    redirect('/login?message=Veuillez vérifier votre boîte mail pour confirmer votre inscription.')
+  }
+
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', authData.user?.id).single()
 
   revalidatePath('/', 'layout')
