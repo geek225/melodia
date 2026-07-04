@@ -103,13 +103,8 @@ export async function createTrack(formData: TrackFormData) {
     
     const enrichedStyle = styleEnrichments[validData.style] || validData.style;
 
-    const voiceTag = validData.voice === "Homme" ? "male vocals" : validData.voice === "Femme" ? "female vocals" : "vocals";
-    
     // Treblo V3 API: "prompt" is the description used to generate lyrics.
-    // "tags" is an array of strings to enforce the exact style.
-    const descriptionPrompt = `Chanson en Français. Histoire/Sujet : ${validData.prompt}`;
-    const styleTags = enrichedStyle.split(',').map(s => s.trim());
-    const tagsArray = [...styleTags, voiceTag, "french"];
+    const descriptionPrompt = `Style musical: ${enrichedStyle}. Voix: ${validData.voice}. Chanson en Français. Histoire/Sujet : ${validData.prompt}`;
 
     const apiRes = await fetch("https://api.treblo.com/v1/generations/v3", {
       method: "POST",
@@ -119,7 +114,6 @@ export async function createTrack(formData: TrackFormData) {
       },
       body: JSON.stringify({
         prompt: descriptionPrompt,
-        tags: tagsArray,
         make_instrumental: false,
         length_range: lengthRange
       })
@@ -131,9 +125,25 @@ export async function createTrack(formData: TrackFormData) {
     } else {
       const errorText = await apiRes.text();
       console.error("Erreur API Treblo:", errorText);
+      throw new Error(`Treblo API Error: ${apiRes.status}`);
     }
   } catch (err) {
     console.error("Erreur réseau API MusicAPI:", err);
+    // Si l'API échoue, on rembourse et on arrête
+    await adminAuthClient
+      .from('profiles')
+      .update({ credits: profile.credits })
+      .eq('id', user.id);
+    throw new Error("L'API de génération musicale a rencontré une erreur.");
+  }
+
+  if (!apiTaskId) {
+    // Si pas de task ID, on rembourse et on arrête
+    await adminAuthClient
+      .from('profiles')
+      .update({ credits: profile.credits })
+      .eq('id', user.id);
+    throw new Error("L'API a refusé la génération.");
   }
 
   // 4. Création de la musique dans la base de données
