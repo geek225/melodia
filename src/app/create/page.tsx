@@ -261,7 +261,13 @@ export default function NewCreatePage() {
             <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-linear-to-r from-purple-500 to-[#FF6B00] rounded-full z-0 transition-all duration-500" style={{ width: `${((step - 1) / 4) * 100}%` }}></div>
             
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="relative z-10 flex flex-col items-center gap-1">
+              <div 
+                key={i} 
+                className={`relative z-10 flex flex-col items-center gap-1 ${i < step && step < 5 ? 'cursor-pointer hover:opacity-80' : ''}`}
+                onClick={() => {
+                  if (i < step && step < 5) setStep(i);
+                }}
+              >
                 <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-xs md:text-sm transition-colors shadow-sm
                   ${step === i ? 'bg-linear-to-r from-purple-500 to-[#FF6B00] text-white' : 
                     step > i ? 'bg-white border-2 border-purple-500 text-purple-500' : 'bg-white border border-gray-200 text-gray-400'}`}>
