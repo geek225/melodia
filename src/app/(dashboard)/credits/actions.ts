@@ -23,7 +23,7 @@ export async function buyMelodies(melodies: number, price: number, packName: str
     }
 
     // Getting the base URL for callbacks
-    const headersList = headers()
+    const headersList = await headers()
     const origin = headersList.get('origin') || 'https://melodia-delta.vercel.app' // Fallback to your Vercel domain
 
     const ref_command = `CMD_${Date.now()}_${user.id.substring(0, 5)}`

@@ -6,10 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Music, Check, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { buyMelodies } from "./actions";
-import { useRouter } from "next/navigation";
 
 export default function CreditsPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const paymentStatus = searchParams.get("payment");
 

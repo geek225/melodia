@@ -23,10 +23,7 @@ export async function POST(req: Request) {
       type_event,
       custom_field,
       ref_command,
-      item_price,
-      env,
-      api_key_sha256,
-      api_secret_sha256
+      item_price
     } = body;
 
     // Verify security: You should theoretically verify hashes if provided, 
@@ -44,7 +41,7 @@ export async function POST(req: Request) {
     let metadata;
     try {
       metadata = JSON.parse(custom_field);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'Invalid custom_field JSON' }, { status: 400 });
     }
 
