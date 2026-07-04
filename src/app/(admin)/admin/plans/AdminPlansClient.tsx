@@ -42,7 +42,7 @@ export default function AdminPlansClient() {
               <TableHead>Prix</TableHead>
               <TableHead>Crédits inclus</TableHead>
               <TableHead>Statut</TableHead>
-              <TableHead>ID Stripe (Produit)</TableHead>
+              <TableHead>ID Externe</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

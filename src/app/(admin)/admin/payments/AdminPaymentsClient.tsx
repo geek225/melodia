@@ -34,7 +34,7 @@ export default function AdminPaymentsClient() {
   };
 
   const filteredTransactions = transactions.filter((t) => 
-    t.stripe_session_id?.toLowerCase().includes(search.toLowerCase()) || 
+    (t.reference || t.stripe_session_id || "").toLowerCase().includes(search.toLowerCase()) || 
     t.profiles?.email?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -61,7 +61,7 @@ export default function AdminPaymentsClient() {
               <TableHead>Type</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>ID Stripe</TableHead>
+              <TableHead>Référence</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -83,7 +83,7 @@ export default function AdminPaymentsClient() {
               filteredTransactions.map((tx) => (
                 <TableRow key={tx.id} className="border-border/50">
                   <TableCell className="font-bold text-emerald-500">
-                    {(tx.amount / 100).toFixed(2)} €
+                    {tx.amount} {tx.currency || "FCFA"}
                   </TableCell>
                   <TableCell>{tx.profiles?.email || "Inconnu"}</TableCell>
                   <TableCell>
@@ -99,8 +99,8 @@ export default function AdminPaymentsClient() {
                   <TableCell className="text-muted-foreground text-sm">
                     {new Date(tx.created_at).toLocaleString('fr-FR')}
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-xs font-mono truncate max-w-37.5">
-                    {tx.stripe_session_id || "N/A"}
+                  <TableCell className="text-muted-foreground text-xs font-mono max-w-37.5 truncate">
+                    {tx.reference || tx.stripe_session_id || "N/A"}
                   </TableCell>
                 </TableRow>
               ))
