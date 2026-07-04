@@ -60,13 +60,8 @@ export default function LandingPage() {
 
       {/* ─── NAVBAR ─── */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 h-16 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex gap-0.5 items-end">
-            {[3, 5, 4, 6, 3].map((h, i) => (
-              <span key={i} className="w-1 rounded-full bg-linear-to-t from-[#FF6B00] to-purple-500" style={{ height: `${h * 3}px` }} />
-            ))}
-          </div>
-          <span className="text-xl font-bold text-gray-900 ml-1">Melodia</span>
+        <Link href="/" className="flex items-center">
+          <Image src="/images/logo.png" alt="Melodia Logo" width={120} height={40} className="h-10 w-auto object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">

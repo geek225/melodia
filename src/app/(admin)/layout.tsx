@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
@@ -101,10 +102,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="w-64 bg-card border-r border-border/50 flex-col hidden lg:flex sticky top-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-border/50">
           <Link href="/dashboard" className="flex items-center gap-2 text-xl font-black tracking-tight">
-            <div className="bg-primary p-1.5 rounded-lg text-white">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            Melodia Admin
+            <Image src="/images/logo.png" alt="Melodia Admin Logo" width={100} height={32} className="h-8 w-auto object-contain" />
+            <span className="text-primary text-sm uppercase mt-1">Admin</span>
           </Link>
         </div>
         
@@ -167,10 +166,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <SheetTitle className="sr-only">Menu d&apos;administration</SheetTitle>
                 <div className="p-6 border-b border-border/50">
                   <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-xl font-black tracking-tight">
-                    <div className="bg-primary p-1.5 rounded-lg text-white">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    Melodia Admin
+                    <Image src="/images/logo.png" alt="Melodia Admin Logo" width={100} height={32} className="h-8 w-auto object-contain" />
+                    <span className="text-primary text-sm uppercase mt-1">Admin</span>
                   </Link>
                 </div>
                 <nav className="flex-1 p-4 space-y-1 h-[calc(100vh-140px)] overflow-y-auto">

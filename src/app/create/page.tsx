@@ -200,11 +200,8 @@ export default function NewCreatePage() {
         
         <div className="relative z-20 flex-1 flex flex-col p-8 xl:p-10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-[#FF6B00] rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-[#FF6B00]/20">
-                <Music2 className="w-6 h-6" />
-              </div>
-              <span className="text-2xl font-bold tracking-tight">Melodia</span>
+            <div className="flex items-center">
+              <Image src="/images/logo.png" alt="Melodia Logo" width={120} height={40} className="h-10 w-auto object-contain drop-shadow-md" />
             </div>
             <Link href="/dashboard" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm border border-white/5">
               <ArrowLeft className="w-4 h-4" />
@@ -245,11 +242,8 @@ export default function NewCreatePage() {
           <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard')} className="rounded-full">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-[#FF6B00] rounded-xl flex items-center justify-center">
-              <Music2 className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-lg">Melodia</span>
+          <div className="flex items-center">
+            <Image src="/images/logo.png" alt="Melodia Logo" width={100} height={32} className="h-8 w-auto object-contain" />
           </div>
           <div className="w-10" />{/* Spacer */}
         </div>

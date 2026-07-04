@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { 
   Home, 
@@ -136,11 +137,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 border-r border-white/5 bg-[#0B0B0F]/80 backdrop-blur-xl p-4 h-screen sticky top-0 z-40">
-        <div className="flex items-center gap-3 px-2 mb-8 mt-2">
-          <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-[#FF6B00] rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-purple-500/20">
-            M
-          </div>
-          <span className="text-xl font-bold text-white tracking-tight">Melodia AI</span>
+        <div className="flex items-center mb-10 px-4">
+          <Image src="/images/logo.png" alt="Melodia Logo" width={140} height={48} className="h-12 w-auto object-contain brightness-0 invert" />
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -293,11 +291,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       }`}>
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-linear-to-br from-purple-500 to-[#FF6B00] rounded-xl flex items-center justify-center text-white font-bold text-sm">
-              M
-            </div>
-            <span className="text-white font-bold text-lg">Melodia AI</span>
+          <div className="flex items-center">
+            <Image src="/images/logo.png" alt="Melodia Logo" width={100} height={32} className="h-8 w-auto object-contain brightness-0 invert" />
           </div>
           <button
             onClick={() => setDrawerOpen(false)}
