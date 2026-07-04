@@ -1,0 +1,146 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getAdminTracks } from "./actions";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Search, Play, Pause, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
+export default function AdminMusicClient() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [tracks, setTracks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    fetchTracks();
+  }, []);
+
+  const fetchTracks = async () => {
+    setLoading(true);
+    const res = await getAdminTracks();
+    if (res.success && res.data) {
+      setTracks(res.data);
+    }
+    setLoading(false);
+  };
+
+  const filteredTracks = tracks.filter((t) => 
+    t.title?.toLowerCase().includes(search.toLowerCase()) || 
+    t.profiles?.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const togglePlay = (url: string, id: string) => {
+    if (!url) return;
+    
+    if (playingTrackId === id) {
+      audioElement?.pause();
+      setPlayingTrackId(null);
+    } else {
+      audioElement?.pause();
+      const newAudio = new Audio(url);
+      newAudio.play();
+      setAudioElement(newAudio);
+      setPlayingTrackId(id);
+      
+      newAudio.onended = () => {
+        setPlayingTrackId(null);
+      };
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Rechercher par titre ou email..." 
+            className="pl-9 rounded-xl bg-background border-border/50"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent border-border/50">
+              <TableHead>Lecture</TableHead>
+              <TableHead>Titre</TableHead>
+              <TableHead>Utilisateur</TableHead>
+              <TableHead>Style</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Statut</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-24 text-center">
+                  <div className="flex items-center justify-center">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : filteredTracks.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  Aucune musique trouvée.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredTracks.map((track) => (
+                <TableRow key={track.id} className="border-border/50">
+                  <TableCell>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      disabled={!track.audio_url}
+                      onClick={() => togglePlay(track.audio_url, track.id)}
+                      className={playingTrackId === track.id ? "text-primary" : ""}
+                    >
+                      {playingTrackId === track.id ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium">{track.title || "Sans titre"}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-1 max-w-50">{track.prompt}</div>
+                  </TableCell>
+                  <TableCell>{track.profiles?.email || "Inconnu"}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="font-normal capitalize">{track.style || "Normal"}</Badge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-sm">
+                    {new Date(track.created_at).toLocaleDateString('fr-FR')}
+                  </TableCell>
+                  <TableCell>
+                    {track.status === 'completed' ? (
+                      <Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20 shadow-none border-0">Terminé</Badge>
+                    ) : track.status === 'failed' ? (
+                      <Badge className="bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-none border-0"><AlertCircle className="w-3 h-3 mr-1" /> Échoué</Badge>
+                    ) : (
+                      <Badge className="bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 shadow-none border-0 animate-pulse">En cours</Badge>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
