@@ -11,14 +11,19 @@ export async function getAdminTickets() {
   try {
     const { data, error } = await adminAuthClient
       .from('support_tickets')
-      .select('*, profiles(email)')
+      .select('*, profiles(email, full_name)')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST205') {
+        return { success: true, data: [] }; // Table doesn't exist
+      }
+      throw error;
+    }
 
     return { success: true, data };
   } catch (error: unknown) {
-    console.error("Error fetching admin tickets:", error);
+    console.error("Error fetching support tickets:", error);
     return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }

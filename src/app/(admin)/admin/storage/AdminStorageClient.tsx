@@ -11,13 +11,48 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { useEffect, useState } from "react";
+import { getAdminStorageStats } from "./actions";
+
 export default function AdminStorageClient() {
-  const storageData = [
-    { type: 'Musiques (MP3)', bucket: 'tracks', size: '0 GB', files: 0, icon: Music, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { type: 'Covers (Images)', bucket: 'covers', size: '0 GB', files: 0, icon: ImageIcon, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-    { type: 'Avatars (Images)', bucket: 'avatars', size: '0 GB', files: 0, icon: ImageIcon, color: 'text-pink-500', bg: 'bg-pink-500/10' },
-    { type: 'Documents & Logs', bucket: 'logs', size: '0 GB', files: 0, icon: FileText, color: 'text-gray-500', bg: 'bg-gray-500/10' },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [storageData, setStorageData] = useState([
+    { type: 'Musiques (MP3)', bucket: 'tracks', size: '0 MB', sizeBytes: 0, files: 0, icon: Music, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { type: 'Covers (Images)', bucket: 'covers', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { type: 'Avatars (Images)', bucket: 'avatars', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-pink-500', bg: 'bg-pink-500/10' },
+    { type: 'Documents & Logs', bucket: 'logs', size: '0 MB', sizeBytes: 0, files: 0, icon: FileText, color: 'text-gray-500', bg: 'bg-gray-500/10' },
+  ]);
+
+  useEffect(() => {
+    fetchStorageStats();
+  }, []);
+
+  const fetchStorageStats = async () => {
+    setLoading(true);
+    const res = await getAdminStorageStats();
+    if (res.success && res.data) {
+      setStorageData(prev => prev.map(item => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const stat = res.data.find((s: any) => s.bucket === item.bucket);
+        if (stat) {
+          const mbSize = stat.sizeBytes / (1024 * 1024);
+          let displaySize = `${mbSize.toFixed(2)} MB`;
+          if (mbSize > 1024) displaySize = `${(mbSize / 1024).toFixed(2)} GB`;
+          
+          return { ...item, files: stat.files, size: displaySize, sizeBytes: stat.sizeBytes };
+        }
+        return item;
+      }));
+    }
+    setLoading(false);
+  };
+
+  const totalBytes = storageData.reduce((acc, curr) => acc + curr.sizeBytes, 0);
+  const totalMB = totalBytes / (1024 * 1024);
+  const totalGB = totalMB / 1024;
+  const displayTotal = totalGB > 1 ? `${totalGB.toFixed(2)} GB` : `${totalMB.toFixed(2)} MB`;
+  const percentUsed = ((totalGB / 100) * 100).toFixed(2);
+
 
   return (
     <div className="space-y-6">
@@ -32,8 +67,8 @@ export default function AdminStorageClient() {
             </div>
             <div className="space-y-1">
               <p className="text-sm text-primary-foreground font-medium opacity-80">Stockage Total Utilisé</p>
-              <p className="text-3xl font-black">0 GB</p>
-              <p className="text-sm opacity-80 pt-2">Sur 100 GB alloués (0%)</p>
+              <p className="text-3xl font-black">{loading ? '...' : displayTotal}</p>
+              <p className="text-sm opacity-80 pt-2">Sur 100 GB alloués ({loading ? '...' : percentUsed}%)</p>
             </div>
           </CardContent>
         </Card>

@@ -68,7 +68,7 @@ export default function AdminPlansClient() {
                     <Badge variant="outline" className="font-normal uppercase text-xs">{plan.billing_cycle || "Unique"}</Badge>
                   </TableCell>
                   <TableCell className="font-medium text-emerald-500">
-                    {plan.price} €
+                    {plan.price} {plan.price >= 1000 ? "FCFA" : "€"}
                   </TableCell>
                   <TableCell className="font-medium text-primary">
                     {plan.credits} Mélodies

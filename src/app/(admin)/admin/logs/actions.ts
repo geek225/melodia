@@ -12,10 +12,14 @@ export async function getAdminLogs() {
     const { data, error } = await adminAuthClient
       .from('api_logs')
       .select('*, profiles(email)')
-      .order('created_at', { ascending: false })
-      .limit(100); // Limit to last 100 logs for performance
+      .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST205') {
+        return { success: true, data: [] }; // Table doesn't exist
+      }
+      throw error;
+    }
 
     return { success: true, data };
   } catch (error: unknown) {
