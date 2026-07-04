@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Users, CreditCard, DollarSign, Music2, Zap, AlertTriangle, TrendingUp } from "lucide-react";
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import AdminStatsClient from './stats/AdminStatsClient';
@@ -24,7 +24,7 @@ export default async function AdminOverviewPage() {
   const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
 
-  txs?.forEach((tx: any) => {
+  txs?.forEach((tx: { amount: number; created_at: string; status: string }) => {
     if (tx.created_at >= startOfDay) caJour += tx.amount;
     if (tx.created_at >= startOfMonth) caMois += tx.amount;
   });
@@ -46,7 +46,7 @@ export default async function AdminOverviewPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Vue Globale</h1>
-        <p className="text-muted-foreground mt-1">Comment se porte l'entreprise aujourd'hui ?</p>
+        <p className="text-muted-foreground mt-1">Comment se porte l&apos;entreprise aujourd&apos;hui ?</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
