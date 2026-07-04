@@ -4,6 +4,8 @@ import Link from "next/link";
 import MusicPlayerClient from "./MusicPlayerClient";
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+
 export default async function MusicDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();

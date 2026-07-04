@@ -188,12 +188,33 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     };
   }, [isGenerating, track.status, track.title, coverUrl, progress]);
 
-  // Ping le serveur tous les 10% de progression pour rafraîchir le statut
+  // Ping le serveur tous les 10% de progression pour rafraîchir le statut via l'API
   useEffect(() => {
-    if (isGenerating && progress > 0 && progress % 10 === 0 && progress < 95) {
-      router.refresh();
+    let pollingInterval: NodeJS.Timeout;
+
+    if (isGenerating) {
+      pollingInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/music/status?trackId=${track.id}`);
+          if (res.ok) {
+            const updatedTrack = await res.json();
+            if (updatedTrack.status === 'completed' && updatedTrack.audio_url && !updatedTrack.audio_url.startsWith('task:')) {
+              // Si la track est terminée, on met à jour la page complète
+              router.refresh();
+            } else if (updatedTrack.status === 'failed') {
+              router.refresh();
+            }
+          }
+        } catch (e) {
+          console.error("Polling error:", e);
+        }
+      }, 5000); // Polling toutes les 5 secondes
     }
-  }, [progress, isGenerating, router]);
+
+    return () => {
+      if (pollingInterval) clearInterval(pollingInterval);
+    };
+  }, [isGenerating, track.id, router]);
 
 
 
