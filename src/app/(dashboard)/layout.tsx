@@ -59,6 +59,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userRole, setUserRole] = useState("user");
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [notifications, setNotifications] = useState<{id: string, title: string, message: string, read: boolean, time: number}[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    // Load notifications from local storage
+    const saved = localStorage.getItem('meliodia_notifications');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setNotifications(parsed);
+        setUnreadCount(parsed.filter((n: { read: boolean }) => !n.read).length);
+      } catch (e) {
+        console.error("Error parsing notifications", e);
+      }
+    }
+  }, []);
+
+  const addNotification = (title: string, message: string) => {
+    const newNotif = {
+      id: Math.random().toString(36).substring(7),
+      title,
+      message,
+      read: false,
+      time: Date.now()
+    };
+    setNotifications(prev => {
+      const updated = [newNotif, ...prev].slice(0, 20); // Keep last 20
+      localStorage.setItem('meliodia_notifications', JSON.stringify(updated));
+      return updated;
+    });
+    setUnreadCount(prev => prev + 1);
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => {
+      const updated = prev.map(n => ({ ...n, read: true }));
+      localStorage.setItem('meliodia_notifications', JSON.stringify(updated));
+      return updated;
+    });
+    setUnreadCount(0);
+  };
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -101,18 +142,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               const oldStatus = payload.old.status;
               
               if (newStatus === 'completed' && oldStatus !== 'completed') {
-                toast.success(`Votre musique "${payload.new.title}" est prête !`, {
-                  description: "Vous pouvez l'écouter dès maintenant.",
+                const title = "Musique prête !";
+                const message = `La génération de "${payload.new.title}" est terminée.`;
+                toast.success(title, {
+                  description: message,
                   duration: 6000,
                 });
+                addNotification(title, message);
                 
                 // Fetch updated credits if a track was completed 
                 // (though technically credits are deducted on creation)
               } else if (newStatus === 'failed' && oldStatus !== 'failed') {
-                toast.error(`Échec de la génération de "${payload.new.title}"`, {
-                  description: "Un problème technique est survenu.",
+                const title = "Échec de génération";
+                const message = `Un problème est survenu avec "${payload.new.title}".`;
+                toast.error(title, {
+                  description: message,
                   duration: 6000,
                 });
+                addNotification(title, message);
               }
             }
           )
@@ -210,22 +257,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {credits !== null ? `${credits} Mélodies` : "..."}
               </div>
             </Link>
-            
-            <DropdownMenu>
+            <DropdownMenu onOpenChange={(open) => { if (open) markAllAsRead(); }}>
               <DropdownMenuTrigger 
                 render={
-                  <button id="notification-trigger" className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900 relative cursor-pointer outline-none transition-colors">
+                  <button id="notification-trigger" className="relative p-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,107,0,0.15)] outline-none cursor-pointer">
                     <Bell className="w-5 h-5" />
-                    <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#FF6B00] rounded-full shadow-[0_0_8px_rgba(255,107,0,0.8)]"></span>
+                    {unreadCount > 0 && (
+                      <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-[#FF6B00] rounded-full shadow-[0_0_8px_rgba(255,107,0,0.8)] border border-[#0B0B0F]"></span>
+                    )}
                   </button>
                 } 
               />
-              <DropdownMenuContent align="end" className="w-64 rounded-2xl p-4 text-center space-y-3 bg-white border-gray-200 text-gray-900 shadow-xl">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Bell className="w-5 h-5 text-gray-500" />
+              <DropdownMenuContent align="end" className="w-80 bg-white border-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-2xl p-2 mt-2">
+                <div className="p-3 pb-2 flex items-center justify-between">
+                  <h3 className="font-bold text-gray-900">Notifications</h3>
+                  {unreadCount > 0 && (
+                    <span className="text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 px-2 py-0.5 rounded-full">
+                      {unreadCount} nouvelle(s)
+                    </span>
+                  )}
                 </div>
-                <p className="font-medium text-sm">Aucune notification</p>
-                <p className="text-xs text-gray-500">Vous serez averti ici lorsque vos musiques seront prêtes ou que vous recevrez des Mélodies.</p>
+                <DropdownMenuSeparator className="bg-gray-100" />
+                <div className="max-h-80 overflow-y-auto scrollbar-hide py-1">
+                  {notifications.length === 0 ? (
+                    <div className="py-8 px-4 text-center flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+                        <Bell className="w-5 h-5 text-gray-400" />
+                      </div>
+                      <p className="font-medium text-sm text-gray-900">Aucune notification</p>
+                      <p className="text-xs text-gray-500 mt-1">Vous serez averti ici lorsque vos musiques seront prêtes.</p>
+                    </div>
+                  ) : (
+                    notifications.map(notif => (
+                      <div key={notif.id} className="p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-default mb-1 relative">
+                        {!notif.read && <div className="absolute left-1.5 top-5 w-1.5 h-1.5 bg-[#FF6B00] rounded-full"></div>}
+                        <div className="pl-3">
+                          <p className="text-sm font-semibold text-gray-900">{notif.title}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{notif.message}</p>
+                          <p className="text-[10px] text-gray-400 mt-1">{new Date(notif.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
             
