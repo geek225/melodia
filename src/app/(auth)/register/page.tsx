@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { signup } from "../actions";
-import { Suspense } from "react";
-import { AlertCircle } from "lucide-react";
+import { Suspense, useState } from "react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
 function RegisterContent() {
+  const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const errorMsg = searchParams.get("error");
 
@@ -88,13 +89,22 @@ function RegisterContent() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                className="h-12 rounded-2xl border-border bg-input/50"
-                required
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className="h-12 rounded-2xl border-border bg-input/50 pr-10"
+                  required
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
             <Button type="submit" className="w-full h-12 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 text-base">
               Créer avec Email

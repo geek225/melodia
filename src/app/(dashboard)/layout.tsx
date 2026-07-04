@@ -260,10 +260,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <DropdownMenu onOpenChange={(open) => { if (open) markAllAsRead(); }}>
               <DropdownMenuTrigger 
                 render={
-                  <button id="notification-trigger" className="relative p-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,107,0,0.15)] outline-none cursor-pointer">
+                  <button id="notification-trigger" className="relative p-2.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 transition-all shadow-sm outline-none cursor-pointer">
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-[#FF6B00] rounded-full shadow-[0_0_8px_rgba(255,107,0,0.8)] border border-[#0B0B0F]"></span>
+                      <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-[#FF6B00] rounded-full shadow-[0_0_5px_rgba(255,107,0,0.5)]"></span>
                     )}
                   </button>
                 } 

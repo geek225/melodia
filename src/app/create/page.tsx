@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createTrack } from "./actions";
 import Image from "next/image";
+import { toast } from "sonner";
 import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff } from "lucide-react";
 import {
   AlertDialog,
@@ -175,6 +176,11 @@ export default function NewCreatePage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onerror = (e: any) => {
       console.error("Speech recognition error", e);
+      if (e.error === 'not-allowed') {
+        toast.error("Veuillez autoriser l'accès au microphone dans votre navigateur.");
+      } else {
+        toast.error(`Erreur du micro: ${e.error}`);
+      }
       setIsListening(false);
     };
 
