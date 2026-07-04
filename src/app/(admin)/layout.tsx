@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="w-64 bg-card border-r border-border/50 flex-col hidden lg:flex sticky top-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-border/50">
           <Link href="/dashboard" className="flex items-center gap-2 text-xl font-black tracking-tight">
-            <Image src="/images/logo.png" alt="Melodia Admin Logo" width={100} height={32} className="h-8 w-auto object-contain" />
+            <Image src="/images/logo.png" alt="Melodia Admin Logo" width={160} height={52} className="h-14 w-auto object-contain" />
             <span className="text-primary text-sm uppercase mt-1">Admin</span>
           </Link>
         </div>
@@ -166,7 +166,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <SheetTitle className="sr-only">Menu d&apos;administration</SheetTitle>
                 <div className="p-6 border-b border-border/50">
                   <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-xl font-black tracking-tight">
-                    <Image src="/images/logo.png" alt="Melodia Admin Logo" width={100} height={32} className="h-8 w-auto object-contain" />
+                    <Image src="/images/logo.png" alt="Melodia Admin Logo" width={140} height={48} className="h-12 w-auto object-contain" />
                     <span className="text-primary text-sm uppercase mt-1">Admin</span>
                   </Link>
                 </div>

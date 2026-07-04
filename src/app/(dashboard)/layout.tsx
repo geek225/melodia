@@ -138,7 +138,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 border-r border-white/5 bg-[#0B0B0F]/80 backdrop-blur-xl p-4 h-screen sticky top-0 z-40">
         <div className="flex items-center mb-10 px-4">
-          <Image src="/images/logo.png" alt="Melodia Logo" width={140} height={48} className="h-12 w-auto object-contain brightness-0 invert" />
+          <Image src="/images/logo.png" alt="Melodia Logo" width={200} height={68} className="h-16 w-auto object-contain brightness-0 invert" />
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -292,7 +292,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-white/5">
           <div className="flex items-center">
-            <Image src="/images/logo.png" alt="Melodia Logo" width={100} height={32} className="h-8 w-auto object-contain brightness-0 invert" />
+            <Image src="/images/logo.png" alt="Melodia Logo" width={140} height={48} className="h-12 w-auto object-contain brightness-0 invert" />
           </div>
           <button
             onClick={() => setDrawerOpen(false)}
