@@ -1,9 +1,9 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { headers } from 'next/headers'
 
-export async function buyMelodies(amount: number) {
+export async function buyMelodies(melodies: number, price: number, packName: string) {
   try {
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -13,45 +13,61 @@ export async function buyMelodies(amount: number) {
       return { success: false, error: 'User not authenticated' }
     }
 
-    // Use admin client to bypass RLS for credits update
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const paytechApiKey = process.env.PAYTECH_API_KEY
+    const paytechApiSecret = process.env.PAYTECH_API_SECRET
+    const paytechEnv = process.env.PAYTECH_ENV || 'test'
 
-    if (!serviceRoleKey || !supabaseUrl) {
-      console.error('Missing env vars')
+    if (!paytechApiKey || !paytechApiSecret) {
+      console.error('Missing PayTech credentials')
       return { success: false, error: 'Server configuration error' }
     }
 
-    const adminClient = createAdminClient(supabaseUrl, serviceRoleKey, {
-      auth: { persistSession: false }
+    // Getting the base URL for callbacks
+    const headersList = headers()
+    const origin = headersList.get('origin') || 'https://melodia-delta.vercel.app' // Fallback to your Vercel domain
+
+    const ref_command = `CMD_${Date.now()}_${user.id.substring(0, 5)}`
+    
+    // Custom data to pass to IPN webhook
+    const custom_field = JSON.stringify({
+      userId: user.id,
+      melodies,
+      packName
     })
 
-    // Get current credits
-    const { data: profile, error: fetchError } = await adminClient
-      .from('profiles')
-      .select('credits')
-      .eq('id', user.id)
-      .single()
+    const payload = new URLSearchParams()
+    payload.append('item_name', packName)
+    payload.append('item_price', price.toString())
+    payload.append('command_name', `Achat de ${packName}`)
+    payload.append('ref_command', ref_command)
+    payload.append('env', paytechEnv)
+    payload.append('currency', 'XOF')
+    payload.append('ipn_url', `${origin}/api/webhooks/paytech`)
+    payload.append('success_url', `${origin}/credits?payment=success`)
+    payload.append('cancel_url', `${origin}/credits?payment=cancelled`)
+    payload.append('custom_field', custom_field)
 
-    if (fetchError || profile === null) {
-      console.error('Profile fetch error:', fetchError)
-      return { success: false, error: 'Profile not found' }
+    const response = await fetch('https://paytech.sn/api/payment/request-payment', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'API_KEY': paytechApiKey,
+        'API_SECRET': paytechApiSecret,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: payload.toString()
+    })
+
+    const data = await response.json()
+
+    if (data.success === 1) {
+      // Return the redirect URL to the client
+      return { success: true, redirectUrl: data.redirect_url }
+    } else {
+      console.error('PayTech Error:', data)
+      return { success: false, error: 'Erreur lors de la création du paiement chez PayTech' }
     }
 
-    const newCredits = (profile.credits || 0) + amount
-
-    // Update credits
-    const { error: updateError } = await adminClient
-      .from('profiles')
-      .update({ credits: newCredits, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-
-    if (updateError) {
-      console.error('Update error:', updateError)
-      return { success: false, error: updateError.message }
-    }
-
-    return { success: true, newBalance: newCredits }
   } catch (err) {
     console.error('Unexpected error in buyMelodies:', err)
     return { success: false, error: 'Unexpected server error' }

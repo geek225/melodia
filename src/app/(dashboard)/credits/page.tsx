@@ -4,27 +4,37 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Music, Check, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { buyMelodies } from "./actions";
 import { useRouter } from "next/navigation";
 
 export default function CreditsPage() {
   const router = useRouter();
-  const [loadingPack, setLoadingPack] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get("payment");
 
-  const handleBuy = async (packName: string, melodies: number) => {
+  const [loadingPack, setLoadingPack] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(
+    paymentStatus === "success" ? "✅ Paiement réussi ! Vos mélodies ont été créditées sur votre compte." : null
+  );
+  const [errorMsg, setErrorMsg] = useState<string | null>(
+    paymentStatus === "cancelled" ? "❌ Paiement annulé." : null
+  );
+
+  const handleBuy = async (packName: string, melodies: number, priceStr: string) => {
     setLoadingPack(packName);
     setErrorMsg(null);
     setSuccessMsg(null);
-    const result = await buyMelodies(melodies);
-    setLoadingPack(null);
+    // Convert "1 000" string to number 1000
+    const price = parseInt(priceStr.replace(/\s+/g, ''), 10);
 
-    if (result.success) {
-      setSuccessMsg(`✅ Paiement réussi ! Vous avez reçu ${melodies} Mélodies. Nouveau solde : ${result.newBalance} Mélodies.`);
-      setTimeout(() => setSuccessMsg(null), 6000);
-      router.refresh();
+    const result = await buyMelodies(melodies, price, packName);
+    
+    if (result.success && result.redirectUrl) {
+      // Redirect user to PayTech secure checkout
+      window.location.href = result.redirectUrl;
     } else {
+      setLoadingPack(null);
       setErrorMsg(`❌ Erreur : ${result.error || "Une erreur est survenue."}`);
       setTimeout(() => setErrorMsg(null), 6000);
     }
@@ -89,7 +99,7 @@ export default function CreditsPage() {
               </div>
 
               <Button 
-                onClick={() => handleBuy(pack.name, pack.melodies)}
+                onClick={() => handleBuy(pack.name, pack.melodies, pack.price)}
                 disabled={loadingPack !== null}
                 className={`w-full rounded-xl font-bold ${pack.recommended ? 'bg-primary hover:bg-primary/90 text-white' : 'variant-outline'}`}
                 variant={pack.recommended ? 'default' : 'outline'}
