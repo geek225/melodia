@@ -30,47 +30,111 @@ export default function PrivacyPage() {
         </Link>
         
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Politique de Confidentialité</h1>
-        <p className="text-sm text-gray-500 mb-10">Dernière mise à jour : 04 Janvier 2026</p>
+        <p className="text-sm text-gray-500 mb-10">Dernière mise à jour : 04 juillet 2026</p>
 
         <div className="space-y-8 text-gray-700 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">1. Introduction</h2>
+            <p className="mb-2">
+              Chez Melodia, nous accordons une grande importance à la confidentialité et à la sécurité des données de nos utilisateurs.
+            </p>
             <p>
-              Bienvenue sur Melodia. Nous prenons la confidentialité de vos données très au sérieux. Cette politique décrit comment nous collectons, utilisons et protégeons vos informations personnelles.
+              La présente Politique de Confidentialité explique quelles informations peuvent être collectées, pourquoi elles sont utilisées et comment elles sont protégées.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">2. Les données que nous collectons</h2>
-            <p className="mb-2">Nous pouvons collecter les types d&apos;informations suivants :</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Informations d&apos;identification (nom, email) lors de l&apos;inscription.</li>
-              <li>Données de création musicale (fichiers audio, prompts, préférences de style).</li>
-              <li>Données d&apos;utilisation (logs, interactions avec l&apos;interface).</li>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">2. Données que nous collectons</h2>
+            <p className="mb-2">
+              Dans le cadre de l&apos;utilisation de Melodia, nous pouvons collecter les informations suivantes :
+            </p>
+            <ul className="list-disc pl-5 space-y-1 mb-2">
+              <li>les informations de compte, comme le nom, l&apos;adresse e-mail et les informations de profil ;</li>
+              <li>les données de création musicale, notamment les paroles, descriptions, styles sélectionnés et paramètres de génération ;</li>
+              <li>les informations relatives aux crédits, abonnements et transactions ;</li>
+              <li>les données techniques et d&apos;utilisation nécessaires au fonctionnement, à la sécurité et à l&apos;amélioration du service.</li>
             </ul>
+            <p>
+              Melodia ne stocke pas directement les informations bancaires ou les codes secrets des services de paiement lorsque les paiements sont traités par des prestataires de paiement externes.
+            </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">3. Utilisation des données</h2>
-            <p className="mb-2">Vos données sont utilisées pour :</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Fournir et améliorer nos services de génération musicale par IA.</li>
-              <li>Vous permettre de télécharger et gérer vos créations.</li>
-              <li>Communiquer avec vous concernant votre compte ou nos services.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Protection de vos créations</h2>
             <p>
-              Les musiques que vous générez sur Melodia restent privées par défaut, sauf si vous décidez de les partager dans la section Playlist publique ou sur d&apos;autres plateformes.
+              Les données collectées peuvent être utilisées pour fournir les services de génération musicale, gérer les comptes utilisateurs, traiter les achats de crédits ou abonnements, améliorer la plateforme, assurer la sécurité du service, prévenir les abus et communiquer avec les utilisateurs concernant leur compte ou le fonctionnement de Melodia.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Contact</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Données de création musicale</h2>
+            <p className="mb-2">
+              Les paroles, descriptions et autres informations fournies pour générer une musique sont traitées afin de fournir le service demandé.
+            </p>
             <p>
-              Pour toute question concernant cette politique, veuillez nous contacter à : contact@melodia-app.com
+              Certaines données peuvent être transmises aux prestataires technologiques nécessaires à la génération musicale, uniquement dans le cadre du fonctionnement du service et selon les conditions applicables à ces prestataires.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Partage des données</h2>
+            <p className="mb-2">Melodia ne vend pas les données personnelles de ses utilisateurs.</p>
+            <p>
+              Certaines informations peuvent être traitées par des prestataires techniques indispensables au fonctionnement du service, notamment pour l&apos;hébergement, l&apos;authentification, la génération musicale, le stockage de fichiers, l&apos;analyse technique ou le traitement des paiements.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">6. Sécurité des données</h2>
+            <p className="mb-2">
+              Nous mettons en œuvre des mesures techniques et organisationnelles raisonnables afin de protéger les données contre l&apos;accès non autorisé, la perte, l&apos;altération ou la divulgation.
+            </p>
+            <p>
+              Aucun système informatique ne pouvant garantir une sécurité absolue, nous améliorons régulièrement nos mécanismes de protection.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">7. Conservation des données</h2>
+            <p className="mb-2">
+              Les données sont conservées pendant la durée nécessaire à la fourniture du service et au respect de nos obligations légales et administratives.
+            </p>
+            <p>
+              L&apos;utilisateur peut demander la suppression de son compte et des données associées, sous réserve des informations devant être conservées pour des raisons légales ou comptables.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">8. Vos droits</h2>
+            <p className="mb-2">
+              Selon la réglementation applicable, l&apos;utilisateur peut demander l&apos;accès, la rectification ou la suppression de ses données personnelles.
+            </p>
+            <p>
+              Il peut également demander des informations sur l&apos;utilisation de ses données en contactant Melodia à l&apos;adresse officielle indiquée sur la plateforme.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">9. Cookies et technologies similaires</h2>
+            <p className="mb-2">
+              Melodia peut utiliser des cookies ou des technologies similaires nécessaires au fonctionnement du site, à la connexion au compte, à la sécurité et à l&apos;analyse de l&apos;utilisation de la plateforme.
+            </p>
+            <p>
+              Lorsque la réglementation applicable l&apos;exige, le consentement de l&apos;utilisateur sera demandé avant l&apos;utilisation de cookies non essentiels.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">10. Modification de la politique</h2>
+            <p>
+              Cette Politique de Confidentialité peut être mise à jour afin de refléter les évolutions de Melodia, de ses fonctionnalités ou des obligations réglementaires applicables.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">11. Contact</h2>
+            <p>
+              Pour toute question concernant la confidentialité ou les données personnelles, vous pouvez contacter Melodia à l&apos;adresse officielle indiquée sur la plateforme.
             </p>
           </section>
         </div>

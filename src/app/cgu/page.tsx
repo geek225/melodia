@@ -30,47 +30,110 @@ export default function CGUPage() {
         </Link>
         
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Conditions Générales d&apos;Utilisation (CGU)</h1>
-        <p className="text-sm text-gray-500 mb-10">Dernière mise à jour : 04 Janvier 2026</p>
+        <p className="text-sm text-gray-500 mb-10">Dernière mise à jour : 04 juillet 2026</p>
 
         <div className="space-y-8 text-gray-700 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">1. Acceptation des conditions</h2>
             <p>
-              En accédant et en utilisant la plateforme Melodia, vous acceptez d&apos;être lié par les présentes Conditions Générales d&apos;Utilisation.
+              En accédant à Melodia et en utilisant ses services, vous acceptez les présentes Conditions Générales d&apos;Utilisation. Si vous n&apos;acceptez pas ces conditions, vous ne devez pas utiliser la plateforme.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">2. Description du service</h2>
-            <p>
-              Melodia est une plateforme assistée par intelligence artificielle permettant la création de musiques, spécialisée dans les genres urbains, afrobeats et divers autres styles musicaux.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">3. Propriété intellectuelle et Droits</h2>
             <p className="mb-2">
-              <strong>Vos Créations :</strong> Sous réserve du respect des présentes conditions, vous conservez la pleine propriété et les droits commerciaux des musiques que vous générez via Melodia. Vous êtes libre de les distribuer, de les vendre et de les diffuser.
+              Melodia est une plateforme de création musicale assistée par intelligence artificielle. Elle permet notamment aux utilisateurs de générer des chansons à partir de paroles, descriptions, styles musicaux et autres paramètres de création.
             </p>
             <p>
-              <strong>Technologie Melodia :</strong> Le logiciel, les algorithmes et l&apos;interface utilisateur restent la propriété exclusive de Melodia.
+              Certaines fonctionnalités peuvent nécessiter l&apos;achat de crédits ou la souscription à une offre payante.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Utilisation acceptable</h2>
-            <p className="mb-2">Vous vous engagez à ne pas utiliser le service pour :</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Générer du contenu haineux, diffamatoire ou illégal.</li>
-              <li>Tenter de pirater ou de perturber le fonctionnement du site.</li>
-              <li>Revendre l&apos;accès à votre compte.</li>
-            </ul>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">3. Compte utilisateur</h2>
+            <p className="mb-2">
+              L&apos;accès à certaines fonctionnalités nécessite la création d&apos;un compte. L&apos;utilisateur s&apos;engage à fournir des informations exactes et à maintenir la confidentialité de ses identifiants de connexion.
+            </p>
+            <p>
+              Toute activité effectuée depuis un compte est considérée comme réalisée par son titulaire, sauf signalement d&apos;un accès non autorisé.
+            </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Limitation de responsabilité</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Crédits et paiements</h2>
+            <p className="mb-2">
+              Certaines générations musicales nécessitent l&apos;utilisation de crédits Melodia. Le nombre de crédits nécessaires peut varier selon le type de génération ou les fonctionnalités utilisées.
+            </p>
+            <p className="mb-2">
+              Les prix et le nombre de crédits inclus sont affichés avant l&apos;achat. Les crédits sont liés au compte de l&apos;utilisateur et ne peuvent pas être transférés ou revendus.
+            </p>
             <p>
-              Melodia fournit le service &quot;tel quel&quot;. Nous ne garantissons pas que la génération musicale répondra toujours exactement à vos attentes spécifiques, la créativité de l&apos;IA comportant une part d&apos;aléatoire.
+              En cas d&apos;échec technique confirmé ayant empêché la génération d&apos;une musique, Melodia peut procéder à la restitution des crédits concernés selon les conditions applicables.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Créations et droits d&apos;utilisation</h2>
+            <p className="mb-2">
+              Les droits applicables aux musiques générées dépendent de l&apos;offre utilisée, des conditions affichées sur Melodia et, le cas échéant, des licences et restrictions imposées par les technologies tierces utilisées pour fournir le service.
+            </p>
+            <p className="mb-2">
+              L&apos;utilisateur reste responsable des paroles, textes, fichiers audio, références et autres contenus qu&apos;il fournit à la plateforme. Il garantit disposer des droits nécessaires sur ces contenus.
+            </p>
+            <p>
+              L&apos;utilisateur ne doit pas demander la reproduction non autorisée d&apos;une œuvre protégée ni utiliser Melodia pour porter atteinte aux droits d&apos;un tiers.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">6. Utilisation acceptable</h2>
+            <p>
+              L&apos;utilisateur s&apos;engage à ne pas utiliser Melodia pour créer ou diffuser des contenus illégaux, haineux, diffamatoires, frauduleux ou portant atteinte aux droits d&apos;autrui. Il est également interdit de tenter de perturber le fonctionnement de la plateforme, de contourner ses systèmes de sécurité ou de revendre l&apos;accès à un compte sans autorisation.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">7. Intelligence artificielle et résultats générés</h2>
+            <p className="mb-2">
+              Les créations produites par intelligence artificielle peuvent varier selon les instructions fournies et comporter une part d&apos;aléatoire.
+            </p>
+            <p>
+              Melodia ne garantit pas qu&apos;une génération correspondra exactement aux attentes de l&apos;utilisateur. Des résultats différents peuvent être produits à partir d&apos;instructions similaires.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">8. Disponibilité du service</h2>
+            <p>
+              Melodia s&apos;efforce d&apos;assurer la disponibilité et le bon fonctionnement de la plateforme. Des interruptions temporaires peuvent néanmoins survenir pour des opérations de maintenance, des mises à jour, des problèmes techniques ou des événements indépendants de notre contrôle.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">9. Limitation de responsabilité</h2>
+            <p className="mb-2">
+              Melodia fournit ses services dans les limites permises par la réglementation applicable. La plateforme ne peut garantir l&apos;absence totale d&apos;interruption, d&apos;erreur ou de résultat musical insatisfaisant.
+            </p>
+            <p>
+              L&apos;utilisateur reste responsable de l&apos;utilisation, de la publication et de la distribution de ses créations.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">10. Modification des conditions</h2>
+            <p className="mb-2">
+              Melodia peut modifier les présentes conditions afin de tenir compte de l&apos;évolution de ses services, de ses technologies ou des obligations réglementaires applicables.
+            </p>
+            <p>
+              Les utilisateurs seront informés des modifications importantes par un moyen approprié.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">11. Contact</h2>
+            <p>
+              Pour toute question concernant les présentes Conditions Générales d&apos;Utilisation, vous pouvez nous contacter à l&apos;adresse officielle indiquée sur la plateforme Melodia.
             </p>
           </section>
         </div>

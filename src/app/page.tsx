@@ -67,6 +67,7 @@ export default function LandingPage() {
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
           <a href="#features" className="hover:text-gray-900 transition-colors">Fonctionnalités</a>
           <a href="#styles" className="hover:text-gray-900 transition-colors">Styles</a>
+          <a href="#faq" className="hover:text-gray-900 transition-colors">FAQ</a>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -332,6 +333,33 @@ export default function LandingPage() {
 
                 {/* Animated Border on hover */}
                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-500/50 rounded-3xl transition-colors duration-500" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section id="faq" className="py-24 px-6 md:px-12 bg-[#FAFAFA]">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">Questions fréquentes</h2>
+            <p className="text-xl text-gray-500">Tout ce que tu as besoin de savoir pour bien démarrer.</p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              { q: "Comment fonctionne Melodia ?", a: "Décris ton idée, choisis un style et notre IA crée ta musique." },
+              { q: "Dois-je savoir chanter ?", a: "Non. Aucune compétence musicale n'est nécessaire." },
+              { q: "Comment fonctionnent les crédits ?", a: "Chaque génération utilise des crédits selon le type de création." },
+              { q: "Puis-je télécharger mes musiques ?", a: "Oui, tes créations peuvent être écoutées et téléchargées depuis ton espace." },
+              { q: "Quels styles sont disponibles ?", a: "Afrobeat, Amapiano, Coupé-décalé, Gospel, Rumba, Pop, R&B et plus encore." },
+              { q: "Que se passe-t-il si la génération échoue ?", a: "En cas d'échec technique confirmé, les crédits concernés peuvent être recrédités." },
+              { q: "Quels moyens de paiement acceptez-vous ?", a: "Vous pouvez acheter vos crédits facilement via Mobile Money ou carte bancaire." },
+            ].map((faq, idx) => (
+              <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{faq.q}</h3>
+                <p className="text-gray-600">{faq.a}</p>
               </div>
             ))}
           </div>
