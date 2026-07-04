@@ -60,9 +60,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [userProfile, setUserProfile] = useState<{full_name: string | null, email: string | null, role: string} | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    const fetchProfile = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (profile) {
+          setUserProfile({
+            full_name: profile.full_name,
+            email: profile.email || user.email || '',
+            role: profile.role
+          });
+        }
+      }
+    };
+    fetchProfile();
   }, []);
 
   const handleLogout = async () => {
@@ -187,11 +207,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           
           <div className="flex items-center gap-4">
             <div className="text-right hidden md:block">
-              <p className="font-bold text-sm leading-none">Super Admin</p>
-              <p className="text-xs text-muted-foreground mt-1">test@admin.com</p>
+              <p className="font-bold text-sm leading-none">
+                {userProfile?.role === 'super_admin' ? 'Super Admin' : 'Administrateur'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">{userProfile?.email || 'admin@melodia.ai'}</p>
             </div>
-            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold shadow-sm">
-              AD
+            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border border-primary/20">
+              {userProfile?.full_name ? userProfile.full_name.substring(0, 2).toUpperCase() : 'AD'}
             </div>
           </div>
         </header>

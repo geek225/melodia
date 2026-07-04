@@ -158,8 +158,8 @@ export function AdminRolesClient() {
               filteredStaff.map(user => (
                 <TableRow key={user.id} className="hover:bg-gray-50/50">
                   <TableCell className="font-medium flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${user.role === 'admin' ? 'bg-red-500' : 'bg-blue-500'}`}>
-                      {user.role === 'admin' ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${(user.role === 'admin' || user.role === 'super_admin') ? 'bg-red-500' : 'bg-blue-500'}`}>
+                      {(user.role === 'admin' || user.role === 'super_admin') ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
                     </div>
                     {user.full_name || 'Anonyme'}
                   </TableCell>
@@ -167,10 +167,11 @@ export function AdminRolesClient() {
                     {user.email || '—'}
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-md font-medium text-xs ${
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      user.role === 'super_admin' ? 'bg-purple-100 text-purple-800' :
                       user.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
                     }`}>
-                      {user.role === 'admin' ? 'Administrateur' : 'Éditeur'}
+                      {user.role === 'super_admin' ? 'Super Admin' : user.role === 'admin' ? 'Administrateur' : 'Éditeur'}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
