@@ -38,7 +38,8 @@ export async function GET(request: Request) {
       
       if (resStatus.ok) {
         const statusData = await resStatus.json();
-        const currentStatus = typeof statusData === 'string' ? statusData : statusData?.status;
+        console.log("Treblo Status Data:", statusData);
+        const currentStatus = (typeof statusData === 'string' ? statusData : statusData?.status)?.toUpperCase();
         
         if (currentStatus === "SUCCESS") {
           // 2. Si succès, récupérer les détails (URL audio)

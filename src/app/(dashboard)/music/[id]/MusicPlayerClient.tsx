@@ -35,6 +35,7 @@ type Track = {
 };
 
 export default function MusicPlayerClient({ track }: { track: Track }) {
+  const [currentTrack, setCurrentTrack] = useState<Track>(track);
   const [isPlaying, setIsPlaying] = useState(false);
   const [coverUrl, setCoverUrl] = useState(track.cover_url);
   const [isUploading, setIsUploading] = useState(false);
@@ -62,16 +63,16 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
   };
 
   const handleDownload = async () => {
-    if (!track.audio_url || track.audio_url.startsWith('task:')) return;
+    if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
     try {
       // Fetch Audio
       const res = await fetch(track.audio_url);
       const audioBuffer = await res.arrayBuffer();
       
       const writer = new ID3Writer(audioBuffer);
-      writer.setFrame('TIT2', track.title || 'Meliodia Music')
+      writer.setFrame('TIT2', currentTrack.title || 'Meliodia Music')
             .setFrame('TPE1', ['Meliodia AI'])
-            .setFrame('TALB', track.style || 'Généré par IA');
+            .setFrame('TALB', currentTrack.style || 'Généré par IA');
 
       // Fetch Cover Image if exists
       if (coverUrl) {
@@ -95,7 +96,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
       
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${track.title || 'Meliodia_Music'}.mp3`;
+      a.download = `${currentTrack.title || 'Meliodia_Music'}.mp3`;
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (e) {
@@ -110,7 +111,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
       const { error } = await supabase
         .from('tracks')
         .delete()
-        .eq('id', track.id);
+        .eq('id', currentTrack.id);
         
       if (error) throw error;
       
@@ -154,7 +155,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     };
   }, [isPlaying]);
 
-  const isGenerating = track.status === 'processing' || (track.audio_url && track.audio_url.startsWith('task:'));
+  const isGenerating = currentTrack.status === 'processing' || (currentTrack.audio_url && currentTrack.audio_url.startsWith('task:'));
 
   // Demande de permission pour les notifications
   useEffect(() => {
@@ -173,11 +174,11 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
       interval = setInterval(() => {
         setProgress((prev) => (prev < 95 ? prev + 1 : prev));
       }, 1500); // 1.5s par % (environ 2min20 pour arriver à 95%)
-    } else if (track.status === 'completed' && progress > 0 && progress < 100) {
+    } else if (currentTrack.status === 'completed' && progress > 0 && progress < 100) {
       setProgress(100);
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
         new Notification("🎵 Ta chanson est prête !", { 
-          body: `La génération de "${track.title}" est terminée.`,
+          body: `La génération de "${currentTrack.title}" est terminée.`,
           icon: coverUrl || "/favicon.ico"
         });
       }
@@ -186,7 +187,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isGenerating, track.status, track.title, coverUrl, progress]);
+  }, [isGenerating, currentTrack.status, currentTrack.title, coverUrl, progress]);
 
   // Ping le serveur tous les 10% de progression pour rafraîchir le statut via l'API
   useEffect(() => {
@@ -195,13 +196,15 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     if (isGenerating) {
       pollingInterval = setInterval(async () => {
         try {
-          const res = await fetch(`/api/music/status?trackId=${track.id}`);
+          const res = await fetch(`/api/music/status?trackId=${currentTrack.id}`);
           if (res.ok) {
             const updatedTrack = await res.json();
             if (updatedTrack.status === 'completed' && updatedTrack.audio_url && !updatedTrack.audio_url.startsWith('task:')) {
-              // Si la track est terminée, on met à jour la page complète
+              // Mettre à jour l'état local et rafraîchir
+              setCurrentTrack(updatedTrack);
               router.refresh();
             } else if (updatedTrack.status === 'failed') {
+              setCurrentTrack(updatedTrack);
               router.refresh();
             }
           }
@@ -214,12 +217,12 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     return () => {
       if (pollingInterval) clearInterval(pollingInterval);
     };
-  }, [isGenerating, track.id, router]);
+  }, [isGenerating, currentTrack.id, router]);
 
 
 
   const togglePlay = () => {
-    if (!audioRef.current || !track.audio_url || track.audio_url.startsWith('task:')) return;
+    if (!audioRef.current || !currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
     
     if (isPlaying) {
       audioRef.current.pause();
@@ -236,7 +239,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
     try {
       setIsUploading(true);
       const fileExt = file.name.split('.').pop();
-      const fileName = `${track.id}-${Math.random()}.${fileExt}`;
+      const fileName = `${currentTrack.id}-${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -326,10 +329,10 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                   <div className="w-1.5 bg-[#FF6B00] rounded-t-sm animate-[bounce_0.7s_ease-in-out_infinite_0.3s]" style={{ height: '80%' }}></div>
                 </div>
               )}
-              <h1 className="text-3xl font-black tracking-tight text-gray-900 text-center line-clamp-2">{track.title}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{currentTrack.title}</h1>
             </div>
             
-            <p className="text-lg text-[#FF6B00] font-semibold text-center mb-6">{track.style || 'Musique'}</p>
+            <p className="text-lg text-[#FF6B00] font-semibold text-center mb-6">{currentTrack.style || 'Musique'}</p>
 
             {/* Barre de progression (Timeline) ou Loader */}
             {isGenerating ? (
@@ -342,13 +345,16 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                     <div className="absolute inset-0 bg-white/20 animate-pulse" />
                   </div>
                 </div>
-                <p className="text-gray-900 font-bold flex items-center gap-2 text-lg">
-                  <Loader2 className="w-5 h-5 animate-spin text-[#FF6B00]" /> 
-                  Génération en cours... {progress}%
-                </p>
-                <p className="text-sm text-gray-500 mt-2 text-center">
-                  L&apos;IA compose votre chef-d&apos;œuvre. Cela prend généralement 1 à 2 minutes.
-                </p>
+                <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center px-4 max-w-sm mx-auto">
+                  <Loader2 className="w-12 h-12 text-[#FF6B00] animate-spin mb-6" />
+                  <h3 className="text-xl font-bold text-slate-800 mb-3 text-balance">
+                    Génération en cours... {progress}%
+                  </h3>
+                  <p className="text-slate-500 text-sm text-balance">
+                    Nous sommes en train de composer <span className="font-semibold text-slate-700">"{currentTrack.title}"</span>.
+                    Cela prend généralement entre 2 et 3 minutes.
+                  </p>
+                </div>
               </div>
             ) : (
               <>
@@ -372,14 +378,14 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                   <span className="w-10">{audioDuration ? `${Math.floor(audioDuration / 60)}:${(Math.floor(audioDuration % 60)).toString().padStart(2, '0')}` : '0:00'}</span>
                 </div>
 
-                {track.audio_url && !track.audio_url.startsWith('task:') && (
-                  <audio ref={audioRef} src={track.audio_url} onEnded={() => setIsPlaying(false)} className="hidden" />
+                {currentTrack.audio_url && !currentTrack.audio_url.startsWith('task:') && (
+                  <audio ref={audioRef} src={currentTrack.audio_url!} onEnded={() => setIsPlaying(false)} className="hidden" />
                 )}
 
                 <Button 
                   size="lg" 
                   onClick={togglePlay}
-                  disabled={!track.audio_url}
+                  disabled={!currentTrack.audio_url}
                   className="w-20 h-20 rounded-full bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white shadow-[0_10px_25px_-5px_rgba(255,107,0,0.5)] transition-transform hover:scale-105 mb-8"
                 >
                   {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
@@ -391,7 +397,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
               <Button size="icon" variant="ghost" className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors">
                 <Heart className="w-6 h-6" />
               </Button>
-              <Button size="icon" variant="ghost" disabled={!track.audio_url || track.audio_url.startsWith('task:')} onClick={handleDownload} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
+              <Button size="icon" variant="ghost" disabled={!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')} onClick={handleDownload} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
                 <Download className="w-6 h-6" />
               </Button>
               <Button size="icon" variant="ghost" onClick={() => setShowShareModal(true)} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
@@ -412,7 +418,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
               <Music className="w-7 h-7 text-[#FF6B00]" /> Paroles
             </h3>
             
-            {track.lyrics ? (
+            {currentTrack.lyrics ? (
                <div className="relative flex-1 min-h-0 overflow-hidden">
                  {/* Fading mask top/bottom pour effet de défilement pro */}
                  <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-white to-transparent z-10 pointer-events-none" />
@@ -421,7 +427,7 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
                    ref={lyricsRef}
                    className="h-full text-gray-700 whitespace-pre-wrap leading-[2.5] font-semibold text-2xl text-center overflow-y-auto px-4 scrollbar-hide pb-32 pt-16 selection:bg-[#FF6B00]/20"
                  >
-                   {track.lyrics}
+                   {currentTrack.lyrics}
                  </div>
                  
                  <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent z-10 pointer-events-none" />
@@ -437,9 +443,9 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
           {/* Détails */}
           <div className="bg-white p-8 rounded-[32px] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border border-gray-100">
             <h3 className="font-bold text-xl text-gray-900 mb-6">Détails de la création</h3>
-            <p className="text-gray-600 leading-relaxed text-lg bg-gray-50 p-6 rounded-2xl border border-gray-100">{track.prompt}</p>
+            <p className="text-gray-600 leading-relaxed text-lg bg-gray-50 p-6 rounded-2xl border border-gray-100">{currentTrack.prompt}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              {[track.mood, track.language, track.voice].filter(Boolean).map((tag, i) => (
+              {[currentTrack.style, currentTrack.mood, currentTrack.language].filter(Boolean).map((tag, i) => (
                 <span key={i} className="bg-[#FF6B00]/10 text-[#FF6B00] px-5 py-2.5 text-sm font-bold rounded-full">
                   {tag}
                 </span>
