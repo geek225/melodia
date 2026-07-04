@@ -45,6 +45,7 @@ export default function NewCreatePage() {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showFundsModal, setShowFundsModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [formData, setFormData] = useState({
     reason: "",
     title: "",
@@ -90,6 +91,7 @@ export default function NewCreatePage() {
   const handleGenerate = async () => {
     try {
       setIsGenerating(true);
+      setErrorMsg("");
 
       const finalFormData = {
         title: formData.title || "Ma Musique",
@@ -103,9 +105,13 @@ export default function NewCreatePage() {
 
       const result = await createTrack(finalFormData);
       
-      if (result && !result.success && result.error === 'INSUFFICIENT_FUNDS') {
+      if (result && !result.success) {
         setIsGenerating(false);
-        setShowFundsModal(true);
+        if (result.error === 'INSUFFICIENT_FUNDS') {
+          setShowFundsModal(true);
+        } else {
+          setErrorMsg(result.message || result.error || "Une erreur est survenue lors de la création.");
+        }
         return;
       }
       
@@ -115,6 +121,7 @@ export default function NewCreatePage() {
     } catch (error) {
       console.error(error);
       setIsGenerating(false);
+      setErrorMsg(error instanceof Error ? error.message : "Erreur de connexion au serveur");
     }
   };
 
@@ -379,6 +386,11 @@ export default function NewCreatePage() {
                     {formData.style}
                   </div>
                   <p className="text-gray-500 text-sm italic border-t pt-4">&quot;{formData.prompt}&quot;</p>
+                  {errorMsg && (
+                    <div className="mt-4 bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-200">
+                      {errorMsg}
+                    </div>
+                  )}
                 </div>
              </motion.div>
           )}
