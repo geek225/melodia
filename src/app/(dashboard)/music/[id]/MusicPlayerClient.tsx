@@ -310,39 +310,61 @@ export default function MusicPlayerClient({ track }: { track: Track }) {
             
             <p className="text-lg text-[#FF6B00] font-semibold text-center mb-6">{track.style || 'Musique'}</p>
 
-            {/* Barre de progression (Timeline) */}
-            <div className="w-full flex items-center gap-3 mb-8 text-sm font-medium text-gray-500">
-              <span className="w-10 text-right">{Math.floor(currentTime / 60)}:{(Math.floor(currentTime % 60)).toString().padStart(2, '0')}</span>
-              <div 
-                className="flex-1 h-2 bg-gray-100 rounded-full cursor-pointer relative overflow-hidden group"
-                onClick={(e) => {
-                  if (audioRef.current && audioDuration) {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const percent = (e.clientX - rect.left) / rect.width;
-                    audioRef.current.currentTime = percent * audioDuration;
-                  }
-                }}
-              >
-                <div 
-                  className="absolute top-0 left-0 h-full bg-linear-to-r from-[#FF8F3D] to-[#FF6B00] rounded-full group-hover:brightness-110 transition-all"
-                  style={{ width: `${audioDuration ? (currentTime / audioDuration) * 100 : 0}%` }}
-                />
+            {/* Barre de progression (Timeline) ou Loader */}
+            {isGenerating ? (
+              <div className="w-full flex flex-col items-center mb-8 px-4">
+                <div className="w-full bg-gray-100 rounded-full h-4 mb-4 overflow-hidden relative shadow-inner">
+                  <div 
+                    className="h-full bg-linear-to-r from-purple-500 to-[#FF6B00] transition-all duration-1000 ease-out relative"
+                    style={{ width: `${progress}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                  </div>
+                </div>
+                <p className="text-gray-900 font-bold flex items-center gap-2 text-lg">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#FF6B00]" /> 
+                  Génération en cours... {progress}%
+                </p>
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  L'IA compose votre chef-d'œuvre. Cela prend généralement 1 à 2 minutes.
+                </p>
               </div>
-              <span className="w-10">{audioDuration ? `${Math.floor(audioDuration / 60)}:${(Math.floor(audioDuration % 60)).toString().padStart(2, '0')}` : '0:00'}</span>
-            </div>
+            ) : (
+              <>
+                <div className="w-full flex items-center gap-3 mb-8 text-sm font-medium text-gray-500">
+                  <span className="w-10 text-right">{Math.floor(currentTime / 60)}:{(Math.floor(currentTime % 60)).toString().padStart(2, '0')}</span>
+                  <div 
+                    className="flex-1 h-2 bg-gray-100 rounded-full cursor-pointer relative overflow-hidden group"
+                    onClick={(e) => {
+                      if (audioRef.current && audioDuration) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const percent = (e.clientX - rect.left) / rect.width;
+                        audioRef.current.currentTime = percent * audioDuration;
+                      }
+                    }}
+                  >
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-linear-to-r from-[#FF8F3D] to-[#FF6B00] rounded-full group-hover:brightness-110 transition-all"
+                      style={{ width: `${audioDuration ? (currentTime / audioDuration) * 100 : 0}%` }}
+                    />
+                  </div>
+                  <span className="w-10">{audioDuration ? `${Math.floor(audioDuration / 60)}:${(Math.floor(audioDuration % 60)).toString().padStart(2, '0')}` : '0:00'}</span>
+                </div>
 
-            {track.audio_url && !track.audio_url.startsWith('task:') && (
-              <audio ref={audioRef} src={track.audio_url} onEnded={() => setIsPlaying(false)} className="hidden" />
+                {track.audio_url && !track.audio_url.startsWith('task:') && (
+                  <audio ref={audioRef} src={track.audio_url} onEnded={() => setIsPlaying(false)} className="hidden" />
+                )}
+
+                <Button 
+                  size="lg" 
+                  onClick={togglePlay}
+                  disabled={!track.audio_url}
+                  className="w-20 h-20 rounded-full bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white shadow-[0_10px_25px_-5px_rgba(255,107,0,0.5)] transition-transform hover:scale-105 mb-8"
+                >
+                  {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
+                </Button>
+              </>
             )}
-
-            <Button 
-              size="lg" 
-              onClick={togglePlay}
-              disabled={isGenerating || !track.audio_url}
-              className="w-20 h-20 rounded-full bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white shadow-[0_10px_25px_-5px_rgba(255,107,0,0.5)] transition-transform hover:scale-105 mb-8"
-            >
-              {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
-            </Button>
 
             <div className="flex w-full justify-center gap-4">
               <Button size="icon" variant="ghost" className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors">
