@@ -51,7 +51,7 @@ export default async function PublicSharePage({ params }: { params: { id: string
           </div>
           
           <div className="bg-card/30 p-4 md:p-8 rounded-[40px] border shadow-2xl">
-            <MusicPlayerClient track={track} />
+            <MusicPlayerClient track={track} isPublic={true} />
           </div>
           
           <div className="text-center pt-8">
