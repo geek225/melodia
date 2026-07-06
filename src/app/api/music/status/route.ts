@@ -48,7 +48,7 @@ export async function GET(request: Request) {
             
           if (finalAudioUrl) {
             const finalCoverUrl = sunoTrack?.imageUrl || track.cover_url;
-            const finalLyrics = sunoTrack?.prompt || track.lyrics;
+            const finalLyrics = sunoTrack?.metadata?.prompt || track.lyrics;
             
             await adminClient
               .from('tracks')

@@ -165,6 +165,17 @@ export default function NewCreatePage() {
     return false;
   };
 
+  const handleAutoInspire = () => {
+    if (!formData.title) {
+      alert("Écris d'abord un titre de chanson pour que je puisse t'inspirer !");
+      return;
+    }
+    setFormData(prev => ({
+      ...prev,
+      prompt: `Une chanson entraînante parlant de ${prev.title}. Le rythme est plein d'émotion et d'énergie.`
+    }));
+  };
+
   // Voice to Text State
   const [isListening, setIsListening] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -358,7 +369,16 @@ export default function NewCreatePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold flex items-center gap-2">Détails de ton histoire <span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold flex items-center gap-2">Détails de ton histoire <span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
+                    <button 
+                      type="button" 
+                      onClick={handleAutoInspire}
+                      className="text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 hover:bg-[#FF6B00]/20 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
+                    >
+                      ✨ Inspirer
+                    </button>
+                  </div>
                   <div className="relative">
                     <Textarea 
                       value={formData.prompt}

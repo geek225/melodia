@@ -97,7 +97,7 @@ export async function createTrack(formData: TrackFormData) {
     
     const enrichedStyle = styleEnrichments[validData.style] || validData.style;
 
-    const descriptionPrompt = `Style musical: ${enrichedStyle}. Voix: ${validData.voice}. Chanson en Français. Histoire/Sujet : ${validData.prompt}`;
+    const descriptionPrompt = `STYLE STRICT ET OBLIGATOIRE: ${enrichedStyle}. Voix: ${validData.voice}. Langue: Français. FORMAT: Chanson courte (1m30s à 2m max) avec une fin rapide et nette. SUJET/HISTOIRE: ${validData.prompt}`;
 
     const apiRes = await fetch("https://api.sunoapi.org/api/v1/generate", {
       method: "POST",
@@ -147,7 +147,7 @@ export async function createTrack(formData: TrackFormData) {
   }
 
   // 4. Création de la musique dans la base de données
-  const finalCoverUrl = validData.coverUrl || "https://melodia.vercel.app/images/logo.png";
+  const finalCoverUrl = validData.coverUrl || "/images/logo.png";
   
   const { data, error } = await supabase
     .from('tracks')

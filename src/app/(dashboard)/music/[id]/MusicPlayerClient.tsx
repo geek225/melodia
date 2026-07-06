@@ -283,7 +283,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
           {/* Pochette Premium (Light Mode) */}
           <div className={`w-full aspect-square rounded-[40px] flex items-center justify-center relative overflow-hidden group transition-all duration-700 bg-white ${isPlaying ? 'scale-[1.02] shadow-[0_30px_60px_-15px_rgba(255,107,0,0.3)]' : 'shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]'}`}>
               <Image 
-                src={coverUrl || '/images/default-cover.png'} 
+                src={coverUrl || '/images/logo.png'} 
                 alt={currentTrack.title} 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
