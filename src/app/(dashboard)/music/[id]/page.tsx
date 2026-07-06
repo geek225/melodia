@@ -3,16 +3,43 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import MusicPlayerClient from "./MusicPlayerClient";
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id: slug } = await params;
+  const uuid = slug.slice(0, 36);
+  
+  const supabase = await createClient();
+  const { data: track } = await supabase
+    .from('tracks')
+    .select('title, cover_url')
+    .eq('id', uuid)
+    .single();
+
+  if (!track) return {};
+
+  return {
+    title: `${track.title} | Melodia`,
+    description: `Écoutez ${track.title} sur Melodia, la plateforme de création musicale par IA.`,
+    openGraph: {
+      title: `${track.title} | Melodia`,
+      description: `Écoutez ${track.title} sur Melodia.`,
+      images: [{ url: track.cover_url || "https://melodia.vercel.app/images/logo.png" }],
+    },
+  };
+}
+
 export default async function MusicDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const { id: slug } = await params;
+  const uuid = slug.slice(0, 36);
+  
   const supabase = await createClient();
   let { data: track } = await supabase
     .from('tracks')
     .select('*')
-    .eq('id', id)
+    .eq('id', uuid)
     .single();
 
   if (!track) {

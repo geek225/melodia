@@ -55,7 +55,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   
   const router = useRouter();
   const supabase = createClient();
-  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/share/${track.id}` : "";
+  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}` : "";
 
   const handleCopyShareUrl = () => {
     navigator.clipboard.writeText(shareUrl);

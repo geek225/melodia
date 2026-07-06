@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createTrack } from "./actions";
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff } from "lucide-react";
 import {
@@ -54,6 +55,8 @@ export default function NewCreatePage() {
     style: "",
     voice: "",
   });
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   // Audio Player State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -95,6 +98,27 @@ export default function NewCreatePage() {
       setIsGenerating(true);
       setErrorMsg("");
       setStep(5); // Show the big loading screen
+      
+      let finalCoverUrl = null;
+      if (coverImage) {
+        const supabase = createClient();
+        const fileExt = coverImage.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('covers')
+          .upload(filePath, coverImage);
+          
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('covers')
+            .getPublicUrl(filePath);
+          finalCoverUrl = publicUrl;
+        } else {
+          console.error("Cover upload error:", uploadError);
+        }
+      }
 
       const finalFormData = {
         title: formData.title || "Ma Musique",
@@ -103,7 +127,8 @@ export default function NewCreatePage() {
         mood: "Énergique",
         language: "Français",
         voice: formData.voice || "Duo", // use selected voice
-        duration: "1min30s"
+        duration: "1min30s",
+        coverUrl: finalCoverUrl
       };
 
       const result = await createTrack(finalFormData);
@@ -120,7 +145,10 @@ export default function NewCreatePage() {
       }
       
       setTimeout(() => {
-        if (result && result.trackId) router.push(`/music/${result.trackId}`);
+        if (result && result.trackId) {
+          const slug = finalFormData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+          router.push(`/music/${result.trackId}-${slug}`);
+        }
       }, 1000);
     } catch (error) {
       console.error(error);
@@ -353,6 +381,30 @@ export default function NewCreatePage() {
                       {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                     </button>
                   </div>
+                </div>
+                
+                <div className="space-y-2 pt-2 border-t border-gray-100">
+                  <label className="text-sm font-bold flex items-center gap-2">Pochette de la musique (Optionnel) 🎨</label>
+                  <div className="flex items-center gap-4">
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setCoverImage(file);
+                          setCoverPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                      className="cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                    />
+                    {coverPreview && (
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 border shadow-sm">
+                        <Image src={coverPreview} alt="Preview" fill className="object-cover" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400">Si tu ne mets pas d'image, une pochette par défaut (Melodia) sera utilisée.</p>
                 </div>
               </div>
             </motion.div>

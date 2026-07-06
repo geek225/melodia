@@ -15,7 +15,8 @@ const trackSchema = z.object({
   mood: z.string().max(50).optional().default(""),
   language: z.string().max(50).optional().default("fr"),
   voice: z.string().max(50).optional().default(""),
-  duration: z.string().max(20).optional().default("2min30s")
+  duration: z.string().max(20).optional().default("2min30s"),
+  coverUrl: z.string().url().optional().nullable()
 })
 
 export type TrackFormData = z.infer<typeof trackSchema>;
@@ -85,12 +86,13 @@ export async function createTrack(formData: TrackFormData) {
   
   try {
     const styleEnrichments: Record<string, string> = {
-      "Amapiano": "Amapiano, log drums, deep bass, south african dance, shaker, energetic",
-      "Afrobeats": "Afrobeats, naija pop, smooth, danceable, rhythmic shakers, tropical",
-      "Coupé-Décalé": "Coupé-Décalé, fast tempo, energetic african drums, festive, animation, ivorian dance",
-      "Rumba Congolaise": "Rumba Congolaise, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa",
-      "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic",
-      "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm"
+      "Amapiano": "authentic south african amapiano, house, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic",
+      "Afrobeats": "modern Nigerian Afrobeats, Wizkid style, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
+      "Coupé-Décalé": "Coupé-décalé, ivorian club banger, fast 130bpm, energetic roukasskass animation, deep talking drum, loud kick, highly danceable, realistic human voice",
+      "Zouglou": "authentic Ivorian Zouglou, woyo acoustic percussion, bottle tapping, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
+      "Rumba Congolaise": "Rumba Congolaise, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa, highly realistic",
+      "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic, radio hit",
+      "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm, highly realistic"
     };
     
     const enrichedStyle = styleEnrichments[validData.style] || validData.style;
@@ -145,6 +147,8 @@ export async function createTrack(formData: TrackFormData) {
   }
 
   // 4. Création de la musique dans la base de données
+  const finalCoverUrl = validData.coverUrl || "https://melodia.vercel.app/images/logo.png";
+  
   const { data, error } = await supabase
     .from('tracks')
     .insert([
@@ -155,7 +159,8 @@ export async function createTrack(formData: TrackFormData) {
         style: validData.style,
         duration: validData.duration,
         status: 'processing',
-        audio_url: apiTaskId ? `task:${apiTaskId}` : null
+        audio_url: apiTaskId ? `task:${apiTaskId}` : null,
+        cover_url: finalCoverUrl
       }
     ])
     .select()
