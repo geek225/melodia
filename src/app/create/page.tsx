@@ -404,7 +404,7 @@ export default function NewCreatePage() {
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-gray-400">Si tu ne mets pas d'image, une pochette par défaut (Melodia) sera utilisée.</p>
+                  <p className="text-xs text-gray-400">Si tu ne mets pas d&apos;image, une pochette par défaut (Melodia) sera utilisée.</p>
                 </div>
               </div>
             </motion.div>
