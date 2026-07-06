@@ -27,58 +27,48 @@ export async function GET(request: Request) {
 
     if (track.status === 'processing' && track.audio_url?.startsWith('task:')) {
       const taskId = track.audio_url.replace('task:', '');
-      const apiKey = process.env.TREBLO_API_KEY || "sksonauto_48dtMwZYfnrRApJ0JAZ5p09Ep9w10p4xgDMSUQjrkf3JWu4I";
+      const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
       
-      // 1. Vérifier le statut de la génération Treblo
-      const resStatus = await fetch(`https://api.treblo.com/v1/generations/status/${taskId}`, {
+      // 1. Vérifier le statut de la génération Suno
+      const resStatus = await fetch(`https://api.sunoapi.org/api/v1/generate/record-info?taskId=${taskId}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${apiKey}` },
         cache: "no-store"
       });
       
       if (resStatus.ok) {
-        const statusData = await resStatus.json();
-        console.log("Treblo Status Data:", statusData);
-        const currentStatus = (typeof statusData === 'string' ? statusData : statusData?.status)?.toUpperCase();
+        const result = await resStatus.json();
+        console.log("Suno Status Data:", result);
+        const statusData = result.data;
+        const currentStatus = statusData?.status?.toUpperCase();
         
-        if (currentStatus === "SUCCESS") {
-          // 2. Si succès, récupérer les détails (URL audio)
-          const resDetails = await fetch(`https://api.treblo.com/v1/generations/${taskId}`, {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${apiKey}` },
-            cache: "no-store"
-          });
-
-          if (resDetails.ok) {
-            const detailsData = await resDetails.json();
+        if (currentStatus === "SUCCESS" || currentStatus === "TEXT_SUCCESS") {
+          const sunoTrack = statusData?.response?.sunoData?.[0];
+          const finalAudioUrl = sunoTrack?.audioUrl || sunoTrack?.streamAudioUrl;
             
-            // Treblo renvoie song_paths (un tableau)
-            const finalAudioUrl = detailsData.song_paths?.[0] || detailsData.audio_url;
+          if (finalAudioUrl) {
+            const finalCoverUrl = sunoTrack?.imageUrl || track.cover_url;
+            const finalLyrics = sunoTrack?.prompt || track.lyrics;
             
-            if (finalAudioUrl) {
-              const finalCoverUrl = detailsData.image_url || track.cover_url;
-              const finalLyrics = detailsData.lyrics || track.lyrics;
+            await adminClient
+              .from('tracks')
+              .update({
+                status: 'completed',
+                audio_url: finalAudioUrl,
+                cover_url: finalCoverUrl,
+                lyrics: finalLyrics
+              })
+              .eq('id', track.id);
               
-              await adminClient
-                .from('tracks')
-                .update({
-                  status: 'completed',
-                  audio_url: finalAudioUrl,
-                  cover_url: finalCoverUrl,
-                  lyrics: finalLyrics
-                })
-                .eq('id', track.id);
-                
-              return NextResponse.json({ 
-                ...track, 
-                status: 'completed', 
-                audio_url: finalAudioUrl, 
-                cover_url: finalCoverUrl, 
-                lyrics: finalLyrics 
-              });
-            }
+            return NextResponse.json({ 
+              ...track, 
+              status: 'completed', 
+              audio_url: finalAudioUrl, 
+              cover_url: finalCoverUrl, 
+              lyrics: finalLyrics 
+            });
           }
-        } else if (currentStatus === "FAILURE") {
+        } else if (currentStatus === "FAILED" || currentStatus === "FAILURE") {
           await adminClient.from('tracks').update({ status: 'failed' }).eq('id', track.id);
           return NextResponse.json({ ...track, status: 'failed' });
         }

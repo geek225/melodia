@@ -78,18 +78,10 @@ export async function createTrack(formData: TrackFormData) {
     throw new Error('Erreur lors de la déduction des Mélodies')
   }
 
-  // 3. Appel de l'API Treblo
-  const apiKey = process.env.TREBLO_API_KEY || "sksonauto_48dtMwZYfnrRApJ0JAZ5p09Ep9w10p4xgDMSUQjrkf3JWu4I";
+  // 3. Appel de l'API Suno
+  const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
   
   let apiTaskId = null;
-  
-  // Conversion de la durée en length_range (multiples de 30s)
-  let lengthRange = [120, 150]; // Par défaut (2min - 2min30)
-  if (validData.duration === "1min30s") {
-    lengthRange = [60, 90];
-  } else if (validData.duration === "2min30s") {
-    lengthRange = [120, 150];
-  }
   
   try {
     const styleEnrichments: Record<string, string> = {
@@ -103,10 +95,9 @@ export async function createTrack(formData: TrackFormData) {
     
     const enrichedStyle = styleEnrichments[validData.style] || validData.style;
 
-    // Treblo V3 API: "prompt" is the description used to generate lyrics.
     const descriptionPrompt = `Style musical: ${enrichedStyle}. Voix: ${validData.voice}. Chanson en Français. Histoire/Sujet : ${validData.prompt}`;
 
-    const apiRes = await fetch("https://api.treblo.com/v1/generations/v3", {
+    const apiRes = await fetch("https://api.sunoapi.org/api/v1/generate", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
@@ -114,18 +105,25 @@ export async function createTrack(formData: TrackFormData) {
       },
       body: JSON.stringify({
         prompt: descriptionPrompt,
-        make_instrumental: false,
-        length_range: lengthRange
+        instrumental: false,
+        customMode: false,
+        model: "V3_5",
+        callBackUrl: "https://melodia.vercel.app/api/webhook"
       })
     });
     
     if (apiRes.ok) {
-      const data = await apiRes.json();
-      apiTaskId = data.task_id;
+      const result = await apiRes.json();
+      if (result.code === 200 && result.data?.taskId) {
+        apiTaskId = result.data.taskId;
+      } else {
+        console.error("Erreur Format API Suno:", result);
+        throw new Error(`Suno API Error: ${result.msg}`);
+      }
     } else {
       const errorText = await apiRes.text();
-      console.error("Erreur API Treblo:", errorText);
-      throw new Error(`Treblo API Error: ${apiRes.status}`);
+      console.error("Erreur HTTP API Suno:", errorText);
+      throw new Error(`Suno API HTTP Error: ${apiRes.status}`);
     }
   } catch (err) {
     console.error("Erreur réseau API MusicAPI:", err);
