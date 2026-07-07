@@ -88,7 +88,7 @@ export async function createTrack(formData: TrackFormData) {
     const styleEnrichments: Record<string, string> = {
       "Amapiano": "authentic south african amapiano, house, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic",
       "Afrobeats": "modern Nigerian Afrobeats, Wizkid style, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
-      "Coupé-Décalé": "Ivorian Coupé-Décalé, fast percussive rhythm, dynamic kick, dry snare, claps, congas, shakers, deep repetitive bass, bright synth, rhythmic electric guitar, energetic animation, atalaku, highly danceable, call-and-response, 130bpm",
+      "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast soukous rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, ndombolo influence, crowd animation, highly energetic party anthem, call-and-response",
       "Zouglou": "authentic Ivorian Zouglou, woyo acoustic percussion, bottle tapping, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
       "Rumba Congolaise": "Rumba Congolaise, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa, highly realistic",
       "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic, radio hit",
