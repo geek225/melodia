@@ -9,88 +9,86 @@ const supabaseAdmin = createClient(
 )
 
 export async function GET(request: Request) {
-  try {
-    const url = new URL(request.url);
-    await supabaseAdmin.from('api_logs').insert([{
-      api_name: 'winipayer_debug_get',
-      response_time_ms: 0,
-      is_error: true,
-      error_message: url.search
-    }]);
-    return NextResponse.json({ success: true, message: 'GET IPN logged' });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ success: false }, { status: 500 });
-  }
+  return processIPN(request);
 }
 
 export async function POST(request: Request) {
+  return processIPN(request);
+}
+
+async function processIPN(request: Request) {
   try {
-    const rawBody = await request.text();
+    const url = new URL(request.url);
+    const cryptoParam = url.searchParams.get('crypto');
     
-    // REALLY RELIABLE DEBUG LOGGING
-    try {
-      await supabaseAdmin.from('api_logs').insert([{
-        api_name: 'winipayer_debug',
-        response_time_ms: 0,
-        is_error: true,
-        error_message: rawBody.substring(0, 5000)
-      }]);
-    } catch (e) {
-      console.error(e);
-    }
-    
-    let body;
-    try {
-      body = JSON.parse(rawBody);
-    } catch (error) {
-      console.error('Failed to parse WiniPayer IPN JSON:', rawBody, error);
-      return NextResponse.json({ success: false, message: 'Invalid JSON' }, { status: 400 });
-    }
+    // In some cases, if it was a POST, we might need to parse body. 
+    // But since they use GET with crypto param, let's focus on that.
+    let cryptoValue = cryptoParam;
 
-    if (!body || !body.success || !body.results || !body.results.invoice) {
-      return NextResponse.json({ success: false, message: 'Invalid payload structure' }, { status: 400 });
-    }
-
-    const invoice = body.results.invoice;
-    const receivedHash = invoice.hash;
-    
-    // Hash verification
-    const winipayerPrivateKey = process.env.WINIPAYER_PRIVATE_KEY;
-    if (!winipayerPrivateKey) {
-      console.error('WINIPAYER_PRIVATE_KEY is not configured on the server');
-      return NextResponse.json({ success: false, message: 'Server configuration error' }, { status: 500 });
-    }
-
-    const dataToHash = `${winipayerPrivateKey}${invoice.uuid}${invoice.crypto}${invoice.amount}${invoice.created_at}`;
-    const generatedHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
-
-    if (receivedHash !== generatedHash) {
-      console.error('WiniPayer IPN Hash Mismatch! Potential fraud attempt.');
-      return NextResponse.json({ success: false, message: 'Invalid hash' }, { status: 403 });
-    }
-
-    // Valid transaction. Check state.
-    const state = invoice.state ? invoice.state.toLowerCase() : '';
-    if (state === 'success' || state === 'test') {
-      let customData = invoice.custom_data;
-      
-      if (typeof customData === 'string') {
-        try {
-          customData = JSON.parse(customData);
-        } catch (error) {
-          console.error('Could not parse custom_data string:', customData, error);
+    if (!cryptoValue && request.method === 'POST') {
+      try {
+        const rawBody = await request.text();
+        const body = JSON.parse(rawBody);
+        if (body?.results?.invoice?.crypto) {
+          cryptoValue = body.results.invoice.crypto;
         }
+      } catch (e) {
+        console.error('Failed to parse POST body for crypto:', e);
       }
+    }
 
-      if (!customData || !customData.userId || !customData.melodies) {
-        console.error('Missing userId or melodies in custom_data:', customData);
-        return NextResponse.json({ success: false, message: 'Invalid custom_data' }, { status: 400 });
+    if (!cryptoValue) {
+      return NextResponse.json({ success: false, message: 'Missing crypto parameter' }, { status: 400 });
+    }
+
+    // Call WiniPayer to get the actual invoice details using the crypto string
+    const winipayerEnv = process.env.WINIPAYER_ENV || 'test';
+    const merchantApply = process.env.WINIPAYER_MERCHANT_APPLY;
+    const merchantToken = process.env.WINIPAYER_MERCHANT_TOKEN;
+
+    if (!merchantApply || !merchantToken) {
+      console.error('WiniPayer merchant keys missing in server env');
+      return NextResponse.json({ success: false, message: 'Server config error' }, { status: 500 });
+    }
+
+    const detailResponse = await fetch(`https://api-v2.winipayer.com/checkout/standard/detail/${cryptoValue}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Merchant-Apply': merchantApply,
+        'X-Merchant-Token': merchantToken
+      },
+      body: JSON.stringify({ env: winipayerEnv })
+    });
+
+    const detailData = await detailResponse.json();
+
+    if (!detailData.success || !detailData.results || !detailData.results.invoice) {
+      console.error('Failed to verify WiniPayer invoice:', detailData);
+      return NextResponse.json({ success: false, message: 'Invalid verification' }, { status: 400 });
+    }
+
+    const invoice = detailData.results.invoice;
+    const state = invoice.state ? invoice.state.toLowerCase() : '';
+    
+    let customData = invoice.custom_data;
+    if (typeof customData === 'string') {
+      try {
+        customData = JSON.parse(customData);
+      } catch (error) {
+        console.error('Could not parse custom_data string:', customData, error);
       }
+    }
 
-      const userId = customData.userId;
-      const melodiesToAdd = parseInt(customData.melodies, 10);
+    if (!customData || !customData.userId || !customData.melodies) {
+      console.error('Missing userId or melodies in custom_data:', customData);
+      return NextResponse.json({ success: false, message: 'Invalid custom_data' }, { status: 400 });
+    }
 
+    const userId = customData.userId;
+    const melodiesToAdd = parseInt(customData.melodies, 10);
+
+    if (state === 'success' || state === 'test') {
       // 1. Log transaction to prevent double counting
       const { data: existingTx } = await supabaseAdmin
         .from('transactions')
@@ -139,30 +137,20 @@ export async function POST(request: Request) {
 
       console.log(`Successfully processed WiniPayer IPN for user ${userId}. Added ${melodiesToAdd} credits.`);
       return NextResponse.json({ success: true, message: 'Credits updated successfully' });
+      
     } else {
       console.log(`WiniPayer IPN received with non-success state: ${state}`);
       
-      let customData = invoice.custom_data;
-      if (typeof customData === 'string') {
-        try {
-          customData = JSON.parse(customData);
-        } catch (e) {
-          console.error('Could not parse custom_data string:', customData, e);
-        }
-      }
-
-      if (customData && customData.userId) {
-        // Log the failed/expired transaction so the admin can see it in the dashboard
-        await supabaseAdmin
-          .from('transactions')
-          .insert([{
-            user_id: customData.userId,
-            amount: invoice.amount,
-            provider: 'winipayer',
-            status: state, // 'failed', 'expired', etc.
-            reference: invoice.uuid
-          }]);
-      }
+      // Log the failed/expired transaction
+      await supabaseAdmin
+        .from('transactions')
+        .insert([{
+          user_id: userId,
+          amount: invoice.amount,
+          provider: 'winipayer',
+          status: state, // 'failed', 'expired', etc.
+          reference: invoice.uuid
+        }]);
 
       return NextResponse.json({ success: true, message: `Logged state: ${state}` });
     }
