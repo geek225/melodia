@@ -29,9 +29,9 @@ function CreditsContent() {
 
     const result = await buyMelodies(melodies, price, packName);
     
-    if (result.success && result.redirectUrl) {
-      // Redirect user to PayTech secure checkout
-      window.location.href = result.redirectUrl;
+    if (result.success && result.redirect_url) {
+      // Redirect user to Winipayer secure checkout
+      window.location.href = result.redirect_url;
     } else {
       setLoadingPack(null);
       setErrorMsg(`❌ Erreur : ${result.error || "Une erreur est survenue."}`);
