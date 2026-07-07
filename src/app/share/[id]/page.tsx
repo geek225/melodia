@@ -4,12 +4,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import MusicPlayerClient from "@/app/(dashboard)/music/[id]/MusicPlayerClient";
 
-export default async function PublicSharePage({ params }: { params: { id: string } }) {
+export default async function PublicSharePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: slug } = await params;
+  const uuid = slug.slice(0, 36);
   const supabase = await createClient();
   const { data: track } = await supabase
     .from('tracks')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', uuid)
     .single();
 
   if (!track) {
