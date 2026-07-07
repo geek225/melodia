@@ -8,6 +8,22 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url);
+    await supabaseAdmin.from('api_logs').insert([{
+      api_name: 'winipayer_debug_get',
+      response_time_ms: 0,
+      is_error: true,
+      error_message: url.search
+    }]);
+    return NextResponse.json({ success: true, message: 'GET IPN logged' });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ success: false }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const rawBody = await request.text();
