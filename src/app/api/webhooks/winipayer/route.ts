@@ -12,6 +12,18 @@ export async function POST(request: Request) {
   try {
     const rawBody = await request.text();
     
+    // REALLY RELIABLE DEBUG LOGGING
+    try {
+      await supabaseAdmin.from('api_logs').insert([{
+        api_name: 'winipayer_debug',
+        response_time_ms: 0,
+        is_error: true,
+        error_message: rawBody.substring(0, 5000)
+      }]);
+    } catch (e) {
+      console.error(e);
+    }
+    
     let body;
     try {
       body = JSON.parse(rawBody);
