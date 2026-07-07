@@ -113,8 +113,33 @@ export async function POST(request: Request) {
       console.log(`Successfully processed WiniPayer IPN for user ${userId}. Added ${melodiesToAdd} credits.`);
       return NextResponse.json({ success: true, message: 'Credits updated successfully' });
     } else {
-      console.log(`WiniPayer IPN received with non-success state: ${invoice.state}`);
-      return NextResponse.json({ success: true, message: `Ignored state: ${invoice.state}` });
+      console.log(`WiniPayer IPN received with non-success state: ${state}`);
+      
+      let customData = invoice.custom_data;
+      if (typeof customData === 'string') {
+        try {
+          customData = JSON.parse(customData);
+        } catch (e) {
+          console.error('Could not parse custom_data string:', customData, e);
+        }
+      }
+
+      if (customData && customData.userId) {
+        // Log the failed/expired transaction so the admin can see it in the dashboard
+        const packName = customData.packName || 'Pack Inconnu';
+        await supabaseAdmin
+          .from('transactions')
+          .insert([{
+            user_id: customData.userId,
+            amount: invoice.amount,
+            type: 'credit',
+            status: state, // 'failed', 'expired', etc.
+            reference: invoice.uuid,
+            description: `Tentative échouée: ${packName} via WiniPayer`
+          }]);
+      }
+
+      return NextResponse.json({ success: true, message: `Logged state: ${state}` });
     }
 
   } catch (error) {
