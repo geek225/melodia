@@ -76,7 +76,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
     try {
       // Fetch Audio
-      const res = await fetch(track.audio_url);
+      const res = await fetch(currentTrack.audio_url);
       const audioBuffer = await res.arrayBuffer();
       
       const writer = new ID3Writer(audioBuffer);
