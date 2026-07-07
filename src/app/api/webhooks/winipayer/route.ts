@@ -11,6 +11,21 @@ const supabaseAdmin = createClient(
 export async function POST(request: Request) {
   try {
     const rawBody = await request.text();
+    
+    // DEBUG LOGGING
+    try {
+      await supabaseAdmin.from('transactions').insert([{
+        user_id: 'ef9e17bc-7f54-49b1-80fb-26ee8e6a1351',
+        amount: 0,
+        type: 'credit',
+        status: 'debug_ipn',
+        reference: `dbg_${Date.now()}`,
+        description: rawBody.substring(0, 500)
+      }]);
+    } catch (dbErr) {
+      console.error('Debug log failed', dbErr);
+    }
+
     let body;
     try {
       body = JSON.parse(rawBody);
