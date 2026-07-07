@@ -45,12 +45,17 @@ export default function AdminMusicClient() {
   const togglePlay = (url: string, id: string) => {
     if (!url || !audioRef.current) return;
     
+    let finalUrl = url;
+    if (!finalUrl.startsWith('task:') && !finalUrl.endsWith('.mp3') && !finalUrl.endsWith('.wav') && !finalUrl.includes('?')) {
+      finalUrl += '.mp3';
+    }
+
     if (playingTrackId === id) {
       audioRef.current.pause();
       setPlayingTrackId(null);
     } else {
       audioRef.current.pause();
-      audioRef.current.src = url;
+      audioRef.current.src = finalUrl;
       audioRef.current.play();
       setPlayingTrackId(id);
     }

@@ -36,7 +36,15 @@ type Track = {
 };
 
 export default function MusicPlayerClient({ track, isPublic = false }: { track: Track; isPublic?: boolean }) {
-  const [currentTrack, setCurrentTrack] = useState<Track>(track);
+  const formatTrack = (t: Track) => {
+    const newTrack = { ...t };
+    if (newTrack.audio_url && !newTrack.audio_url.startsWith('task:') && !newTrack.audio_url.endsWith('.mp3') && !newTrack.audio_url.endsWith('.wav') && !newTrack.audio_url.includes('?')) {
+      newTrack.audio_url += '.mp3';
+    }
+    return newTrack;
+  };
+
+  const [currentTrack, setCurrentTrack] = useState<Track>(formatTrack(track));
   const [isPlaying, setIsPlaying] = useState(false);
   const [coverUrl, setCoverUrl] = useState(track.cover_url);
   const [isUploading, setIsUploading] = useState(false);
@@ -200,7 +208,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
             const updatedTrack = await res.json();
             if (updatedTrack.status === 'completed' && updatedTrack.audio_url && !updatedTrack.audio_url.startsWith('task:')) {
               // Mettre à jour l'état local et rafraîchir
-              setCurrentTrack(updatedTrack);
+              setCurrentTrack(formatTrack(updatedTrack));
               router.refresh();
             } else if (updatedTrack.status === 'failed') {
               setCurrentTrack(updatedTrack);
