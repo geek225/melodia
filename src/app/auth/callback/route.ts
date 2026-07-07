@@ -9,8 +9,18 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
+    if (!error && data?.session?.user) {
+      // Check if user is an admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.session.user.id)
+        .single()
+        
+      if (profile?.role === 'admin') {
+        return NextResponse.redirect(`${origin}/admin`)
+      }
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

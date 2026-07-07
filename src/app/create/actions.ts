@@ -207,6 +207,7 @@ export async function createTrack(formData: TrackFormData) {
         user_id: user.id,
         title: validData.title,
         prompt: validData.prompt,
+        lyrics: lyricsText, // Save the generated lyrics
         style: validData.style,
         duration: validData.duration,
         status: 'processing',
