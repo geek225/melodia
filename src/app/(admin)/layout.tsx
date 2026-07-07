@@ -20,7 +20,8 @@ import {
   ShieldCheck,
   Activity,
   LogOut,
-  Menu
+  Menu,
+  Bell
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +50,7 @@ const ADMIN_LINKS = [
   { name: "Plans & Mélodies", href: "/admin/plans", icon: Package },
   { name: "Statistiques", href: "/admin/stats", icon: BarChart3 },
   { name: "Marketing", href: "/admin/marketing", icon: Megaphone },
+  { name: "Notifications", href: "/admin/notifications", icon: Bell },
   { name: "Avis Clients", href: "/admin/reviews", icon: Star },
   { name: "Stockage", href: "/admin/storage", icon: HardDrive },
   { name: "Journaux (Logs)", href: "/admin/logs", icon: TerminalSquare },

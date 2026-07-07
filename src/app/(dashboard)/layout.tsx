@@ -59,22 +59,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userRole, setUserRole] = useState("user");
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [notifications, setNotifications] = useState<{id: string, title: string, message: string, read: boolean, time: number}[]>([]);
+  const [notifications, setNotifications] = useState<{id: string, title: string, message: string, read: boolean, time: number, isServer?: boolean}[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // Load notifications from local storage
+    // Load local notifications from local storage
     const saved = localStorage.getItem('meliodia_notifications');
+    let localNotifs = [];
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
-        setNotifications(parsed);
-        setUnreadCount(parsed.filter((n: { read: boolean }) => !n.read).length);
+        localNotifs = JSON.parse(saved);
+        setNotifications(localNotifs);
       } catch (e) {
         console.error("Error parsing notifications", e);
       }
     }
   }, []);
+
+  useEffect(() => {
+    setUnreadCount(notifications.filter(n => !n.read).length);
+  }, [notifications]);
 
   const addNotification = (title: string, message: string) => {
     const newNotif = {
@@ -92,13 +96,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setUnreadCount(prev => prev + 1);
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
     setNotifications(prev => {
       const updated = prev.map(n => ({ ...n, read: true }));
-      localStorage.setItem('meliodia_notifications', JSON.stringify(updated));
+      localStorage.setItem('meliodia_notifications', JSON.stringify(updated.filter(n => !n.isServer)));
       return updated;
     });
-    setUnreadCount(0);
+    
+    // Update server notifications
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      // Mark personal notifications as read
+      await supabase.from('notifications')
+        .update({ is_read: true })
+        .eq('user_id', user.id)
+        .eq('is_read', false);
+      
+      // Update last_read_notifications for global notifications
+      await supabase.from('profiles')
+        .update({ last_read_notifications: new Date().toISOString() })
+        .eq('id', user.id);
+    }
   };
 
   const handleLogout = async () => {
@@ -124,8 +143,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             setUserName(profile.full_name);
             setUserInitial(profile.full_name.charAt(0).toUpperCase());
           }
+
+          // Fetch server notifications
+          const { data: dbNotifications } = await supabase
+            .from('notifications')
+            .select('*')
+            .or(`user_id.eq.${user.id},user_id.is.null`)
+            .gte('created_at', profile.created_at || '2020-01-01')
+            .order('created_at', { ascending: false })
+            .limit(20);
+
+          if (dbNotifications) {
+            const formatted = dbNotifications.map(n => ({
+              id: n.id,
+              title: n.title,
+              message: n.message,
+              read: n.user_id ? n.is_read : (profile.last_read_notifications ? new Date(n.created_at) <= new Date(profile.last_read_notifications) : false),
+              time: new Date(n.created_at).getTime(),
+              isServer: true,
+            }));
+
+            setNotifications(prev => {
+              const all = [...prev.filter(p => !p.isServer), ...formatted];
+              all.sort((a, b) => b.time - a.time);
+              return all.slice(0, 20);
+            });
+          }
         }
-        
         // Listen to track generation updates
         const channel = supabase
           .channel('tracks-updates')
