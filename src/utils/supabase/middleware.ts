@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register') || request.nextUrl.pathname.startsWith('/auth/callback')
   const isPublicApiRoute = request.nextUrl.pathname.startsWith('/api/webhooks')
-  const isPublicPageRoute = request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/cgu') || request.nextUrl.pathname.startsWith('/privacy')
+  const isPublicPageRoute = request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/cgu') || request.nextUrl.pathname.startsWith('/privacy') || request.nextUrl.pathname.startsWith('/share')
   
   if (!user && !isAuthRoute && !isPublicApiRoute && !isPublicPageRoute) {
     // no user, potentially respond by redirecting the user to the login page
