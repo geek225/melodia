@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getAdminTracks } from "./actions";
 import {
   Table,
@@ -21,7 +21,8 @@ export default function AdminMusicClient() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     fetchTracks();
@@ -42,26 +43,22 @@ export default function AdminMusicClient() {
   );
 
   const togglePlay = (url: string, id: string) => {
-    if (!url) return;
+    if (!url || !audioRef.current) return;
     
     if (playingTrackId === id) {
-      audioElement?.pause();
+      audioRef.current.pause();
       setPlayingTrackId(null);
     } else {
-      audioElement?.pause();
-      const newAudio = new Audio(url);
-      newAudio.play();
-      setAudioElement(newAudio);
+      audioRef.current.pause();
+      audioRef.current.src = url;
+      audioRef.current.play();
       setPlayingTrackId(id);
-      
-      newAudio.onended = () => {
-        setPlayingTrackId(null);
-      };
     }
   };
 
   return (
     <div className="space-y-6">
+      <audio ref={audioRef} onEnded={() => setPlayingTrackId(null)} className="hidden" />
       <div className="flex items-center justify-between">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

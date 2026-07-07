@@ -42,6 +42,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   const [isUploading, setIsUploading] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedLyrics, setCopiedLyrics] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -139,10 +140,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
         const progress = audio.currentTime / audio.duration;
         if (!isNaN(progress)) {
           const scrollAmount = progress * (lyricsContainer.scrollHeight - lyricsContainer.clientHeight);
-          lyricsContainer.scrollTo({
-            top: scrollAmount,
-            behavior: 'smooth'
-          });
+          lyricsContainer.scrollTop = scrollAmount;
         }
       }
     };
@@ -422,9 +420,26 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
         <div className="flex-1 space-y-8 w-full">
           {/* Section Paroles */}
           <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100 h-150 flex flex-col">
-            <h3 className="font-bold text-2xl text-gray-900 flex items-center gap-3 mb-8">
-              <Music className="w-7 h-7 text-[#FF6B00]" /> Paroles
-            </h3>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="font-bold text-2xl text-gray-900 flex items-center gap-3">
+                <Music className="w-7 h-7 text-[#FF6B00]" /> Paroles
+              </h3>
+              {currentTrack.lyrics && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-full flex items-center gap-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(currentTrack.lyrics);
+                    setCopiedLyrics(true);
+                    setTimeout(() => setCopiedLyrics(false), 2000);
+                  }}
+                >
+                  {copiedLyrics ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />} 
+                  {copiedLyrics ? "Copié" : "Copier"}
+                </Button>
+              )}
+            </div>
             
             {currentTrack.lyrics ? (
                <div className="relative flex-1 min-h-0 overflow-hidden">
@@ -483,8 +498,16 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </Button>
           </div>
-          <div className="flex justify-end gap-2 mt-4">
-             <AlertDialogCancel onClick={() => setShowShareModal(false)}>Fermer</AlertDialogCancel>
+          <div className="flex flex-col gap-3 mt-6">
+             <Button 
+               className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white flex items-center gap-2" 
+               onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`Écoute ma nouvelle musique générée par IA: ${currentTrack.title} 🎵 ${shareUrl}`)}`, '_blank')}
+             >
+               Partager sur WhatsApp
+             </Button>
+             <div className="flex justify-end mt-2">
+               <AlertDialogCancel onClick={() => setShowShareModal(false)}>Fermer</AlertDialogCancel>
+             </div>
           </div>
         </AlertDialogContent>
       </AlertDialog>
