@@ -31,16 +31,47 @@ const CREATE_REASONS = [
   { id: "decouvrir", title: "Je veux découvrir", desc: "Laisse l'IA t'inspirer et t'aider à créer ta musique.", icon: "🔍" },
 ];
 
-const STYLE_OPTIONS = [
-  { id: "Afrobeats", label: "Afrobeat", desc: "Rythmes africains", icon: "🥁" },
-  { id: "Amapiano", label: "Amapiano", desc: "Ambiance lounge", icon: "🎹" },
-  { id: "Pop / R&B", label: "R&B", desc: "Mélodies douces", icon: "🎤" },
-  { id: "Rap / Hip-Hop", label: "Rap / Hip-Hop", desc: "Flow percutant", icon: "🎧" },
-  { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Ambiance festive", icon: "👞" },
-  { id: "Gospel", label: "Gospel", desc: "Spiritualité, foi", icon: "🙏" },
-  { id: "Acoustique", label: "Acoustique", desc: "Simplicité", icon: "🎸" },
-  { id: "Reggae", label: "Reggae", desc: "Vibes positives", icon: "🇯🇲" },
+const STYLE_CATEGORIES = [
+  {
+    id: "afrique_ouest",
+    title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
+    styles: [
+      { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Rythme ivoirien", icon: "👞" },
+      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Drill/Rap Nouchi", icon: "🎤" },
+      { id: "Zouglou", label: "Zouglou", desc: "Woyo, ambiance", icon: "🥁" },
+      { id: "Afrobeats", label: "Afrobeats", desc: "Vibe Naija", icon: "🇳🇬" },
+      { id: "Mbalax", label: "Mbalax", desc: "Sénégal", icon: "🇸🇳" },
+    ]
+  },
+  {
+    id: "afrique_centrale",
+    title: "Afrique Centrale 🇨🇩 🇨🇲",
+    styles: [
+      { id: "Rumba Congolaise", label: "Rumba", desc: "Sebene romantique", icon: "🎸" },
+      { id: "Afro-Congo", label: "Afro-Congo", desc: "Ndombolo / Pop", icon: "🕺" },
+    ]
+  },
+  {
+    id: "afrique_sud_est",
+    title: "Afrique Sud & Est 🇿🇦 🇹🇿",
+    styles: [
+      { id: "Amapiano", label: "Amapiano", desc: "Log drum sud-africain", icon: "🎹" },
+      { id: "Bongo Flava", label: "Bongo Flava", desc: "Pop Tanzanienne", icon: "🇹🇿" },
+    ]
+  },
+  {
+    id: "maghreb_diaspora",
+    title: "Maghreb & Diaspora 🌍",
+    styles: [
+      { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Algérie / Maroc", icon: "🇩🇿" },
+      { id: "Kizomba", label: "Kizomba", desc: "Zouk / Angola", icon: "🇦🇴" },
+      { id: "Pop / R&B", label: "R&B", desc: "Mélodies douces", icon: "🎧" },
+      { id: "Gospel", label: "Gospel", desc: "Chorale", icon: "🙏" },
+    ]
+  }
 ];
+
+const STYLE_OPTIONS = STYLE_CATEGORIES.flatMap(c => c.styles);
 
 export default function NewCreatePage() {
   const router = useRouter();
@@ -57,6 +88,7 @@ export default function NewCreatePage() {
   });
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [openCategory, setOpenCategory] = useState("afrique_ouest");
 
   // Audio Player State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -452,17 +484,36 @@ export default function NewCreatePage() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Quel style de musique <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">préfères-tu</span> ?</h2>
                 <p className="text-gray-500 text-sm md:text-base">Tu pourras changer à chaque chanson.</p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-10">
-                {STYLE_OPTIONS.map((style) => (
-                  <div 
-                    key={style.id}
-                    onClick={() => updateForm('style', style.id)}
-                    className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
-                      ${formData.style === style.id ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
-                  >
-                    <div className="text-3xl md:text-4xl mb-2 md:mb-3">{style.icon}</div>
-                    <h3 className="font-bold text-sm md:text-md mb-0.5 md:mb-1">{style.label}</h3>
-                    <p className="text-gray-500 text-[10px] md:text-xs">{style.desc}</p>
+              <div className="space-y-4 mb-10 text-left max-w-2xl mx-auto">
+                {STYLE_CATEGORIES.map((category) => (
+                  <div key={category.id} className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm transition-all duration-300">
+                    <button
+                      type="button"
+                      onClick={() => setOpenCategory(openCategory === category.id ? "" : category.id)}
+                      className={`w-full flex items-center justify-between p-4 md:p-5 text-left transition-colors ${openCategory === category.id ? 'bg-purple-50/50 text-purple-700' : 'hover:bg-gray-50 text-gray-800'}`}
+                    >
+                      <span className="font-bold text-base md:text-lg">{category.title}</span>
+                      <span className="text-sm md:text-base text-gray-400">{openCategory === category.id ? '▼' : '▶'}</span>
+                    </button>
+                    
+                    {openCategory === category.id && (
+                      <div className="p-4 md:p-5 border-t border-gray-100 bg-gray-50/30">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                          {category.styles.map((style) => (
+                            <div 
+                              key={style.id}
+                              onClick={() => updateForm('style', style.id)}
+                              className={`bg-white rounded-xl p-3 md:p-4 cursor-pointer border-2 transition-all hover:shadow-md flex flex-col items-center text-center
+                                ${formData.style === style.id ? 'border-purple-500 shadow-lg shadow-purple-500/10 scale-[1.02]' : 'border-transparent shadow-sm'}`}
+                            >
+                              <div className="text-3xl mb-2">{style.icon}</div>
+                              <h3 className="font-bold text-xs md:text-sm mb-1">{style.label}</h3>
+                              <p className="text-gray-500 text-[9px] md:text-[10px] leading-tight">{style.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
