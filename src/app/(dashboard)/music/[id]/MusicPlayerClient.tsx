@@ -432,13 +432,13 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
               <h3 className="font-bold text-2xl text-gray-900 flex items-center gap-3">
                 <Music className="w-7 h-7 text-[#FF6B00]" /> Paroles
               </h3>
-              {currentTrack.lyrics && (
+              {(currentTrack.lyrics || currentTrack.prompt?.includes('[')) && (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="rounded-full flex items-center gap-2"
                   onClick={() => {
-                    navigator.clipboard.writeText(currentTrack.lyrics);
+                    navigator.clipboard.writeText(currentTrack.lyrics || currentTrack.prompt || "");
                     setCopiedLyrics(true);
                     setTimeout(() => setCopiedLyrics(false), 2000);
                   }}
@@ -449,7 +449,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
               )}
             </div>
             
-            {currentTrack.lyrics ? (
+            {(currentTrack.lyrics || currentTrack.prompt?.includes('[')) ? (
                <div className="relative flex-1 min-h-0 overflow-hidden">
                  {/* Fading mask top/bottom pour effet de défilement pro */}
                  <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-white to-transparent z-10 pointer-events-none" />
@@ -458,7 +458,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                    ref={lyricsRef}
                    className="h-full text-gray-700 whitespace-pre-wrap leading-[2.5] font-semibold text-2xl text-center overflow-y-auto px-4 scrollbar-hide pb-32 pt-16 selection:bg-[#FF6B00]/20"
                  >
-                   {currentTrack.lyrics}
+                   {currentTrack.lyrics || currentTrack.prompt}
                  </div>
                  
                  <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent z-10 pointer-events-none" />
