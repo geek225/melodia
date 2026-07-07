@@ -14,8 +14,8 @@ export async function POST(request: Request) {
     let body;
     try {
       body = JSON.parse(rawBody);
-    } catch (e) {
-      console.error('Failed to parse WiniPayer IPN JSON:', rawBody);
+    } catch (error) {
+      console.error('Failed to parse WiniPayer IPN JSON:', rawBody, error);
       return NextResponse.json({ success: false, message: 'Invalid JSON' }, { status: 400 });
     }
 
@@ -48,8 +48,8 @@ export async function POST(request: Request) {
       if (typeof customData === 'string') {
         try {
           customData = JSON.parse(customData);
-        } catch (e) {
-          console.error('Could not parse custom_data string:', customData);
+        } catch (error) {
+          console.error('Could not parse custom_data string:', customData, error);
         }
       }
 
