@@ -95,10 +95,49 @@ export async function createTrack(formData: TrackFormData) {
       "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm, highly realistic"
     };
     
-    const enrichedStyle = styleEnrichments[validData.style] || validData.style;
+    const voiceTag = validData.voice === "Homme" ? "male vocal" : validData.voice === "Femme" ? "female vocal" : "";
+    const enrichedStyle = (styleEnrichments[validData.style] || validData.style) + (voiceTag ? `, ${voiceTag}` : "");
 
-    const descriptionPrompt = `STYLE STRICT ET OBLIGATOIRE: ${enrichedStyle}. Voix: ${validData.voice}. Langue: Français. FORMAT: Chanson courte (1m30s à 2m max) avec une fin rapide et nette. SUJET/HISTOIRE: ${validData.prompt}`;
+    // --- ETAPE 1 : GENERER LES PAROLES ---
+    const lyricsPrompt = `Chanson en français. Sujet : ${validData.prompt}. Format court avec intro, couplet, refrain, fin nette.`;
+    
+    const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+    });
 
+    let lyricsText = "";
+    if (lyricsRes.ok) {
+      const result = await lyricsRes.json();
+      if (result.code === 200 && result.data?.taskId) {
+        const lyricsTaskId = result.data.taskId;
+        // Polling pour récupérer les paroles (max 10 secondes = 5 essais de 2s)
+        for (let i = 0; i < 5; i++) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const checkRes = await fetch(`https://api.sunoapi.org/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
+            headers: { "Authorization": `Bearer ${apiKey}` },
+            cache: "no-store"
+          });
+          if (checkRes.ok) {
+            const checkData = await checkRes.json();
+            if (checkData.data?.status === "SUCCESS" && checkData.data?.response?.data?.[0]?.text) {
+              lyricsText = checkData.data.response.data[0].text;
+              break;
+            } else if (checkData.data?.status?.includes("FAILED") || checkData.data?.status === "SENSITIVE_WORD_ERROR") {
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
+    if (!lyricsText) {
+      lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt}\n[Chorus]\nOn y va !\n[Outro]`;
+    }
+
+    // --- ETAPE 2 : GENERER LA MUSIQUE EN MODE CUSTOM ---
     const apiRes = await fetch("https://api.sunoapi.org/api/v1/generate", {
       method: "POST",
       headers: {
@@ -106,9 +145,11 @@ export async function createTrack(formData: TrackFormData) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        prompt: descriptionPrompt,
+        prompt: lyricsText,
+        style: enrichedStyle,
+        title: validData.title || "Nouvelle Musique",
         instrumental: false,
-        customMode: false,
+        customMode: true, // Le mode Pro avec tags purs
         model: "V3_5",
         callBackUrl: "https://melodia.vercel.app/api/webhook"
       })

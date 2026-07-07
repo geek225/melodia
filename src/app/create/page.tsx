@@ -512,7 +512,8 @@ export default function NewCreatePage() {
                 <span className="text-4xl">🎵</span>
               </div>
               <h2 className="text-3xl font-bold mb-4">Création de la magie...</h2>
-              <p className="text-gray-500 text-lg">Cela peut prendre quelques minutes.</p>
+              <p className="text-gray-500 text-lg">Génération des paroles (Qualité Studio)... puis de la musique.</p>
+              <p className="text-gray-400 text-sm mt-2">Cela prend généralement 1 à 2 minutes.</p>
             </motion.div>
           )}
 
