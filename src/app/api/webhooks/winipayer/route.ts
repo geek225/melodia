@@ -106,7 +106,7 @@ async function processIPN(request: Request) {
           user_id: userId,
           amount: invoice.amount,
           provider: 'winipayer',
-          status: 'success',
+          status: 'completed',
           reference: invoice.uuid
         }]);
 
@@ -147,7 +147,7 @@ async function processIPN(request: Request) {
           user_id: userId,
           amount: invoice.amount,
           provider: 'winipayer',
-          status: state, // 'failed', 'expired', etc.
+          status: state === 'expired' ? 'failed' : 'failed', // Default to failed if unknown
           reference: invoice.uuid
         }]);
 
