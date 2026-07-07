@@ -62,7 +62,6 @@ export async function POST(request: Request) {
 
       const userId = customData.userId;
       const melodiesToAdd = parseInt(customData.melodies, 10);
-      const packName = customData.packName || 'Pack Inconnu';
 
       // 1. Log transaction to prevent double counting
       const { data: existingTx } = await supabaseAdmin
@@ -126,7 +125,6 @@ export async function POST(request: Request) {
 
       if (customData && customData.userId) {
         // Log the failed/expired transaction so the admin can see it in the dashboard
-        const packName = customData.packName || 'Pack Inconnu';
         await supabaseAdmin
           .from('transactions')
           .insert([{
