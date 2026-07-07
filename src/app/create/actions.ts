@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 const trackSchema = z.object({
   title: z.string().max(100, "Le titre ne doit pas dépasser 100 caractères").optional().default("Nouvelle Musique"),
-  prompt: z.string().min(3, "La description est trop courte").max(500, "La description ne doit pas dépasser 500 caractères"),
+  prompt: z.string().min(3, "La description est trop courte").max(1000, "La description ne doit pas dépasser 1000 caractères"),
   style: z.string().min(1, "Le style est requis").max(50, "Le style est trop long"),
   mood: z.string().max(50).optional().default(""),
   language: z.string().max(50).optional().default("fr"),

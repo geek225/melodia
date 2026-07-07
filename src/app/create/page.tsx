@@ -383,15 +383,31 @@ export default function NewCreatePage() {
                     <Textarea 
                       value={formData.prompt}
                       onChange={(e) => updateForm("prompt", e.target.value)}
-                      placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, donne quelques mots clés..."} 
+                      maxLength={1000}
+                      placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, colle tes paroles ou donne quelques mots clés..."} 
                       className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-none transition-colors ${
                         isListening ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-50/50' : ''
                       }`}
                     />
+                    <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5 max-w-[60%]">
+                      {['[Intro]', '[Couplet]', '[Refrain]', '[Pont]', '[Solo]'].map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => updateForm("prompt", formData.prompt ? `${formData.prompt}\n${tag}\n` : `${tag}\n`)}
+                          className="text-[10px] md:text-xs bg-gray-100 hover:bg-purple-100 text-gray-600 hover:text-purple-600 px-2 py-1 rounded border border-gray-200 transition-colors"
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                    <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 1000 ? 'text-red-500' : formData.prompt?.length > 900 ? 'text-orange-400' : 'text-gray-400'}`}>
+                      {formData.prompt?.length || 0} / 1000
+                    </div>
                     <button
                       type="button"
                       onClick={toggleListening}
-                      className={`absolute bottom-4 right-4 p-3 rounded-full flex items-center justify-center transition-all ${
+                      className={`absolute bottom-3 right-3 p-2.5 rounded-full flex items-center justify-center transition-all ${
                         isListening 
                           ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30 animate-pulse' 
                           : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-purple-600'
