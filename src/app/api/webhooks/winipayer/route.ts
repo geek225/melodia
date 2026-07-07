@@ -42,7 +42,8 @@ export async function POST(request: Request) {
     }
 
     // Valid transaction. Check state.
-    if (invoice.state === 'success') {
+    const state = invoice.state ? invoice.state.toLowerCase() : '';
+    if (state === 'success' || state === 'test') {
       let customData = invoice.custom_data;
       
       if (typeof customData === 'string') {
