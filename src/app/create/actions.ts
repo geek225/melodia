@@ -83,6 +83,7 @@ export async function createTrack(formData: TrackFormData) {
   const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
   
   let apiTaskId = null;
+  let lyricsText = "";
   
   try {
     const styleEnrichments: Record<string, string> = {
@@ -117,7 +118,6 @@ export async function createTrack(formData: TrackFormData) {
       body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
     });
 
-    let lyricsText = "";
     if (lyricsRes.ok) {
       const result = await lyricsRes.json();
       if (result.code === 200 && result.data?.taskId) {
