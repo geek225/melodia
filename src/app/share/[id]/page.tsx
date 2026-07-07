@@ -4,10 +4,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import MusicPlayerClient from "@/app/(dashboard)/music/[id]/MusicPlayerClient";
 
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
 export default async function PublicSharePage({ params }: { params: Promise<{ id: string }> }) {
   const { id: slug } = await params;
   const uuid = slug.slice(0, 36);
-  const supabase = await createClient();
+  
+  // Use admin client to bypass RLS for public sharing
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  
   const { data: track } = await supabase
     .from('tracks')
     .select('*')
