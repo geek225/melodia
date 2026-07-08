@@ -56,6 +56,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
+  const [shareUrl, setShareUrl] = useState("");
 
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -64,7 +65,10 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   
   const router = useRouter();
   const supabase = createClient();
-  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/share/${currentTrack.id}` : "";
+
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}/share/${currentTrack.id}`);
+  }, [currentTrack.id]);
 
   const handleCopyShareUrl = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -162,7 +166,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     };
   }, [isPlaying]);
 
-  const isGenerating = currentTrack.status === 'processing' || (currentTrack.audio_url && currentTrack.audio_url.startsWith('task:'));
+  const isGenerating = currentTrack.status === 'processing';
 
   // Demande de permission pour les notifications
   useEffect(() => {
