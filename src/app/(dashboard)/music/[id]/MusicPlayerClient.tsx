@@ -368,6 +368,20 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                   </p>
                 </div>
               </div>
+            ) : currentTrack.status === 'failed' ? (
+              <div className="w-full flex flex-col items-center mb-8 px-4">
+                <div className="flex flex-col items-center justify-center h-full min-h-75 text-center px-4 max-w-sm mx-auto">
+                  <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-red-600 mb-3 text-balance">
+                    Génération échouée
+                  </h3>
+                  <p className="text-slate-500 text-sm text-balance">
+                    La génération de cette musique a été rejetée par le système d&apos;intelligence artificielle, probablement parce qu&apos;elle contient des noms d&apos;artistes protégés.
+                  </p>
+                </div>
+              </div>
             ) : (
               <>
                 <div className="w-full flex items-center gap-3 mb-8 text-sm font-medium text-gray-500">

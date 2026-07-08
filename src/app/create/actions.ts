@@ -89,19 +89,19 @@ export async function createTrack(formData: TrackFormData) {
     const styleEnrichments: Record<string, string> = {
       // AFRIQUE DE L'OUEST
       "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast soukous rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, ndombolo influence, crowd animation, highly energetic party anthem, call-and-response",
-      "Rap Ivoire / Drill": "Rap Ivoire, Drill Nouchi hardcore, Didi B Himra style, trap beat, heavy 808 bass, fast aggressive flow, abidjan street vibe",
-      "Zouglou": "Zouglou ivoirien, Magic System Yodé Siro influence, woyo acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
-      "Afrobeats": "modern Nigerian Afrobeats, Burna Boy Rema Asake style, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
-      "Mbalax": "Senegalese Mbalax, Wally Seck Viviane style, sabar drums, tama talking drum, fast polyrhythmic, energetic dance music, mbalax beat",
+      "Rap Ivoire / Drill": "Rap Ivoire, Drill Nouchi hardcore, urban modern style, trap beat, heavy 808 bass, fast aggressive flow, abidjan street vibe",
+      "Zouglou": "Zouglou ivoirien, traditional urban influence, woyo acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
+      "Afrobeats": "modern Nigerian Afrobeats, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
+      "Mbalax": "Senegalese Mbalax, modern dakar style, sabar drums, tama talking drum, fast polyrhythmic, energetic dance music, mbalax beat",
       // AFRIQUE CENTRALE
-      "Rumba Congolaise": "Rumba Congolaise, Fally Ipupa style, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa, highly realistic",
-      "Afro-Congo": "Afro-Congo pop, Innoss'B style, ndombolo rhythm, fast danceable beat, animator shouts, energetic, congolese club banger",
+      "Rumba Congolaise": "Rumba Congolaise, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa, highly realistic",
+      "Afro-Congo": "Afro-Congo pop, ndombolo rhythm, fast danceable beat, animator shouts, energetic, congolese club banger",
       // AFRIQUE SUD & EST
-      "Amapiano": "authentic south african amapiano, Kabza De Small Tyla style, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic",
-      "Bongo Flava": "Tanzanian Bongo Flava, Diamond Platnumz style, afropop, sweet melodies, swahili flavor, upbeat, rhythmic, east african pop",
+      "Amapiano": "authentic south african amapiano, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic",
+      "Bongo Flava": "Tanzanian Bongo Flava, afropop, sweet melodies, swahili flavor, upbeat, rhythmic, east african pop",
       // MAGHREB & DIASPORA
-      "Raï / Pop Urbaine": "Algerian Raï, Soolking style, modern urban pop, autotune vocals, maghreb melodies, darbuka percussion, oriental synth, trap drums",
-      "Kizomba": "Kizomba, Angolan semba influence, Nelson Freitas style, slow sensual beat, romantic zouk rhythm, acoustic guitar, soft vocals",
+      "Raï / Pop Urbaine": "Algerian Raï, modern urban pop, autotune vocals, maghreb melodies, darbuka percussion, oriental synth, trap drums",
+      "Kizomba": "Kizomba, Angolan semba influence, slow sensual beat, romantic zouk rhythm, acoustic guitar, soft vocals",
       "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic, radio hit",
       "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm, highly realistic"
     };

@@ -89,7 +89,7 @@ export default async function MusicDetailPage({ params }: { params: Promise<{ id
                 
               track = { ...track, status: 'completed', audio_url: finalAudioUrl, cover_url: finalCoverUrl, lyrics: finalLyrics };
             }
-          } else if (currentStatus === "FAILED" || currentStatus === "FAILURE") {
+          } else if (currentStatus === "FAILED" || currentStatus === "FAILURE" || currentStatus === "SENSITIVE_WORD_ERROR" || currentStatus?.includes("ERROR")) {
             const adminClient = createSupabaseClient(
               process.env.NEXT_PUBLIC_SUPABASE_URL!,
               process.env.SUPABASE_SERVICE_ROLE_KEY!

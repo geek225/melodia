@@ -68,9 +68,9 @@ export async function GET(request: Request) {
               lyrics: finalLyrics 
             });
           }
-        } else if (currentStatus === "FAILED" || currentStatus === "FAILURE") {
+        } else if (currentStatus === "FAILED" || currentStatus === "FAILURE" || currentStatus === "SENSITIVE_WORD_ERROR" || currentStatus?.includes("ERROR")) {
           await adminClient.from('tracks').update({ status: 'failed' }).eq('id', track.id);
-          return NextResponse.json({ ...track, status: 'failed' });
+          return NextResponse.json({ ...track, status: 'failed', error: statusData?.errorMessage || 'Erreur de génération' });
         }
       }
     }
