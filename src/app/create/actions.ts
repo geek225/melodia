@@ -89,7 +89,7 @@ export async function createTrack(formData: TrackFormData) {
     const styleEnrichments: Record<string, string> = {
       // AFRIQUE DE L'OUEST
       "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast soukous rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, ndombolo influence, crowd animation, highly energetic party anthem, call-and-response",
-      "Rap Ivoire / Drill": "Rap Ivoire, Drill Nouchi hardcore, urban modern style, trap beat, heavy 808 bass, fast aggressive flow, abidjan street vibe",
+      "Rap Ivoire / Drill": "Rap Ivoire, hardcore Drill beat, sliding 808 sub-bass, rapid hi-hats, nouchi street slang vocal delivery, aggressive and confident fast rap flow, modern hip hop club banger, dark cinematic melody",
       "Zouglou": "Zouglou ivoirien, traditional urban influence, woyo acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
       "Afrobeats": "modern Nigerian Afrobeats, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
       "Mbalax": "Senegalese Mbalax, modern dakar style, sabar drums, tama talking drum, fast polyrhythmic, energetic dance music, mbalax beat",
