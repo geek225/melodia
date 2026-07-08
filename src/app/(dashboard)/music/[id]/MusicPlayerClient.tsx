@@ -166,6 +166,13 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     };
   }, [isPlaying]);
 
+  // Load audio automatically when url becomes available
+  useEffect(() => {
+    if (audioRef.current && currentTrack.audio_url && !currentTrack.audio_url.startsWith('task:')) {
+      audioRef.current.load();
+    }
+  }, [currentTrack.audio_url]);
+
   const isGenerating = currentTrack.status === 'processing';
 
   // Demande de permission pour les notifications

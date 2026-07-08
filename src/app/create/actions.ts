@@ -88,25 +88,25 @@ export async function createTrack(formData: TrackFormData) {
   try {
     const styleEnrichments: Record<string, string> = {
       // AFRIQUE DE L'OUEST
-      "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast soukous rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, ndombolo influence, crowd animation, highly energetic party anthem, call-and-response",
-      "Rap Ivoire / Drill": "Rap Ivoire, hardcore Drill beat, sliding 808 sub-bass, rapid hi-hats, nouchi street slang vocal delivery, aggressive and confident fast rap flow, modern hip hop club banger, dark cinematic melody",
-      "Zouglou": "Zouglou ivoirien, traditional urban influence, woyo acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe",
-      "Afrobeats": "modern Nigerian Afrobeats, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery",
-      "Mbalax": "Senegalese Mbalax, modern dakar style, sabar drums, tama talking drum, fast polyrhythmic, energetic dance music, mbalax beat",
+      "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, crowd animation, highly energetic party anthem, call-and-response, authentic west african accent, raw expressive vocals",
+      "Rap Ivoire / Drill": "Hardcore Drill beat, sliding 808 sub-bass, rapid hi-hats, street slang vocal delivery, aggressive and confident fast rap flow, modern hip hop club banger, dark cinematic melody, authentic west african accent",
+      "Zouglou": "Traditional urban influence, acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe, authentic west african accent, emotional storytelling vocals",
+      "Afrobeats": "Modern Afrobeats, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery, authentic african accent",
+      "Mbalax": "Modern african pop, talking drum, fast polyrhythmic, energetic dance music, rhythmic beat, authentic senegalese accent, raw expressive vocals",
       // AFRIQUE CENTRALE
-      "Rumba Congolaise": "Rumba Congolaise, sebene guitar, slow tempo, romantic, smooth vocals, elegant, kinshasa, highly realistic",
-      "Afro-Congo": "Afro-Congo pop, ndombolo rhythm, fast danceable beat, animator shouts, energetic, congolese club banger",
+      "Rumba Congolaise": "Slow tempo, romantic, smooth vocals, elegant, highly realistic, african acoustic guitar, authentic congolese accent, passionate vocals",
+      "Afro-Congo": "Afro-pop, fast danceable beat, animator shouts, energetic, club banger, authentic congolese accent",
       // AFRIQUE SUD & EST
-      "Amapiano": "authentic south african amapiano, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic",
-      "Bongo Flava": "Tanzanian Bongo Flava, afropop, sweet melodies, swahili flavor, upbeat, rhythmic, east african pop",
+      "Amapiano": "African deep house, signature log drum bassline, 112bpm, smooth chords, shaker loop, soulful vocal chops, extremely realistic, authentic south african accent",
+      "Bongo Flava": "East african pop, sweet melodies, upbeat, rhythmic, authentic east african accent, smooth expressive vocals",
       // MAGHREB & DIASPORA
-      "Raï / Pop Urbaine": "Algerian Raï, modern urban pop, autotune vocals, maghreb melodies, darbuka percussion, oriental synth, trap drums",
-      "Kizomba": "Kizomba, Angolan semba influence, slow sensual beat, romantic zouk rhythm, acoustic guitar, soft vocals",
-      "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic, radio hit",
-      "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm, highly realistic"
+      "Raï / Pop Urbaine": "Modern urban pop, autotune vocals, maghreb melodies, darbuka percussion, oriental synth, trap drums, authentic maghrebi accent, expressive vocals",
+      "Kizomba": "Slow sensual beat, romantic rhythm, acoustic guitar, soft vocals, authentic lusophone african accent, emotional delivery",
+      "Pop / R&B": "Pop, contemporary R&B, smooth vocals, modern beat, emotional, melodic, radio hit, clear french accent, pure human vocals",
+      "Gospel": "Gospel, uplifting choir, spiritual, soulful vocals, praise, organ, warm, highly realistic, clear french accent, powerful emotional human vocals"
     };
     
-    const voiceTag = validData.voice === "Homme" ? "male vocal" : validData.voice === "Femme" ? "female vocal" : "";
+    const voiceTag = validData.voice === "Homme" ? "authentic human male vocal" : validData.voice === "Femme" ? "authentic human female vocal" : "";
     const enrichedStyle = (styleEnrichments[validData.style] || validData.style) + (voiceTag ? `, ${voiceTag}` : "");
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
