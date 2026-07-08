@@ -203,7 +203,10 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     if (isGenerating) {
       pollingInterval = setInterval(async () => {
         try {
-          const res = await fetch(`/api/music/status?trackId=${currentTrack.id}`);
+          const res = await fetch(`/api/music/status?trackId=${currentTrack.id}&t=${Date.now()}`, {
+            cache: 'no-store',
+            headers: { 'Cache-Control': 'no-cache' }
+          });
           if (res.ok) {
             const updatedTrack = await res.json();
             if (updatedTrack.status === 'completed' && updatedTrack.audio_url && !updatedTrack.audio_url.startsWith('task:')) {
