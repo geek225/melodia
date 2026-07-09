@@ -49,6 +49,7 @@ const ADMIN_LINKS = [
   { name: "Paiements", href: "/admin/payments", icon: CreditCard },
   { name: "Plans & Mélodies", href: "/admin/plans", icon: Package },
   { name: "Statistiques", href: "/admin/stats", icon: BarChart3 },
+  { name: "Supervision IA", href: "/admin/ai-supervision", icon: Activity },
   { name: "Marketing", href: "/admin/marketing", icon: Megaphone },
   { name: "Notifications", href: "/admin/notifications", icon: Bell },
   { name: "Avis Clients", href: "/admin/reviews", icon: Star },
