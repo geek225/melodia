@@ -37,11 +37,7 @@ type Track = {
 
 export default function MusicPlayerClient({ track, isPublic = false }: { track: Track; isPublic?: boolean }) {
   const formatTrack = (t: Track) => {
-    const newTrack = { ...t };
-    if (newTrack.audio_url && !newTrack.audio_url.startsWith('task:') && !newTrack.audio_url.endsWith('.mp3') && !newTrack.audio_url.endsWith('.wav') && !newTrack.audio_url.includes('?')) {
-      newTrack.audio_url += '.mp3';
-    }
-    return newTrack;
+    return { ...t };
   };
 
   const [currentTrack, setCurrentTrack] = useState<Track>(formatTrack(track));

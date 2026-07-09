@@ -165,7 +165,13 @@ export async function createTrack(formData: TrackFormData) {
         customMode: true, // Le mode Pro avec tags purs
         model: "V3_5",
         callBackUrl: "https://melodia.vercel.app/api/webhook",
-        ...(validData.voiceUrl ? { uploadUrl: validData.voiceUrl, audioUrl: validData.voiceUrl } : {})
+        ...(validData.voiceUrl ? { 
+          uploadUrl: validData.voiceUrl, 
+          audioUrl: validData.voiceUrl, 
+          audio_url: validData.voiceUrl,
+          reference_audio: validData.voiceUrl,
+          vocal_url: validData.voiceUrl
+        } : {})
       })
     });
     
