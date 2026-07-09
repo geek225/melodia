@@ -31,7 +31,7 @@ export async function GET() {
     const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
     let sunoLimitData = null;
     try {
-      const res = await fetch("https://api.sunoapi.org/api/v1/get_limit", {
+      const res = await fetch("https://api.sunoapi.org/api/v1/generate/credit", {
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json"

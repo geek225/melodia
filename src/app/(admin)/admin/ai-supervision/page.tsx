@@ -66,11 +66,15 @@ export default function AISupervisionPage() {
   };
 
   // Determine Credits left
-  // Since sunoapi.org wrappers vary in response, we try multiple possible fields.
   let creditsLeft: number | string = "---";
   if (sunoData) {
-    if (sunoData.data?.left !== undefined) creditsLeft = sunoData.data.left;
-    else if (sunoData.credits_left !== undefined) creditsLeft = sunoData.credits_left;
+    if (typeof sunoData.data === 'number') {
+      creditsLeft = sunoData.data;
+    } else if (sunoData.data?.left !== undefined) {
+      creditsLeft = sunoData.data.left;
+    } else if (sunoData.credits_left !== undefined) {
+      creditsLeft = sunoData.credits_left;
+    }
   }
 
   // Calculate percentages for the progress bar
