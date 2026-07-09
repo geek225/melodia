@@ -90,6 +90,62 @@ export default function NewCreatePage() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [openCategory, setOpenCategory] = useState("afrique_ouest");
 
+  // Voice Recording State
+  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
+  const [voicePreviewUrl, setVoicePreviewUrl] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      setRecordingTime(0);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setVoiceBlob(audioBlob);
+        setVoicePreviewUrl(URL.createObjectURL(audioBlob));
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime((prev) => {
+          if (prev >= 29) {
+             stopRecording();
+             return 30;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } catch (err) {
+      console.error("Microphone access denied", err);
+      toast.error("Veuillez autoriser l'accès au microphone pour vous enregistrer.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    setIsRecording(false);
+  };
+
+
   // Audio Player State
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -152,6 +208,25 @@ export default function NewCreatePage() {
         }
       }
 
+      let finalVoiceUrl = null;
+      if (formData.voice === "Clonage" && voiceBlob) {
+        const supabase = createClient();
+        const fileName = `voice_${Math.random().toString(36).substring(2, 15)}.webm`;
+        
+        const { error: uploadVoiceError } = await supabase.storage
+          .from('voices')
+          .upload(fileName, voiceBlob);
+          
+        if (!uploadVoiceError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('voices')
+            .getPublicUrl(fileName);
+          finalVoiceUrl = publicUrl;
+        } else {
+          console.error("Voice upload error:", uploadVoiceError);
+        }
+      }
+
       const finalFormData = {
         title: formData.title || "Ma Musique",
         prompt: formData.prompt, // send just the prompt, actions.ts will format it
@@ -160,7 +235,8 @@ export default function NewCreatePage() {
         language: "Français",
         voice: formData.voice || "Duo", // use selected voice
         duration: "1min30s",
-        coverUrl: finalCoverUrl
+        coverUrl: finalCoverUrl,
+        voiceUrl: finalVoiceUrl
       };
 
       const result = await createTrack(finalFormData);
@@ -193,7 +269,10 @@ export default function NewCreatePage() {
   const isNextDisabled = () => {
     if (step === 1 && !formData.reason) return true;
     if (step === 2 && (!formData.title || !formData.prompt)) return true;
-    if (step === 3 && (!formData.style || !formData.voice)) return true;
+    if (step === 3) {
+      if (!formData.style || !formData.voice) return true;
+      if (formData.voice === "Clonage" && !voiceBlob) return true;
+    }
     return false;
   };
 
@@ -521,7 +600,7 @@ export default function NewCreatePage() {
               <div className="text-center mb-6 md:mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Choisis la <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">voix</span> 🎤</h2>
               </div>
-              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 <div 
                   onClick={() => updateForm('voice', 'Homme')}
                   className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
@@ -538,7 +617,83 @@ export default function NewCreatePage() {
                   <div className="text-4xl mb-3">👩🏽‍🎤</div>
                   <h3 className="font-bold text-lg">Femme</h3>
                 </div>
+                <div 
+                  onClick={() => updateForm('voice', 'Clonage')}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center col-span-2 md:col-span-1 relative
+                    ${formData.voice === 'Clonage' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
+                >
+                  <div className="absolute -top-3 -right-3 bg-linear-to-r from-purple-500 to-[#FF6B00] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md animate-bounce">
+                    15 Mélodies
+                  </div>
+                  <div className="text-4xl mb-3">🎙️</div>
+                  <h3 className="font-bold text-lg">Ma Voix</h3>
+                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">Clonage vocal</p>
+                </div>
               </div>
+
+              {formData.voice === 'Clonage' && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-8 max-w-xl mx-auto w-full">
+                  <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 text-left mb-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400/10 rounded-full blur-3xl"></div>
+                    <h4 className="font-bold text-orange-800 flex items-center gap-2 mb-2">
+                      <span className="text-xl">🎧</span> Conseil de pro
+                    </h4>
+                    <p className="text-sm text-orange-700/90 leading-relaxed">
+                      Pour un résultat vraiment magique, utilise des <strong>écouteurs avec micro</strong> (ou place-toi dans une pièce très calme). L'IA a besoin d'entendre ta voix clairement sans bruit de fond.
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                    {!voiceBlob ? (
+                      <>
+                        <h3 className="font-bold text-xl mb-2">Enregistre ta voix (30s max)</h3>
+                        <p className="text-gray-500 text-sm mb-8">Parle normalement ou chante quelques mots pour que l'IA capte ton timbre de voix.</p>
+                        
+                        <div className="relative mb-4">
+                          {isRecording && (
+                            <>
+                              <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20"></div>
+                              <div className="absolute -inset-4 bg-red-500 rounded-full animate-ping opacity-10" style={{ animationDelay: '0.2s' }}></div>
+                            </>
+                          )}
+                          <button
+                            type="button"
+                            onClick={isRecording ? stopRecording : startRecording}
+                            className={`relative z-10 w-24 h-24 rounded-full flex items-center justify-center transition-all ${
+                              isRecording 
+                                ? 'bg-red-500 text-white shadow-lg shadow-red-500/40 scale-110' 
+                                : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                            }`}
+                          >
+                            {isRecording ? <div className="w-8 h-8 bg-white rounded-sm" /> : <Mic className="w-10 h-10" />}
+                          </button>
+                        </div>
+                        
+                        {isRecording && (
+                          <div className="text-red-500 font-bold text-2xl tabular-nums tracking-wider mt-4">
+                            00:{recordingTime.toString().padStart(2, '0')}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                          <Check className="w-8 h-8" />
+                        </div>
+                        <h3 className="font-bold text-xl mb-4">Voix enregistrée !</h3>
+                        <audio src={voicePreviewUrl!} controls className="w-full max-w-sm mb-6" />
+                        <button
+                          type="button"
+                          onClick={() => { setVoiceBlob(null); setVoicePreviewUrl(null); }}
+                          className="text-purple-600 text-sm font-semibold hover:underline"
+                        >
+                          Recommencer l'enregistrement
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           )}
           
@@ -595,7 +750,7 @@ export default function NewCreatePage() {
               className="h-12 md:h-14 rounded-full px-8 md:px-12 text-base md:text-lg font-bold bg-linear-to-r from-purple-500 to-[#FF6B00] hover:scale-105 transition-transform text-white shadow-xl shadow-[#FF6B00]/20 flex items-center gap-2"
             >
               {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-              {step === 4 ? "Générer (10 Mélodies)" : "Continuer"} 
+              {step === 4 ? (formData.voice === "Clonage" ? "Générer (15 Mélodies)" : "Générer (10 Mélodies)") : "Continuer"} 
               {!isGenerating && <ArrowLeft className="w-5 h-5 rotate-180" />}
             </Button>
             {step === 2 && (

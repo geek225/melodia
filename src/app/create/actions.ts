@@ -16,7 +16,8 @@ const trackSchema = z.object({
   language: z.string().max(50).optional().default("fr"),
   voice: z.string().max(50).optional().default(""),
   duration: z.string().max(20).optional().default("2min30s"),
-  coverUrl: z.string().url().optional().nullable()
+  coverUrl: z.string().url().optional().nullable(),
+  voiceUrl: z.string().url().optional().nullable()
 })
 
 export type TrackFormData = z.infer<typeof trackSchema>;
@@ -54,6 +55,8 @@ export async function createTrack(formData: TrackFormData) {
   )
 
   // 1. Vérifier le solde de Mélodies
+  const cost = validData.voiceUrl ? 15 : 10;
+  
   const { data: profile, error: profileError } = await adminAuthClient
     .from('profiles')
     .select('credits')
@@ -65,14 +68,14 @@ export async function createTrack(formData: TrackFormData) {
     throw new Error(`Erreur lors de la récupération du profil: ${profileError?.message || 'Profil non trouvé'}`)
   }
 
-  if (profile.credits < 10) {
+  if (profile.credits < cost) {
     return { success: false, error: 'INSUFFICIENT_FUNDS' }
   }
 
-  // 2. Déduire 10 Mélodies
+  // 2. Déduire les Mélodies
   const { error: updateError } = await adminAuthClient
     .from('profiles')
-    .update({ credits: profile.credits - 10 })
+    .update({ credits: profile.credits - cost })
     .eq('id', user.id)
 
   if (updateError) {
@@ -161,7 +164,8 @@ export async function createTrack(formData: TrackFormData) {
         instrumental: false,
         customMode: true, // Le mode Pro avec tags purs
         model: "V3_5",
-        callBackUrl: "https://melodia.vercel.app/api/webhook"
+        callBackUrl: "https://melodia.vercel.app/api/webhook",
+        ...(validData.voiceUrl ? { uploadUrl: validData.voiceUrl, audioUrl: validData.voiceUrl } : {})
       })
     });
     
