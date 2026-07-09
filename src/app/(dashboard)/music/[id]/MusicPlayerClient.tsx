@@ -166,12 +166,8 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     };
   }, [isPlaying]);
 
-  // Load audio automatically when url becomes available
-  useEffect(() => {
-    if (audioRef.current && currentTrack.audio_url && !currentTrack.audio_url.startsWith('task:')) {
-      audioRef.current.load();
-    }
-  }, [currentTrack.audio_url]);
+  // Note: Removed the auto-load useEffect as it causes issues on mobile browsers when URL changes
+  // The audio element will automatically load the new src when it updates
 
   const isGenerating = currentTrack.status === 'processing';
 
@@ -247,10 +243,25 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setIsPlaying(true);
+        }).catch((error) => {
+          console.error("Playback failed:", error);
+          setIsPlaying(false);
+          // Fallback force reload on mobile
+          if (audioRef.current) {
+            audioRef.current.load();
+            audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+          }
+        });
+      } else {
+        setIsPlaying(true);
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleUploadCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
