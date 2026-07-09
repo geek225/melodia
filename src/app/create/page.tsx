@@ -639,7 +639,7 @@ export default function NewCreatePage() {
                       <span className="text-xl">🎧</span> Conseil de pro
                     </h4>
                     <p className="text-sm text-orange-700/90 leading-relaxed">
-                      Pour un résultat vraiment magique, utilise des <strong>écouteurs avec micro</strong> (ou place-toi dans une pièce très calme). L'IA a besoin d'entendre ta voix clairement sans bruit de fond.
+                      Pour un résultat vraiment magique, utilise des <strong>écouteurs avec micro</strong> (ou place-toi dans une pièce très calme). L&apos;IA a besoin d&apos;entendre ta voix clairement sans bruit de fond.
                     </p>
                   </div>
 
@@ -647,7 +647,7 @@ export default function NewCreatePage() {
                     {!voiceBlob ? (
                       <>
                         <h3 className="font-bold text-xl mb-2">Enregistre ta voix (30s max)</h3>
-                        <p className="text-gray-500 text-sm mb-8">Parle normalement ou chante quelques mots pour que l'IA capte ton timbre de voix.</p>
+                        <p className="text-gray-500 text-sm mb-8">Parle normalement ou chante quelques mots pour que l&apos;IA capte ton timbre de voix.</p>
                         
                         <div className="relative mb-4">
                           {isRecording && (
@@ -687,7 +687,7 @@ export default function NewCreatePage() {
                           onClick={() => { setVoiceBlob(null); setVoicePreviewUrl(null); }}
                           className="text-purple-600 text-sm font-semibold hover:underline"
                         >
-                          Recommencer l'enregistrement
+                          Recommencer l&apos;enregistrement
                         </button>
                       </>
                     )}
