@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { Heart, Play, Pause, Music } from 'lucide-react';
-import { likePublicTrack } from '../actions/gallery';
+import { Star, Play, Pause, Music } from 'lucide-react';
+import { rateFeaturedTrack } from '../actions/gallery';
 
 interface PublicTrack {
   id: string;
@@ -11,7 +11,8 @@ interface PublicTrack {
   style: string;
   audio_url: string;
   cover_url: string;
-  likes_count: number;
+  rating_sum: number;
+  rating_count: number;
 }
 
 export default function CommunityGallery() {
@@ -24,11 +25,11 @@ export default function CommunityGallery() {
     const fetchTracks = async () => {
       const { data } = await supabase
         .from('tracks')
-        .select('id, title, style, audio_url, cover_url, likes_count')
-        .eq('is_public', true)
+        .select('id, title, style, audio_url, cover_url, rating_sum, rating_count')
+        .eq('is_featured', true)
         .not('audio_url', 'is', null) // Only show tracks that are fully generated
         .order('created_at', { ascending: false })
-        .limit(6);
+        .limit(5);
         
       if (data) {
         setTracks(data);
@@ -39,10 +40,17 @@ export default function CommunityGallery() {
     fetchTracks();
   }, [supabase]);
 
-  const handleLike = async (trackId: string) => {
+  const handleRate = async (trackId: string, rating: number) => {
+    // Check if already rated in this browser
+    const ratedKey = `rated_${trackId}`;
+    if (localStorage.getItem(ratedKey)) {
+      return; // Already rated
+    }
+    
     // Optimistic UI update
-    setTracks(prev => prev.map(t => t.id === trackId ? { ...t, likes_count: (t.likes_count || 0) + 1 } : t));
-    await likePublicTrack(trackId);
+    setTracks(prev => prev.map(t => t.id === trackId ? { ...t, rating_sum: (t.rating_sum || 0) + rating, rating_count: (t.rating_count || 0) + 1 } : t));
+    localStorage.setItem(ratedKey, 'true');
+    await rateFeaturedTrack(trackId, rating);
   };
 
   const togglePlay = (trackId: string) => {
@@ -61,8 +69,8 @@ export default function CommunityGallery() {
     <section className="py-24 px-6 md:px-12 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Galerie de la Communauté</h2>
-          <p className="text-xl text-gray-600">Écoutez les meilleures créations générées par nos utilisateurs.</p>
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">À la Une 🌟</h2>
+          <p className="text-xl text-gray-600">Écoutez les meilleures créations du moment et donnez votre avis.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -92,13 +100,32 @@ export default function CommunityGallery() {
                     <Music className="w-3.5 h-3.5" /> {track.style || 'Musique'}
                   </p>
                 </div>
-                <button 
-                  onClick={() => handleLike(track.id)}
-                  className="flex flex-col items-center justify-center text-gray-400 hover:text-red-500 transition-colors p-2"
-                >
-                  <Heart className="w-6 h-6 hover:fill-red-500/20" />
-                  <span className="text-xs font-bold mt-1">{track.likes_count || 0}</span>
-                </button>
+                <div className="flex flex-col items-end justify-center text-gray-400">
+                  <div className="flex gap-1 mb-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => handleRate(track.id, star)}
+                        className="hover:scale-110 transition-transform"
+                      >
+                        <Star 
+                          className="w-5 h-5 text-yellow-400 hover:fill-yellow-400" 
+                          fill={
+                            ((track.rating_count > 0 ? track.rating_sum / track.rating_count : 0) >= star) 
+                              ? "currentColor" 
+                              : "none"
+                          } 
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-bold mt-1 bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded-full">
+                    {track.rating_count > 0 
+                      ? `${(track.rating_sum / track.rating_count).toFixed(1)}/5 (${track.rating_count} avis)`
+                      : 'Nouveau !'
+                    }
+                  </span>
+                </div>
               </div>
 
               {playingId === track.id && (

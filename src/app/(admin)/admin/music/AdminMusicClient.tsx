@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { getAdminTracks } from "./actions";
+import { getAdminTracks, toggleFeaturedTrack } from "./actions";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -11,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Search, Play, Pause, AlertCircle } from "lucide-react";
+import { Search, Play, Pause, AlertCircle, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -61,6 +62,16 @@ export default function AdminMusicClient() {
     }
   };
 
+  const handleToggleFeatured = async (trackId: string, currentStatus: boolean) => {
+    const res = await toggleFeaturedTrack(trackId, currentStatus);
+    if (res.success) {
+      setTracks(tracks.map(t => t.id === trackId ? { ...t, is_featured: !currentStatus } : t));
+      toast.success(currentStatus ? "Musique retirée de l'accueil" : "Musique mise à la une");
+    } else {
+      toast.error(res.error || "Erreur lors de la mise à jour");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <audio ref={audioRef} onEnded={() => setPlayingTrackId(null)} className="hidden" />
@@ -86,6 +97,7 @@ export default function AdminMusicClient() {
               <TableHead>Style</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Statut</TableHead>
+              <TableHead>À la une</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -99,7 +111,7 @@ export default function AdminMusicClient() {
               </TableRow>
             ) : filteredTracks.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   Aucune musique trouvée.
                 </TableCell>
               </TableRow>
@@ -135,6 +147,18 @@ export default function AdminMusicClient() {
                       <Badge className="bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-none border-0"><AlertCircle className="w-3 h-3 mr-1" /> Échoué</Badge>
                     ) : (
                       <Badge className="bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 shadow-none border-0 animate-pulse">En cours</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {track.status === 'completed' && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleToggleFeatured(track.id, track.is_featured)}
+                        className={track.is_featured ? "text-yellow-500 hover:text-yellow-600" : "text-gray-300 hover:text-yellow-500"}
+                      >
+                        <Star className="w-5 h-5" fill={track.is_featured ? "currentColor" : "none"} />
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

@@ -75,3 +75,37 @@ export async function likePublicTrack(trackId: string) {
   revalidatePath('/')
   return { success: true, newCount }
 }
+
+export async function rateFeaturedTrack(trackId: string, rating: number) {
+  if (rating < 1 || rating > 5) return { success: false, message: "Note invalide" };
+
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  
+  const { data, error: fetchError } = await supabaseAdmin
+    .from('tracks')
+    .select('rating_sum, rating_count')
+    .eq('id', trackId)
+    .single()
+    
+  if (fetchError || !data) {
+    return { success: false, message: "Musique introuvable" }
+  }
+  
+  const newSum = (data.rating_sum || 0) + rating;
+  const newCount = (data.rating_count || 0) + 1;
+  
+  const { error: updateError } = await supabaseAdmin
+    .from('tracks')
+    .update({ rating_sum: newSum, rating_count: newCount })
+    .eq('id', trackId)
+    
+  if (updateError) {
+    return { success: false, message: "Erreur de mise à jour" }
+  }
+  
+  revalidatePath('/')
+  return { success: true, newSum, newCount }
+}
