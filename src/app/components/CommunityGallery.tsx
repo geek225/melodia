@@ -42,6 +42,15 @@ export default function CommunityGallery() {
     await rateFeaturedTrack(trackId, rating);
   };
 
+  const getValidAudioUrl = (url: string) => {
+    if (!url) return '';
+    let finalUrl = url;
+    if (!finalUrl.startsWith('task:') && !finalUrl.endsWith('.mp3') && !finalUrl.endsWith('.wav') && !finalUrl.includes('?')) {
+      finalUrl += '.mp3';
+    }
+    return finalUrl;
+  };
+
   const togglePlay = (trackId: string) => {
     setPlayingId(prev => prev === trackId ? null : trackId);
   };
@@ -119,7 +128,7 @@ export default function CommunityGallery() {
 
               {playingId === track.id && (
                 <audio 
-                  src={track.audio_url} 
+                  src={getValidAudioUrl(track.audio_url)} 
                   autoPlay 
                   onEnded={() => setPlayingId(null)}
                   className="hidden"
