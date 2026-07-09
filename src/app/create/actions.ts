@@ -92,7 +92,7 @@ export async function createTrack(formData: TrackFormData) {
   try {
     const styleEnrichments: Record<string, string> = {
       // AFRIQUE DE L'OUEST
-      "Coupé-Décalé": "Afro-pop club banger, 135bpm, fast rhythmic guitar, dry snare, four-on-the-floor heavy kick drum, crowd animation, highly energetic party anthem, call-and-response, authentic west african accent, raw expressive vocals",
+      "Coupé-Décalé": "Ivorian Coupé-Décalé, Abidjan style, atalaku animation, 135bpm, fast rhythmic sebene guitar, dry snare, heavy kick drum, crowd animation, highly energetic ivorian party anthem, roukaskas, boucan, farot, authentic ivorian accent, raw expressive vocals",
       "Rap Ivoire / Drill": "Hardcore Drill beat, sliding 808 sub-bass, rapid hi-hats, street slang vocal delivery, aggressive and confident fast rap flow, modern hip hop club banger, dark cinematic melody, authentic west african accent",
       "Zouglou": "Traditional urban influence, acoustic percussion, philosophic storytelling, lead vocal with choir response, nostalgic vibe, authentic west african accent, emotional storytelling vocals",
       "Afrobeats": "Modern Afrobeats, smooth 105bpm, warm sub-bass, syncopated percussion, highly realistic, emotional delivery, authentic african accent",

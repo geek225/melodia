@@ -142,7 +142,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
 
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
-      setAudioDuration(audio.duration || 0);
+      setAudioDuration(audio.duration === Infinity ? 0 : (audio.duration || 0));
 
       if (lyricsContainer && isPlaying) {
         const progress = audio.currentTime / audio.duration;
@@ -187,10 +187,14 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
     } else if (currentTrack.status === 'completed' && progress > 0 && progress < 100) {
       setProgress(100);
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification("🎵 Ta chanson est prête !", { 
-          body: `La génération de "${currentTrack.title}" est terminée.`,
-          icon: coverUrl || "/favicon.ico"
-        });
+        try {
+          new Notification("🎵 Ta chanson est prête !", { 
+            body: `La génération de "${currentTrack.title}" est terminée.`,
+            icon: coverUrl || "/favicon.ico"
+          });
+        } catch (e) {
+          console.error("Notification error:", e);
+        }
       }
     }
 

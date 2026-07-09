@@ -9,7 +9,7 @@ const adminAuthClient = createClient(
 
 export async function getAdminStorageStats() {
   try {
-    const buckets = ['tracks', 'covers', 'avatars', 'logs'];
+    const buckets = ['tracks', 'covers', 'avatars', 'logs', 'voices', 'music_covers'];
     const storageStats = [];
 
     for (const bucket of buckets) {

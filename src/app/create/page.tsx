@@ -348,7 +348,7 @@ export default function NewCreatePage() {
       if (step2InputType === 'audio' && !promptAudioBlob) return true;
     }
     if (step === 3) {
-      if (!formData.style || !formData.voice) return true;
+      if (!formData.style || (step2InputType !== 'audio' && !formData.voice)) return true;
       if (formData.voice === "Clonage" && !voiceBlob && step2InputType !== 'audio') return true;
     }
     return false;
@@ -749,16 +749,22 @@ export default function NewCreatePage() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 <div 
-                  onClick={() => updateForm('voice', 'Homme')}
-                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
+                  onClick={() => {
+                    if (step2InputType !== 'audio') updateForm('voice', 'Homme')
+                  }}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center
+                    ${step2InputType === 'audio' ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'cursor-pointer hover:shadow-lg'}
                     ${formData.voice === 'Homme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
                   <div className="text-4xl mb-3">👨🏽‍🎤</div>
                   <h3 className="font-bold text-lg">Homme</h3>
                 </div>
                 <div 
-                  onClick={() => updateForm('voice', 'Femme')}
-                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center
+                  onClick={() => {
+                    if (step2InputType !== 'audio') updateForm('voice', 'Femme')
+                  }}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center
+                    ${step2InputType === 'audio' ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'cursor-pointer hover:shadow-lg'}
                     ${formData.voice === 'Femme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
                   <div className="text-4xl mb-3">👩🏽‍🎤</div>
@@ -904,7 +910,7 @@ export default function NewCreatePage() {
               className="h-12 md:h-14 rounded-full px-8 md:px-12 text-base md:text-lg font-bold bg-linear-to-r from-purple-500 to-[#FF6B00] hover:scale-105 transition-transform text-white shadow-xl shadow-[#FF6B00]/20 flex items-center gap-2"
             >
               {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-              {step === 4 ? (formData.voice === "Clonage" ? "Générer (15 Mélodies)" : "Générer (10 Mélodies)") : "Continuer"} 
+              {step === 4 ? ((formData.voice === "Clonage" || step2InputType === "audio") ? "Générer (15 Mélodies)" : "Générer (10 Mélodies)") : "Continuer"} 
               {!isGenerating && <ArrowLeft className="w-5 h-5 rotate-180" />}
             </Button>
             {step === 2 && (

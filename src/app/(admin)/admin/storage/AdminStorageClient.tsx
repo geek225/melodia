@@ -21,6 +21,8 @@ export default function AdminStorageClient() {
     { type: 'Covers (Images)', bucket: 'covers', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { type: 'Avatars (Images)', bucket: 'avatars', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-pink-500', bg: 'bg-pink-500/10' },
     { type: 'Documents & Logs', bucket: 'logs', size: '0 MB', sizeBytes: 0, files: 0, icon: FileText, color: 'text-gray-500', bg: 'bg-gray-500/10' },
+    { type: 'Voix (Audio)', bucket: 'voices', size: '0 MB', sizeBytes: 0, files: 0, icon: Music, color: 'text-green-500', bg: 'bg-green-500/10' },
+    { type: 'Pochettes Perso', bucket: 'music_covers', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-orange-500', bg: 'bg-orange-500/10' },
   ]);
 
   useEffect(() => {

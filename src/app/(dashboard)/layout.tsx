@@ -172,7 +172,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         // Listen to track generation updates
         const channel = supabase
-          .channel('tracks-updates')
+          .channel(`tracks-updates-${user.id}-${Date.now()}`)
           .on(
             'postgres_changes',
             {
