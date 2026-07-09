@@ -111,19 +111,17 @@ export async function createTrack(formData: TrackFormData) {
     };
     
     const voiceTag = validData.voice === "Homme" ? "authentic human male vocal" : validData.voice === "Femme" ? "authentic human female vocal" : "";
-    const enrichedStyle = (styleEnrichments[validData.style] || validData.style) + (voiceTag ? `, ${voiceTag}` : "");
+    const enrichedStyle = (styleEnrichments[validData.style] || validData.style) + (voiceTag ? `, ${voiceTag}` : "") + ", sung in French";
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
-    let lyricsRes;
-    if (!validData.promptAudioUrl) {
-      const lyricsPrompt = `Chanson en français. Sujet : ${validData.prompt}. Format court avec intro, couplet, refrain, fin nette.`;
+    const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
+    const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
       
-      lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
-      });
-    }
+    const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+    });
 
     if (lyricsRes && lyricsRes.ok) {
       const result = await lyricsRes.json();
@@ -150,8 +148,8 @@ export async function createTrack(formData: TrackFormData) {
     }
 
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
-    if (!lyricsText && !validData.promptAudioUrl) {
-      lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt}\n[Chorus]\nOn y va !\n[Outro]`;
+    if (!lyricsText) {
+      lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt || "Chant en français"}\n[Chorus]\nOn y va !\n[Outro]`;
     }
 
     // --- ETAPE 2 : GENERER LA MUSIQUE EN MODE CUSTOM ---
