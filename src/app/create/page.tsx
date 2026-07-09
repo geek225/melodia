@@ -145,6 +145,61 @@ export default function NewCreatePage() {
     setIsRecording(false);
   };
 
+  // Step 2 Audio Recording State
+  const [step2InputType, setStep2InputType] = useState<"text" | "audio">("text");
+  const [promptAudioBlob, setPromptAudioBlob] = useState<Blob | null>(null);
+  const [promptAudioPreviewUrl, setPromptAudioPreviewUrl] = useState<string | null>(null);
+  const [isPromptRecording, setIsPromptRecording] = useState(false);
+  const [promptRecordingTime, setPromptRecordingTime] = useState(0);
+  const promptMediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const promptAudioChunksRef = useRef<Blob[]>([]);
+  const promptRecordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startPromptRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      promptMediaRecorderRef.current = mediaRecorder;
+      promptAudioChunksRef.current = [];
+      setPromptRecordingTime(0);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          promptAudioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(promptAudioChunksRef.current, { type: 'audio/webm' });
+        setPromptAudioBlob(audioBlob);
+        setPromptAudioPreviewUrl(URL.createObjectURL(audioBlob));
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsPromptRecording(true);
+      promptRecordingTimerRef.current = setInterval(() => {
+        setPromptRecordingTime((prev) => {
+          if (prev >= 29) {
+             stopPromptRecording();
+             return 30;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } catch (err) {
+      console.error("Microphone access denied", err);
+      toast.error("Veuillez autoriser l'accès au microphone pour vous enregistrer.");
+    }
+  };
+
+  const stopPromptRecording = () => {
+    if (promptMediaRecorderRef.current && promptMediaRecorderRef.current.state === "recording") {
+      promptMediaRecorderRef.current.stop();
+    }
+    if (promptRecordingTimerRef.current) clearInterval(promptRecordingTimerRef.current);
+    setIsPromptRecording(false);
+  };
 
   // Audio Player State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -209,7 +264,7 @@ export default function NewCreatePage() {
       }
 
       let finalVoiceUrl = null;
-      if (formData.voice === "Clonage" && voiceBlob) {
+      if (formData.voice === "Clonage" && voiceBlob && step2InputType !== 'audio') {
         const supabase = createClient();
         const fileName = `voice_${Math.random().toString(36).substring(2, 15)}.webm`;
         
@@ -227,16 +282,36 @@ export default function NewCreatePage() {
         }
       }
 
+      let finalPromptAudioUrl = null;
+      if (step2InputType === 'audio' && promptAudioBlob) {
+        const supabase = createClient();
+        const fileName = `prompt_audio_${Math.random().toString(36).substring(2, 15)}.webm`;
+        
+        const { error: uploadPromptAudioError } = await supabase.storage
+          .from('voices')
+          .upload(fileName, promptAudioBlob);
+          
+        if (!uploadPromptAudioError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('voices')
+            .getPublicUrl(fileName);
+          finalPromptAudioUrl = publicUrl;
+        } else {
+          console.error("Prompt audio upload error:", uploadPromptAudioError);
+        }
+      }
+
       const finalFormData = {
         title: formData.title || "Ma Musique",
-        prompt: formData.prompt, // send just the prompt, actions.ts will format it
+        prompt: step2InputType === 'audio' ? "" : formData.prompt, // send just the prompt, actions.ts will format it
         style: formData.style,
         mood: "Énergique",
         language: "Français",
         voice: formData.voice || "Duo", // use selected voice
         duration: "1min30s",
         coverUrl: finalCoverUrl,
-        voiceUrl: finalVoiceUrl
+        voiceUrl: finalVoiceUrl,
+        promptAudioUrl: finalPromptAudioUrl
       };
 
       const result = await createTrack(finalFormData);
@@ -268,10 +343,13 @@ export default function NewCreatePage() {
 
   const isNextDisabled = () => {
     if (step === 1 && !formData.reason) return true;
-    if (step === 2 && (!formData.title || !formData.prompt)) return true;
+    if (step === 2) {
+      if (step2InputType === 'text' && (!formData.title || !formData.prompt)) return true;
+      if (step2InputType === 'audio' && !promptAudioBlob) return true;
+    }
     if (step === 3) {
       if (!formData.style || !formData.voice) return true;
-      if (formData.voice === "Clonage" && !voiceBlob) return true;
+      if (formData.voice === "Clonage" && !voiceBlob && step2InputType !== 'audio') return true;
     }
     return false;
   };
@@ -470,8 +548,25 @@ export default function NewCreatePage() {
                 <p className="text-gray-500 text-sm md:text-base">Ces informations nous aident à personnaliser la chanson.</p>
               </div>
               <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm space-y-5 md:space-y-6">
+                <div className="flex bg-gray-100 p-1 rounded-xl mb-2 w-full md:w-fit mx-auto">
+                  <button 
+                    type="button"
+                    onClick={() => setStep2InputType("text")}
+                    className={`flex-1 md:px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${step2InputType === "text" ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  >
+                    ✍️ Texte
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setStep2InputType("audio")}
+                    className={`flex-1 md:px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${step2InputType === "audio" ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  >
+                    🎤 Chanter (Audio)
+                  </button>
+                </div>
+
                 <div className="space-y-2">
-                  <label className="text-sm font-bold flex items-center gap-2">Titre de la chanson <span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
+                  <label className="text-sm font-bold flex items-center gap-2">Titre de la chanson (Optionnel)<span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
                   <Input 
                     value={formData.title}
                     onChange={(e) => updateForm("title", e.target.value)}
@@ -479,6 +574,8 @@ export default function NewCreatePage() {
                     className="h-12 md:h-14 text-base md:text-lg rounded-[16px] px-4 md:px-6 border-gray-200 focus:border-purple-500"
                   />
                 </div>
+
+                {step2InputType === "text" ? (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-bold flex items-center gap-2">Détails de ton histoire <span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
@@ -529,6 +626,56 @@ export default function NewCreatePage() {
                     </button>
                   </div>
                 </div>
+                ) : (
+                <div className="space-y-4">
+                  <div className="p-6 md:p-8 rounded-[24px] border-2 border-dashed border-purple-100 bg-purple-50/30 flex flex-col items-center justify-center text-center">
+                    {!promptAudioBlob ? (
+                      <>
+                        <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4">
+                          <Mic className={`w-8 h-8 ${isPromptRecording ? 'animate-pulse text-red-500' : ''}`} />
+                        </div>
+                        <h4 className="font-bold text-lg mb-2">Chante ta mélodie</h4>
+                        <p className="text-sm text-gray-500 mb-6 max-w-sm">
+                          Fredonne un air ou chante tes paroles (max 30s). L&apos;IA utilisera cette mélodie pour composer la chanson.
+                        </p>
+                        
+                        {isPromptRecording ? (
+                          <div className="w-full max-w-xs space-y-4">
+                            <div className="flex items-center justify-between text-sm font-medium text-red-500">
+                              <span className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                Enregistrement...
+                              </span>
+                              <span>0:{promptRecordingTime.toString().padStart(2, '0')} / 0:30</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                              <div className="bg-red-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(promptRecordingTime / 30) * 100}%` }}></div>
+                            </div>
+                            <Button onClick={stopPromptRecording} className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full h-12">
+                              Arrêter l&apos;enregistrement
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button onClick={startPromptRecording} className="bg-purple-600 hover:bg-purple-700 text-white rounded-full h-12 px-8">
+                            🎤 Commencer (30s)
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full max-w-sm">
+                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mx-auto">
+                          <Check className="w-8 h-8" />
+                        </div>
+                        <h4 className="font-bold text-lg mb-2">Mélodie enregistrée !</h4>
+                        <audio src={promptAudioPreviewUrl!} controls className="w-full h-12 mb-4" />
+                        <Button variant="outline" onClick={() => { setPromptAudioBlob(null); setPromptAudioPreviewUrl(null); }} className="w-full rounded-full h-10 border-gray-200">
+                          Recommencer
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                )}
                 
                 <div className="space-y-2 pt-2 border-t border-gray-100">
                   <label className="text-sm font-bold flex items-center gap-2">Pochette de la musique (Optionnel) 🎨</label>
@@ -618,8 +765,13 @@ export default function NewCreatePage() {
                   <h3 className="font-bold text-lg">Femme</h3>
                 </div>
                 <div 
-                  onClick={() => updateForm('voice', 'Clonage')}
-                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer border-2 transition-all hover:shadow-lg flex flex-col items-center text-center col-span-2 md:col-span-1 relative
+                  onClick={() => {
+                    if (step2InputType !== 'audio') {
+                      updateForm('voice', 'Clonage');
+                    }
+                  }}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center col-span-2 md:col-span-1 relative
+                    ${step2InputType === 'audio' ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'cursor-pointer hover:shadow-lg'}
                     ${formData.voice === 'Clonage' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
                   <div className="absolute -top-3 -right-3 bg-linear-to-r from-purple-500 to-[#FF6B00] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md animate-bounce">
@@ -627,7 +779,9 @@ export default function NewCreatePage() {
                   </div>
                   <div className="text-4xl mb-3">🎙️</div>
                   <h3 className="font-bold text-lg">Ma Voix</h3>
-                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">Clonage vocal</p>
+                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">
+                    {step2InputType === 'audio' ? 'Désactivé (Chansonnette utilisée)' : 'Clonage vocal'}
+                  </p>
                 </div>
               </div>
 
