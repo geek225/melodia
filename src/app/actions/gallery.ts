@@ -109,3 +109,25 @@ export async function rateFeaturedTrack(trackId: string, rating: number) {
   revalidatePath('/')
   return { success: true, newSum, newCount }
 }
+
+export async function getFeaturedTracks() {
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  
+  const { data, error } = await supabaseAdmin
+    .from('tracks')
+    .select('id, title, style, audio_url, cover_url, rating_sum, rating_count')
+    .eq('is_featured', true)
+    .not('audio_url', 'is', null) // Only show tracks that are fully generated
+    .order('created_at', { ascending: false })
+    .limit(5);
+    
+  if (error) {
+    console.error("Failed to fetch featured tracks:", error);
+    return [];
+  }
+  
+  return data || [];
+}

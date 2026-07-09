@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client';
+
 import { Star, Play, Pause, Music } from 'lucide-react';
-import { rateFeaturedTrack } from '../actions/gallery';
+import { rateFeaturedTrack, getFeaturedTracks } from '../actions/gallery';
 
 interface PublicTrack {
   id: string;
@@ -19,26 +19,15 @@ export default function CommunityGallery() {
   const [tracks, setTracks] = useState<PublicTrack[]>([]);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
-
   useEffect(() => {
     const fetchTracks = async () => {
-      const { data } = await supabase
-        .from('tracks')
-        .select('id, title, style, audio_url, cover_url, rating_sum, rating_count')
-        .eq('is_featured', true)
-        .not('audio_url', 'is', null) // Only show tracks that are fully generated
-        .order('created_at', { ascending: false })
-        .limit(5);
-        
-      if (data) {
-        setTracks(data);
-      }
+      const data = await getFeaturedTracks();
+      setTracks(data as unknown as PublicTrack[]);
       setLoading(false);
     };
 
     fetchTracks();
-  }, [supabase]);
+  }, []);
 
   const handleRate = async (trackId: string, rating: number) => {
     // Check if already rated in this browser
