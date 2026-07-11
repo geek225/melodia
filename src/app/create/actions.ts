@@ -198,12 +198,28 @@ export async function createTrack(formData: TrackFormData) {
         "extremely realistic human voice, glossy premium mix"
       ].join(", "),
 
-      "Gospel": [
-        "Uplifting Gospel worship choir anthem, 75-90bpm",
-        "live Hammond B3 organ, grand piano, full gospel drum kit",
-        "very strong authentic European French accent with soulful inflections",
-        "powerful lead vocal, massive four-part choir harmonies, emotional belts",
-        "extremely realistic human voice, authentic church acoustics"
+      "Gospel Américain": [
+        "American Gospel worship choir, RnB soul influence, 80-100bpm",
+        "live Hammond B3 organ, grand piano, tight gospel drum kit, deep bass",
+        "very strong authentic American English accent, African-American gospel soul vocal",
+        "powerful lead vocal, massive energetic four-part choir harmonies, incredible emotional belts",
+        "extremely realistic human voice, authentic black church acoustics, lively spirit"
+      ].join(", "),
+
+      "Gospel Africain": [
+        "African Gospel praise and worship, highly rhythmic, 110-120bpm",
+        "African percussion, talking drum, upbeat joyful guitar, clapping",
+        "very strong authentic African accent, energetic joyful delivery",
+        "call-and-response choir, vibrant dancing rhythm, spiritual celebration",
+        "extremely realistic human voice, warm dynamic production"
+      ].join(", "),
+
+      "Gospel Européen": [
+        "European Gospel, classic chorale, harmonious and melodic, 75-90bpm",
+        "acoustic piano, soft strings, classical choral arrangement",
+        "very strong authentic European French accent, clear and pristine vocal",
+        "structured harmonies, serene and solemn delivery, classical vibrato",
+        "extremely realistic human voice, cathedral acoustics, majestic"
       ].join(", "),
 
       // ─── NOUVEAUX STYLES EUROPÉENS ────────────────────────────────────────
@@ -332,9 +348,11 @@ export async function createTrack(formData: TrackFormData) {
     if (audioInputUrl) {
       // ✅ CORRECT : Upload + Extend — l'IA continue la musique à partir de ta voix
       // continueAt = point en secondes à partir duquel Suno étend l'audio (OBLIGATOIRE)
-      // ⚠️ On limite à 6 secondes MAX : Suno n'a besoin que de 4-6s pour capter la mélodie
-      // et l'accent vocal. Au-delà, ça allonge juste la phase de voix brute sans instrumental.
-      const continueAt = Math.min(6, Math.max(1, (validData.audioRecordingDuration ?? 6) - 1));
+      // On utilise la fin de l'enregistrement de l'utilisateur pour qu'il garde tout son vocal
+      const continueAt = Math.max(1, Math.floor(validData.audioRecordingDuration ?? 6) - 1);
+      
+      // V4_5 est limité à 60s d'upload. Si le vocal dépasse 59s, on bascule sur V3_5 (limite 8 minutes)
+      const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
 
       apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-extend", {
         method: "POST",
@@ -350,7 +368,7 @@ export async function createTrack(formData: TrackFormData) {
           style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
           continueAt,                     // ✅ OBLIGATOIRE : point de départ de l'extension
-          model: "V4_5",                  // V4_5 compatible avec upload-extend
+          model: selectedModel,           // Bascule intelligente du modèle selon la durée
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
       });

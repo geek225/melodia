@@ -66,7 +66,15 @@ const STYLE_CATEGORIES = [
       { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Oran, darbuka, urbain", icon: "🇩🇿" },
       { id: "Kizomba", label: "Kizomba", desc: "Sensuel, Luanda, semba", icon: "🇦🇴" },
       { id: "Pop / R&B", label: "Pop R&B", desc: "Radio, mélodies émotives", icon: "🎧" },
-      { id: "Gospel", label: "Gospel", desc: "Chœur puissant, église", icon: "🙏" },
+    ]
+  },
+  {
+    id: "gospel",
+    title: "Gospel & Louange 🙏",
+    styles: [
+      { id: "Gospel Américain", label: "Gospel Américain", desc: "Chœur, soul, église US", icon: "🇺🇸" },
+      { id: "Gospel Africain", label: "Gospel Africain", desc: "Rythmé, percussions, danse", icon: "🌍" },
+      { id: "Gospel Européen", label: "Gospel Européen", desc: "Classique, harmonieux, FR", icon: "🇪🇺" },
     ]
   },
   {
@@ -147,9 +155,9 @@ export default function NewCreatePage() {
       setIsRecording(true);
       recordingTimerRef.current = setInterval(() => {
         setRecordingTime((prev) => {
-          if (prev >= 29) {
+          if (prev >= 149) {
              stopRecording();
-             return 30;
+             return 150;
           }
           return prev + 1;
         });
@@ -209,9 +217,9 @@ export default function NewCreatePage() {
       setIsPromptRecording(true);
       promptRecordingTimerRef.current = setInterval(() => {
         setPromptRecordingTime((prev) => {
-          if (prev >= 29) {
+          if (prev >= 149) {
              stopPromptRecording();
-             return 30;
+             return 150;
           }
           return prev + 1;
         });
@@ -696,9 +704,9 @@ export default function NewCreatePage() {
                           <Mic className={`w-8 h-8 ${isPromptRecording ? 'animate-pulse text-red-500' : ''}`} />
                         </div>
                         <h4 className="font-bold text-lg mb-1">Chante ta mélodie</h4>
-                        <p className="text-sm text-gray-500 mb-5 max-w-sm">
-                          Fredonne ou chante tes paroles (max 30s). L&apos;IA utilisera cette mélodie pour composer la chanson.
-                        </p>
+                        <div className="text-gray-500 text-sm max-w-sm mb-6 leading-relaxed">
+                          Fredonne ou chante tes paroles (max 2min30). L&apos;IA utilisera cette mélodie pour composer la chanson.
+                        </div>
 
                         {/* Bloc de conseils — visible uniquement avant l’enregistrement */}
                         {!isPromptRecording && (
@@ -734,10 +742,10 @@ export default function NewCreatePage() {
                                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                 Enregistrement...
                               </span>
-                              <span>0:{promptRecordingTime.toString().padStart(2, '0')} / 0:30</span>
+                              <span>{Math.floor(promptRecordingTime / 60)}:{(promptRecordingTime % 60).toString().padStart(2, '0')} / 2:30</span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-1.5">
-                              <div className="bg-red-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(promptRecordingTime / 30) * 100}%` }}></div>
+                            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="bg-red-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(promptRecordingTime / 150) * 100}%` }}></div>
                             </div>
                             <Button onClick={stopPromptRecording} className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full h-12">
                               Arrêter l&apos;enregistrement
@@ -745,7 +753,7 @@ export default function NewCreatePage() {
                           </div>
                         ) : (
                           <Button onClick={startPromptRecording} className="bg-purple-600 hover:bg-purple-700 text-white rounded-full h-12 px-8">
-                            🎤 Commencer (30s)
+                            🎤 Commencer (2min30)
                           </Button>
                         )}
                       </>
@@ -914,8 +922,10 @@ export default function NewCreatePage() {
                   <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center">
                     {!voiceBlob ? (
                       <>
-                        <h3 className="font-bold text-xl mb-2">Enregistre ta voix (30s max)</h3>
-                        <p className="text-gray-500 text-sm mb-8">Parle normalement ou chante quelques mots pour que l&apos;IA capte ton timbre de voix.</p>
+                        <div className="text-center mb-6">
+                          <h3 className="font-bold text-xl mb-2">Enregistre ta voix (2min30 max)</h3>
+                          <p className="text-gray-500 text-sm">Parle ou chante ton idée, l&apos;IA s&apos;occupe du reste.</p>
+                        </div>
                         
                         <div className="relative mb-4">
                           {isRecording && (
@@ -939,7 +949,7 @@ export default function NewCreatePage() {
                         
                         {isRecording && (
                           <div className="text-red-500 font-bold text-2xl tabular-nums tracking-wider mt-4">
-                            00:{recordingTime.toString().padStart(2, '0')}
+                            {Math.floor(recordingTime / 60).toString().padStart(2, '0')}:{(recordingTime % 60).toString().padStart(2, '0')}
                           </div>
                         )}
                       </>
