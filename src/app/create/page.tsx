@@ -36,37 +36,46 @@ const STYLE_CATEGORIES = [
     id: "afrique_ouest",
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
-      { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Rythme ivoirien", icon: "👞" },
-      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Drill/Rap Nouchi", icon: "🎤" },
-      { id: "Zouglou", label: "Zouglou", desc: "Woyo, ambiance", icon: "🥁" },
-      { id: "Afrobeats", label: "Afrobeats", desc: "Vibe Naija", icon: "🇳🇬" },
-      { id: "Mbalax", label: "Mbalax", desc: "Sénégal", icon: "🇸🇳" },
+      { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Atalaku, boucan, Abidjan", icon: "👞" },
+      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Drill / Nouchi flow", icon: "🎤" },
+      { id: "Zouglou", label: "Zouglou", desc: "Woyo, contes, ambiance", icon: "🥁" },
+      { id: "Afrobeats", label: "Afrobeats", desc: "Naija groove Lagos", icon: "🇳🇬" },
+      { id: "Mbalax", label: "Mbalax", desc: "Sabar, kora, Dakar", icon: "🇸🇳" },
     ]
   },
   {
     id: "afrique_centrale",
     title: "Afrique Centrale 🇨🇩 🇨🇲",
     styles: [
-      { id: "Rumba Congolaise", label: "Rumba", desc: "Sebene romantique", icon: "🎸" },
-      { id: "Afro-Congo", label: "Afro-Congo", desc: "Ndombolo / Pop", icon: "🕺" },
+      { id: "Rumba Congolaise", label: "Rumba", desc: "Sebene, romantique, Kinshasa", icon: "🎸" },
+      { id: "Afro-Congo", label: "Afro-Congo", desc: "Ndombolo, énergie, club", icon: "🕺" },
     ]
   },
   {
     id: "afrique_sud_est",
     title: "Afrique Sud & Est 🇿🇦 🇹🇿",
     styles: [
-      { id: "Amapiano", label: "Amapiano", desc: "Log drum sud-africain", icon: "🎹" },
-      { id: "Bongo Flava", label: "Bongo Flava", desc: "Pop Tanzanienne", icon: "🇹🇿" },
+      { id: "Amapiano", label: "Amapiano", desc: "Log drum, deep house, Joburg", icon: "🎹" },
+      { id: "Bongo Flava", label: "Bongo Flava", desc: "Swahili pop, Dar es Salaam", icon: "🇹🇿" },
     ]
   },
   {
     id: "maghreb_diaspora",
     title: "Maghreb & Diaspora 🌍",
     styles: [
-      { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Algérie / Maroc", icon: "🇩🇿" },
-      { id: "Kizomba", label: "Kizomba", desc: "Zouk / Angola", icon: "🇦🇴" },
-      { id: "Pop / R&B", label: "R&B", desc: "Mélodies douces", icon: "🎧" },
-      { id: "Gospel", label: "Gospel", desc: "Chorale", icon: "🙏" },
+      { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Oran, darbuka, urbain", icon: "🇩🇿" },
+      { id: "Kizomba", label: "Kizomba", desc: "Sensuel, Luanda, semba", icon: "🇦🇴" },
+      { id: "Pop / R&B", label: "Pop R&B", desc: "Radio, mélodies émotives", icon: "🎧" },
+      { id: "Gospel", label: "Gospel", desc: "Chœur puissant, église", icon: "🙏" },
+    ]
+  },
+  {
+    id: "europe_diaspora",
+    title: "Europe & Pop Française 🇫🇷 🎶",
+    styles: [
+      { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
+      { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
+      { id: "Soul / Jazz France", label: "Soul Jazz", desc: "Club intime, soul, sax", icon: "🎷" },
     ]
   }
 ];
@@ -102,7 +111,13 @@ export default function NewCreatePage() {
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      // Choisir le meilleur format supporté par le navigateur (mp4 > ogg > webm)
+      const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')
+        ? 'audio/ogg;codecs=opus'
+        : 'audio/webm';
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
       setRecordingTime(0);
@@ -114,7 +129,7 @@ export default function NewCreatePage() {
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
         setVoiceBlob(audioBlob);
         setVoicePreviewUrl(URL.createObjectURL(audioBlob));
         stream.getTracks().forEach(track => track.stop());
@@ -158,7 +173,13 @@ export default function NewCreatePage() {
   const startPromptRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      // Choisir le meilleur format supporté par le navigateur (mp4 > ogg > webm)
+      const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')
+        ? 'audio/ogg;codecs=opus'
+        : 'audio/webm';
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       promptMediaRecorderRef.current = mediaRecorder;
       promptAudioChunksRef.current = [];
       setPromptRecordingTime(0);
@@ -170,7 +191,7 @@ export default function NewCreatePage() {
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(promptAudioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(promptAudioChunksRef.current, { type: mimeType });
         setPromptAudioBlob(audioBlob);
         setPromptAudioPreviewUrl(URL.createObjectURL(audioBlob));
         stream.getTracks().forEach(track => track.stop());
@@ -266,11 +287,15 @@ export default function NewCreatePage() {
       let finalVoiceUrl = null;
       if (formData.voice === "Clonage" && voiceBlob && step2InputType !== 'audio') {
         const supabase = createClient();
-        const fileName = `voice_${Math.random().toString(36).substring(2, 15)}.webm`;
+        // Extension dynamique selon le format réel du Blob
+        const voiceExt = voiceBlob.type.includes('mp4') ? 'mp4'
+          : voiceBlob.type.includes('ogg') ? 'ogg'
+          : 'webm';
+        const fileName = `voice_${Math.random().toString(36).substring(2, 15)}.${voiceExt}`;
         
         const { error: uploadVoiceError } = await supabase.storage
           .from('voices')
-          .upload(fileName, voiceBlob);
+          .upload(fileName, voiceBlob, { contentType: voiceBlob.type });
           
         if (!uploadVoiceError) {
           const { data: { publicUrl } } = supabase.storage
@@ -285,11 +310,15 @@ export default function NewCreatePage() {
       let finalPromptAudioUrl = null;
       if (step2InputType === 'audio' && promptAudioBlob) {
         const supabase = createClient();
-        const fileName = `prompt_audio_${Math.random().toString(36).substring(2, 15)}.webm`;
+        // Extension dynamique selon le format réel du Blob
+        const promptExt = promptAudioBlob.type.includes('mp4') ? 'mp4'
+          : promptAudioBlob.type.includes('ogg') ? 'ogg'
+          : 'webm';
+        const fileName = `prompt_audio_${Math.random().toString(36).substring(2, 15)}.${promptExt}`;
         
         const { error: uploadPromptAudioError } = await supabase.storage
           .from('voices')
-          .upload(fileName, promptAudioBlob);
+          .upload(fileName, promptAudioBlob, { contentType: promptAudioBlob.type });
           
         if (!uploadPromptAudioError) {
           const { data: { publicUrl } } = supabase.storage
