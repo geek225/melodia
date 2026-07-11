@@ -289,9 +289,9 @@ export async function createTrack(formData: TrackFormData) {
         + `, ${voiceTag}`
         + ", sung in French, extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
     }
-    // Tronquer à 900 chars max pour respecter la limite Suno V4_5 (1000 chars)
-    if (enrichedStyle.length > 900) {
-      enrichedStyle = enrichedStyle.substring(0, 900);
+    // Tronquer à 490 chars max pour respecter la limite Suno (500 chars)
+    if (enrichedStyle.length > 490) {
+      enrichedStyle = enrichedStyle.substring(0, 490);
     }
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
