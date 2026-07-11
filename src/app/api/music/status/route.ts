@@ -38,18 +38,39 @@ export async function GET(request: Request) {
       
       if (resStatus.ok) {
         const result = await resStatus.json();
-        console.log("Suno Status Data:", result);
+        console.log("Suno Status Data:", JSON.stringify(result?.data?.status), "taskId:", taskId);
         const statusData = result.data;
-        const currentStatus = statusData?.status?.toUpperCase();
+        const currentStatus = (statusData?.status || '').toUpperCase();
         
-        if (currentStatus === "SUCCESS" || currentStatus === "TEXT_SUCCESS") {
-          const sunoTrack = statusData?.response?.sunoData?.[0];
-          const finalAudioUrl = sunoTrack?.audioUrl || sunoTrack?.streamAudioUrl;
+        if (currentStatus === "SUCCESS" || currentStatus === "TEXT_SUCCESS" || currentStatus === "COMPLETE") {
+          // Chercher l'URL audio dans les différentes structures possibles
+          const sunoDataArr = statusData?.response?.sunoData || [];
+          const sunoTrack = sunoDataArr[0];
+
+          const finalAudioUrl =
+            sunoTrack?.audioUrl ||
+            sunoTrack?.audio_url ||
+            sunoTrack?.streamAudioUrl ||
+            statusData?.response?.audioUrl ||
+            statusData?.response?.audio_url ||
+            statusData?.audioUrl ||
+            null;
+
+          const finalCoverUrl =
+            sunoTrack?.imageUrl ||
+            sunoTrack?.image_url ||
+            statusData?.response?.imageUrl ||
+            track.cover_url ||
+            null;
+
+          const finalLyrics =
+            sunoTrack?.metadata?.prompt ||
+            sunoTrack?.prompt ||
+            statusData?.response?.prompt ||
+            track.lyrics ||
+            null;
             
           if (finalAudioUrl) {
-            const finalCoverUrl = sunoTrack?.imageUrl || track.cover_url;
-            const finalLyrics = sunoTrack?.metadata?.prompt || track.lyrics;
-            
             await adminClient
               .from('tracks')
               .update({
@@ -68,7 +89,7 @@ export async function GET(request: Request) {
               lyrics: finalLyrics 
             });
           }
-        } else if (currentStatus === "FAILED" || currentStatus === "FAILURE" || currentStatus === "SENSITIVE_WORD_ERROR" || currentStatus?.includes("ERROR")) {
+        } else if (currentStatus === "FAILED" || currentStatus === "FAILURE" || currentStatus === "SENSITIVE_WORD_ERROR" || currentStatus.includes("ERROR")) {
           await adminClient.from('tracks').update({ status: 'failed' }).eq('id', track.id);
           return NextResponse.json({ ...track, status: 'failed', error: statusData?.errorMessage || 'Erreur de génération' });
         }
