@@ -37,7 +37,7 @@ const STYLE_CATEGORIES = [
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
       { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Atalaku, boucan, Abidjan", icon: "👞" },
-      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Drill / Nouchi flow", icon: "🎤" },
+      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Nouchi flow authentique", icon: "🎤" },
       { id: "Zouglou", label: "Zouglou", desc: "Woyo, contes, ambiance", icon: "🥁" },
       { id: "Afrobeats", label: "Afrobeats", desc: "Naija groove Lagos", icon: "🇳🇬" },
       { id: "Mbalax", label: "Mbalax", desc: "Sabar, kora, Dakar", icon: "🇸🇳" },
@@ -76,6 +76,14 @@ const STYLE_CATEGORIES = [
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
       { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
       { id: "Soul / Jazz France", label: "Soul Jazz", desc: "Club intime, soul, sax", icon: "🎷" },
+      { id: "Rap Français", label: "Rap Français", desc: "Flow FR, Boom Bap / Trap", icon: "🇫🇷" },
+    ]
+  },
+  {
+    id: "rap_us",
+    title: "Rap International 🇺🇸 🌐",
+    styles: [
+      { id: "Rap Américain", label: "Rap Américain", desc: "Flow US, Trap Atlanta / NY", icon: "🇺🇸" },
     ]
   }
 ];
@@ -92,7 +100,7 @@ export default function NewCreatePage() {
     reason: "",
     title: "",
     prompt: "",
-    style: "",
+    styles: [] as string[], // tableau de styles sélectionnés (max 3)
     voice: "",
   });
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -257,6 +265,20 @@ export default function NewCreatePage() {
   const nextStep = () => setStep((s) => s < 5 ? s + 1 : s);
   const updateForm = (key: string, value: string) => setFormData({ ...formData, [key]: value });
 
+  const toggleStyle = (styleId: string) => {
+    setFormData(prev => {
+      const current = prev.styles;
+      if (current.includes(styleId)) {
+        // Désélectionner
+        return { ...prev, styles: current.filter(s => s !== styleId) };
+      } else if (current.length < 3) {
+        // Sélectionner (max 3)
+        return { ...prev, styles: [...current, styleId] };
+      }
+      return prev; // Déjà 3 sélectionnés, on ignore
+    });
+  };
+
   const handleGenerate = async () => {
     try {
       setIsGenerating(true);
@@ -330,10 +352,16 @@ export default function NewCreatePage() {
         }
       }
 
+      // Fusionner les styles sélectionnés en une étiquette lisible
+      const styleLabelMerged = formData.styles.length > 0
+        ? formData.styles.map(s => STYLE_OPTIONS.find(o => o.id === s)?.label || s).join(' + ')
+        : "Afrobeats";
+
       const finalFormData = {
         title: formData.title || "Ma Musique",
         prompt: step2InputType === 'audio' ? "" : formData.prompt,
-        style: formData.style,
+        style: styleLabelMerged,
+        styles: formData.styles,
         mood: "Énergique",
         language: "Français",
         voice: formData.voice || "Duo",
@@ -381,7 +409,7 @@ export default function NewCreatePage() {
       if (step2InputType === 'audio' && !promptAudioBlob) return true;
     }
     if (step === 3) {
-      if (!formData.style || (step2InputType !== 'audio' && !formData.voice)) return true;
+      if (formData.styles.length === 0 || (step2InputType !== 'audio' && !formData.voice)) return true;
       if (formData.voice === "Clonage" && !voiceBlob && step2InputType !== 'audio') return true;
     }
     return false;
@@ -740,8 +768,17 @@ export default function NewCreatePage() {
           {step === 3 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full mt-6 md:mt-10">
               <div className="text-center mb-6 md:mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-3">Quel style de musique <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">préfères-tu</span> ?</h2>
-                <p className="text-gray-500 text-sm md:text-base">Tu pourras changer à chaque chanson.</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">Choisis jusqu&apos;à <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">3 styles</span> à fusionner 🎛️</h2>
+                <p className="text-gray-500 text-sm md:text-base">Mix de styles = sons uniques et inédits.</p>
+                {/* Badge compteur */}
+                <div className="mt-3 inline-flex items-center gap-2 bg-purple-50 border border-purple-100 rounded-full px-4 py-1.5">
+                  <span className="text-purple-700 font-bold text-sm">{formData.styles.length}/3 styles sélectionnés</span>
+                  {formData.styles.length > 0 && (
+                    <span className="text-purple-500 text-xs">
+                      {formData.styles.map(s => STYLE_OPTIONS.find(o => o.id === s)?.icon).join(" ")}
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="space-y-4 mb-10 text-left max-w-2xl mx-auto">
                 {STYLE_CATEGORIES.map((category) => (
@@ -758,18 +795,29 @@ export default function NewCreatePage() {
                     {openCategory === category.id && (
                       <div className="p-4 md:p-5 border-t border-gray-100 bg-gray-50/30">
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-                          {category.styles.map((style) => (
-                            <div 
-                              key={style.id}
-                              onClick={() => updateForm('style', style.id)}
-                              className={`bg-white rounded-xl p-3 md:p-4 cursor-pointer border-2 transition-all hover:shadow-md flex flex-col items-center text-center
-                                ${formData.style === style.id ? 'border-purple-500 shadow-lg shadow-purple-500/10 scale-[1.02]' : 'border-transparent shadow-sm'}`}
-                            >
-                              <div className="text-3xl mb-2">{style.icon}</div>
-                              <h3 className="font-bold text-xs md:text-sm mb-1">{style.label}</h3>
-                              <p className="text-gray-500 text-[9px] md:text-[10px] leading-tight">{style.desc}</p>
-                            </div>
-                          ))}
+                          {category.styles.map((style) => {
+                            const isSelected = formData.styles.includes(style.id);
+                            const isDisabled = !isSelected && formData.styles.length >= 3;
+                            return (
+                              <div 
+                                key={style.id}
+                                onClick={() => !isDisabled && toggleStyle(style.id)}
+                                className={`bg-white rounded-xl p-3 md:p-4 border-2 transition-all flex flex-col items-center text-center relative
+                                  ${isSelected ? 'border-purple-500 shadow-lg shadow-purple-500/10 scale-[1.02] cursor-pointer' 
+                                    : isDisabled ? 'border-gray-100 opacity-40 cursor-not-allowed' 
+                                    : 'border-transparent shadow-sm hover:shadow-md cursor-pointer'}`}
+                              >
+                                {isSelected && (
+                                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
+                                    <Check className="w-3.5 h-3.5 text-white" />
+                                  </div>
+                                )}
+                                <div className="text-3xl mb-2">{style.icon}</div>
+                                <h3 className="font-bold text-xs md:text-sm mb-1">{style.label}</h3>
+                                <p className="text-gray-500 text-[9px] md:text-[10px] leading-tight">{style.desc}</p>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -897,14 +945,18 @@ export default function NewCreatePage() {
                   <p className="text-gray-500">Vérifie si tout est correct.</p>
                 </div>
                 <div className="bg-white rounded-3xl p-8 shadow-sm space-y-4 text-center">
-                  <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-2">
-                    {STYLE_OPTIONS.find(s => s.id === formData.style)?.icon || "🎵"}
+                  <div className="flex items-center justify-center gap-1 text-4xl mb-2">
+                    {formData.styles.length > 0
+                      ? formData.styles.map(s => STYLE_OPTIONS.find(o => o.id === s)?.icon || "🎵").join(" ")
+                      : "🎵"}
                   </div>
                   <h3 className="text-2xl font-bold">{formData.title}</h3>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <div className="inline-block bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-semibold">
-                      {formData.style}
-                    </div>
+                  <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+                    {formData.styles.map(s => (
+                      <div key={s} className="inline-block bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm font-semibold">
+                        {STYLE_OPTIONS.find(o => o.id === s)?.label || s}
+                      </div>
+                    ))}
                     <div className="inline-block bg-orange-50 text-[#FF6B00] px-3 py-1 rounded-full text-sm font-semibold">
                       Voix : {formData.voice}
                     </div>

@@ -11,7 +11,8 @@ import { z } from 'zod'
 const trackSchema = z.object({
   title: z.string().max(100, "Le titre ne doit pas dépasser 100 caractères").optional().default("Nouvelle Musique"),
   prompt: z.string().max(1000, "La description ne doit pas dépasser 1000 caractères").optional().default(""),
-  style: z.string().min(1, "Le style est requis").max(50, "Le style est trop long"),
+  style: z.string().min(1, "Le style est requis").max(200, "Le style est trop long"),
+  styles: z.array(z.string()).max(3).optional().default([]),
   mood: z.string().max(50).optional().default(""),
   language: z.string().max(50).optional().default("fr"),
   voice: z.string().max(50).optional().default(""),
@@ -259,6 +260,26 @@ export async function createTrack(formData: TrackFormData) {
         "extremely realistic human voice with close-mic warmth and natural room tone",
         "sophisticated urban French jazz-soul atmosphere, emotional depth, live feel"
       ].join(", "),
+      // ─── EUROPE & RAP INTERNATIONAL ──────────────────────────────────────────────────────
+      "Rap Français": [
+        "Classic French hip-hop rap, Parisian urban style, 85-100bpm boom bap or 140bpm trap",
+        "sampled jazz break or 808 bass, crisp snare, stutter trap hi-hats or boom bap kick",
+        "dark cinematic strings, vintage vinyl crackle sample, melodic synth hook",
+        "authentic Parisian French accent, razor-sharp lyrical flow, precise diction",
+        "confident street cadence, real breath between bars, gritty chest-voice delivery",
+        "introspective verse energy, explosive rapid-fire chorus flow, French slang",
+        "hyper-realistic human rap vocal, zero robotic artifacts, studio-quality performance"
+      ].join(", "),
+
+      "Rap Américain": [
+        "American hip-hop rap, Atlanta trap or New York boom bap, 130-148bpm",
+        "heavy 808 sub-bass with pitch glide, rapid trap hi-hats, punchy snare crack",
+        "dark melodic piano, haunting synth arpeggio, cinematic orchestral stabs",
+        "authentic native English-speaking American rapper vocal, US street accent",
+        "Atlanta melodic trap singing-rap blend or NY lyrical precision flow",
+        "confident aggressive delivery, ad-lib exclamations, real breath and cadence",
+        "hyper-realistic human rap voice, premium trap mixing, zero synthetic artifacts"
+      ].join(", "),
     };
     
     const voiceTag = validData.voice === "Homme"
@@ -267,9 +288,28 @@ export async function createTrack(formData: TrackFormData) {
       ? "authentic warm human female vocal, natural chest and head voice mix, real breath, emotional vibrato"
       : "authentic human vocal, natural breathing, real human voice texture";
 
-    const enrichedStyle = (styleEnrichments[validData.style] || validData.style)
-      + `, ${voiceTag}`
-      + ", sung in French, extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
+    // Construire le style enrichi : si plusieurs styles, on fusionne leurs descriptions
+    let enrichedStyle: string;
+    const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
+
+    if (selectedStyles.length > 1) {
+      // Fusion multi-styles : on prend les 3 premiers descripteurs de chaque style
+      const blendedParts = selectedStyles.map(s => {
+        const enriched = styleEnrichments[s] || s;
+        return enriched.split(", ").slice(0, 3).join(", ");
+      });
+      enrichedStyle = blendedParts.join(" | ")
+        + `, ${voiceTag}`
+        + ", extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
+    } else {
+      enrichedStyle = (styleEnrichments[selectedStyles[0]] || selectedStyles[0])
+        + `, ${voiceTag}`
+        + ", sung in French, extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
+    }
+    // Tronquer à 900 chars max pour respecter la limite Suno V4_5 (1000 chars)
+    if (enrichedStyle.length > 900) {
+      enrichedStyle = enrichedStyle.substring(0, 900);
+    }
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
     const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
