@@ -97,188 +97,155 @@ export async function createTrack(formData: TrackFormData) {
     const styleEnrichments: Record<string, string> = {
       // ─── AFRIQUE DE L'OUEST ───────────────────────────────────────────────
       "Coupé-Décalé": [
-        "Ivorian Coupé-Décalé, Abidjan club anthem, atalaku hype man shouts, 132-138bpm",
-        "punchy dry snare, deep sub kick, layered sebene electric guitar riff, brass stab hits",
-        "call-and-response crowd chants, roukaskas dance energy, boucan farot ambiance",
-        "authentic thick Ivorian Nouchi accent, chest-voiced lead male vocal",
-        "raw gritty breathiness, slightly nasal tone, passionate African ad-libs",
-        "extremely human-sounding vocals, natural room reverb, live crowd feel",
-        "hyper-realistic production, party dancefloor energy, West African percussion loop"
+        "Ivorian Coupé-Décalé, pure Abidjan club rhythm, 130-140bpm",
+        "heavy syncopated drum machine loop, deep driving bassline, bright repetitive electric guitar sebene",
+        "shakers, cowbell hits, energetic synthesizer stabs, electronic snare rolls",
+        "very strong authentic West African Ivorian accent, energetic hype man shouts (atalaku)",
+        "call-and-response vocal structure, raw party energy, nouchi slang cadence",
+        "extremely realistic human vocal performance, NO robotic artifacts"
       ].join(", "),
 
       "Rap Ivoire / Drill": [
-        "Ivorian Drill hip-hop, Abidjan street rap, 140-148bpm triplet flow",
-        "sliding 808 sub-bass with pitch glide, staccato hi-hats, snare roll trap",
-        "dark minor piano loop, cinematic string pad, ethereal synth texture",
-        "authentic Nouchi slang delivery, aggressive confident male rap vocal",
-        "slightly hoarse throat texture, real breath between bars, West African cadence",
-        "fast syllable stacking, melodic hook sung with Ivorian lilt",
-        "hyper-realistic hip-hop mixing, punchy low-end, studio-quality human rap voice"
+        "Ivorian Drill, Abidjan hip-hop, 140bpm sliding 808 bass, dark piano melody",
+        "staccato trap hi-hats, syncopated African percussion layer, hard hitting snare",
+        "very strong authentic West African Ivorian accent, gritty nouchi slang rap flow",
+        "aggressive chest voice delivery, razor-sharp street cadence",
+        "extremely realistic human rap vocal, NO robotic artifacts"
       ].join(", "),
 
       "Zouglou": [
-        "Classic Ivorian Zouglou, Abidjan township storytelling music, 95-105bpm",
-        "live acoustic conga and djembe percussion, rhythmic maracas, acoustic bass guitar",
-        "philosophic social commentary lyrics, melancholic yet uplifting tone",
-        "lead tenor vocal with warm chest resonance, spontaneous choir harmonies",
-        "Ivorian French accent with Dioula influences, slightly raspy emotional delivery",
-        "call-and-response between soloist and backing singers, live concert feel",
-        "authentic nostalgic atmosphere, organic instruments, deeply human vocal texture"
+        "Traditional Ivorian Zouglou, 95-105bpm, authentic Abidjan woyo style",
+        "live acoustic conga, djembe, syncopated shaker rhythms, acoustic bass",
+        "very strong authentic West African Ivorian accent, soulful choir harmonies",
+        "emotional tenor lead vocal, call-and-response structure, storytelling cadence",
+        "extremely realistic human voice, organic acoustic production"
       ].join(", "),
 
       "Afrobeats": [
-        "Modern Afrobeats, Lagos Naija vibe, 100-110bpm smooth dancehall groove",
-        "warm deep sub-bass, syncopated clave percussion, shekere and talking drum layer",
-        "bright electric guitar lick, lush keyboard chords, afro-pop synthesizer melody",
-        "smooth melodic male or female lead vocal with Nigerian Yoruba tonal inflection",
-        "breathy falsetto hooks, natural vibrato, emotional melismatic runs",
-        "extremely realistic human vocal performance, intimate studio mic presence",
-        "radio-ready West African pop sound, glossy yet organic production"
+        "Modern Nigerian Afrobeats, 100-110bpm Naija pop groove, smooth dancehall rhythm",
+        "log drum bass, syncopated clave, shekere, lush synthesizer chords, muted guitar",
+        "very strong authentic West African Nigerian accent, smooth melodic delivery",
+        "pidgin english and local dialect inflections, warm breathy vocal tone",
+        "extremely realistic human vocal, premium afro-pop studio mix"
       ].join(", "),
 
       "Mbalax": [
-        "Traditional Senegalese Mbalax, Dakar dance music, 120-135bpm",
-        "sabar drum polyrhythm, tama talking drum lead, bougarabou bass drum",
-        "repetitive hypnotic xalam lute riff, kora arpeggio texture, balafon accents",
-        "powerful Wolof-inflected French vocal delivery, strong chest projection",
-        "guttural throat ornaments, intense passionate phrasing, call-and-response chorus",
-        "authentic Dakar accent, griot storytelling energy, vibrant live percussion",
-        "extremely human-sounding voice, natural reverb of a live performance space"
+        "Traditional Senegalese Mbalax, 120-135bpm, explosive Sabar drum rhythms",
+        "tama talking drum, bougarabou, repetitive xalam lute, bright brass section",
+        "very strong authentic West African Senegalese accent, powerful high-energy vocal",
+        "intense passionate phrasing, Wolof language inflections, guttural ornaments",
+        "extremely realistic human voice, vibrant live acoustic energy"
       ].join(", "),
 
       // ─── AFRIQUE CENTRALE ─────────────────────────────────────────────────
       "Rumba Congolaise": [
-        "Classic Congolese Rumba, Kinshasa romantic ballad, 70-85bpm",
-        "fingerpicked acoustic guitar sebene riff, warm upright bass, soft brushed snare",
-        "lush string arrangement, vintage electric piano comping, gentle maracas",
-        "smooth silky tenor lead vocal with deep Lingala-French accent",
-        "romantic melismatic phrasing, gentle vibrato, chest voice warmth",
-        "intimate close-mic presence, subtle room reverb, elegant nostalgic feel",
-        "extremely realistic human vocal, emotional passion of Kinshasa music legends"
+        "Classic Congolese Rumba, Kinshasa romantic music, 75-85bpm",
+        "complex fingerpicked acoustic guitar sebene, warm upright bass, gentle shaker",
+        "very strong authentic Central African Congolese accent, silky smooth tenor voice",
+        "Lingala language inflections, romantic melismatic phrasing, emotional warmth",
+        "extremely realistic human voice, intimate acoustic atmosphere"
       ].join(", "),
 
       "Afro-Congo": [
-        "Modern Afro-Congo pop, Kinshasa club banger, 115-125bpm",
-        "heavy kick drum, layered synth bass, electric guitar riff loop",
-        "hype animator shouts, crowd response chants, Lingala party energy",
-        "charismatic male lead with thick Congolese accent, confident chest projection",
-        "ad-lib exclamations, breathless excitement delivery, melodic hook with nasal warmth",
-        "dancefloor production, punchy mix, vibrant Central African rhythm section",
-        "hyper-realistic energetic vocal performance, authentic Brazzaville-Kinshasa feel"
+        "Modern Afro-Congo pop, Ndombolo dance rhythm, 115-125bpm",
+        "heavy club kick drum, layered electronic bass, fast electric guitar riff",
+        "very strong authentic Central African Congolese accent, energetic animator shouts",
+        "confident chest projection, Lingala party energy, call-and-response",
+        "extremely realistic human voice, punchy dancefloor production"
       ].join(", "),
 
       // ─── AFRIQUE DU SUD & EST ─────────────────────────────────────────────
       "Amapiano": [
-        "South African Amapiano deep house, Johannesburg township sound, 110-116bpm",
-        "signature log drum synth bassline, dusty sub-kick, shaker percussion loop",
-        "lush jazz piano chords, warm Rhodes melody, marimba-inspired synth top-line",
-        "smooth soulful vocals with South African Zulu-English lilt, breathy falsetto",
-        "spoken word improvisation sections, whispered ad-libs, relaxed cool delivery",
-        "extremely realistic human voice with natural breath and soft consonants",
-        "premium studio-quality mix, warm low-end, organic live-recorded feel"
+        "South African Amapiano deep house, 110-115bpm",
+        "heavy signature log drum bassline, dusty shaker loops, deep sub-kick",
+        "jazz piano chords, soulful synth melodies",
+        "very strong authentic South African accent, smooth soulful vocal delivery",
+        "Zulu language inflections, whispered ad-libs, relaxed cool vibe",
+        "extremely realistic human voice, premium deep house mix"
       ].join(", "),
 
       "Bongo Flava": [
-        "East African Bongo Flava, Dar es Salaam urban pop, 90-105bpm",
-        "Swahili rhythmic groove, light electronic drums, melodic guitar lick",
-        "hip-hop influenced flow mixed with R&B melodic hook",
-        "smooth Tanzanian Swahili-inflected French vocal, gentle nasal tone",
-        "sweet falsetto runs, laid-back confident delivery, melodic ad-libs",
-        "extremely human-sounding voice with East African warmth and intimacy",
-        "modern production with organic percussion, radio-friendly African pop feel"
+        "East African Bongo Flava, Tanzanian urban pop, 90-105bpm",
+        "Swahili rhythmic groove, light electronic drums, melodic guitar",
+        "very strong authentic East African Tanzanian accent, smooth R&B infused vocal",
+        "Swahili language inflections, sweet falsetto runs, laid-back delivery",
+        "extremely realistic human voice, warm radio-friendly production"
       ].join(", "),
 
       // ─── MAGHREB & DIASPORA ───────────────────────────────────────────────
       "Raï / Pop Urbaine": [
-        "Modern Algerian Raï fused with French urban pop, 95-108bpm",
-        "darbuka doum-tak pattern, bendir frame drum, oriental synth arpeggio",
-        "electric guitar with Arabic maqam bends, trap hi-hat layer, 808 sub",
-        "passionate Oran-accented French vocal, raw emotional delivery",
-        "melismatic Arabic ornamentation, husky chest voice with controlled rasp",
-        "breathy vulnerability in the verses, powerful explosive chorus delivery",
-        "authentic North African accent, extremely human emotional vocal performance"
+        "Modern Algerian Raï fused with urban pop, 95-108bpm",
+        "darbuka and bendir percussion, 808 sub bass, oriental synth arpeggio",
+        "very strong authentic North African Maghreb accent, passionate emotional delivery",
+        "Arabic melismatic vocal ornamentation, controlled rasp, powerful chorus",
+        "extremely realistic human voice, cinematic urban production"
       ].join(", "),
 
       "Kizomba": [
-        "Angolan Kizomba slow dance, Luanda romantic sensual groove, 60-75bpm",
-        "deep semba bass guitar, soft programmed kick, brushed snare, cabasa rhythm",
-        "lush warm synthesizer pad, fingerpicked acoustic guitar, vibraphone melody",
-        "silky Portuguese-Angolan accented French vocal, intimate hushed delivery",
-        "breathy close-mic presence, soft vibrato, sensual vocal whispers",
-        "extremely realistic human voice with warm room ambiance",
-        "romantic slow-dance production, deep emotional atmosphere, Lusophone African soul"
+        "Angolan Kizomba slow dance, 60-75bpm romantic groove",
+        "deep semba bass, soft programmed kick, cabasa rhythm, lush synthesizer pad",
+        "very strong authentic African Lusophone Angolan accent, intimate sensual vocal",
+        "Portuguese language inflections, soft breathy delivery, emotional warmth",
+        "extremely realistic human voice, deep romantic atmosphere"
       ].join(", "),
 
       // ─── EUROPE & POP INTERNATIONALE ──────────────────────────────────────
       "Pop / R&B": [
-        "Contemporary French Pop R&B, radio hit production, 90-105bpm",
-        "polished trap-influenced drum programming, warm synthesizer bass, electric piano",
-        "lush string section, layered background vocals, melodic guitar accent",
-        "clear Parisian French accent, smooth professional vocal delivery",
-        "natural vibrato, breathy intimate verses, powerful belted chorus",
-        "extremely realistic human voice with studio polish and warmth",
-        "premium modern production, glossy R&B feel, emotionally resonant performance"
+        "Contemporary Pop R&B, radio hit production, 90-105bpm",
+        "polished trap-influenced drums, warm synth bass, lush strings",
+        "very strong authentic European French accent, smooth professional vocal",
+        "clear Parisian diction, natural vibrato, powerful belted chorus",
+        "extremely realistic human voice, glossy premium mix"
       ].join(", "),
 
       "Gospel": [
-        "Uplifting French Gospel, worship choir anthem, 75-90bpm",
-        "live Hammond B3 organ stabs, grand piano chord voicings, full gospel drum kit",
-        "powerful four-part choir harmonies, soaring soprano lead, deep bass foundation",
-        "passionate French-accented lead vocal with strong West African diaspora influence",
-        "raw emotional delivery, chest voice power, spontaneous melismatic improvisation",
-        "natural breath and body in the recording, authentic church acoustic reverb",
-        "extremely human choir sound, powerful spiritual energy, tears-inducing performance"
+        "Uplifting Gospel worship choir anthem, 75-90bpm",
+        "live Hammond B3 organ, grand piano, full gospel drum kit",
+        "very strong authentic European French accent with soulful inflections",
+        "powerful lead vocal, massive four-part choir harmonies, emotional belts",
+        "extremely realistic human voice, authentic church acoustics"
       ].join(", "),
 
       // ─── NOUVEAUX STYLES EUROPÉENS ────────────────────────────────────────
       "Chanson Française": [
         "Classic French Chanson, Paris cabaret atmosphere, 80-95bpm",
-        "acoustic nylon-string guitar, upright bass pizzicato, light accordion melody",
-        "subtle brushed jazz drums, intimate piano comping, warm string quartet",
-        "iconic Parisian French accent, slight cigarette-voice rasp, poetic phrasing",
-        "intimate close-mic delivery, natural breath between phrases, melancholic warmth",
-        "extremely realistic human vocal with authentic French diction and emotional depth",
-        "timeless romantic Parisian atmosphere, literary storytelling, bistro feel"
+        "acoustic guitar, upright bass, light accordion, subtle jazz drums",
+        "very strong authentic European French accent, iconic Parisian diction",
+        "poetic phrasing, intimate close-mic delivery, melancholic warmth",
+        "extremely realistic human voice, timeless acoustic production"
       ].join(", "),
 
       "Afro Trap France": [
-        "French Afro Trap, Paris banlieue rap, 140-148bpm",
-        "808 sub-bass with African percussion layer, rapid trap hi-hats, hard snare",
-        "afrobeat guitar sample chop, melodic autotune hook, dark synth pad",
-        "authentic French cité accent with Ivorian or Malian lilt, confident rap flow",
-        "melodic sung bridges, street-smart aggressive energy, real breath in bars",
-        "extremely human-sounding voice, authentic Parisian banlieue vocal character",
-        "premium Afro Trap production, hard-hitting low-end, modern French urban sound"
+        "French Afro Trap, Paris urban rap, 140bpm",
+        "808 sub-bass, rapid hi-hats, hard snare, afrobeat guitar sample",
+        "very strong authentic European French banlieue accent, confident rap flow",
+        "street-smart energy, melodic sung bridges, modern slang",
+        "extremely realistic human voice, hard-hitting urban mix"
       ].join(", "),
 
       "Soul / Jazz France": [
-        "French Soul Jazz, late-night intimate club session, 75-90bpm",
-        "brushed jazz drum kit, upright bass walking line, Rhodes electric piano",
-        "muted trumpet melody, alto saxophone improvisation, warm guitar comping",
-        "smooth French-accented soul vocal, natural husky texture, intimate delivery",
-        "breathy falsetto moments, natural pitch inflections, jazzy melodic improvisation",
-        "extremely realistic human voice with close-mic warmth and natural room tone",
-        "sophisticated urban French jazz-soul atmosphere, emotional depth, live feel"
+        "French Soul Jazz, intimate club session, 75-90bpm",
+        "brushed jazz drums, walking upright bass, Rhodes piano, muted trumpet",
+        "very strong authentic European French accent, smooth husky soul vocal",
+        "intimate jazzy phrasing, breathy falsetto moments",
+        "extremely realistic human voice, warm live acoustic room tone"
       ].join(", "),
+
       // ─── EUROPE & RAP INTERNATIONAL ──────────────────────────────────────────────────────
       "Rap Français": [
-        "Classic French hip-hop rap, Parisian urban style, 85-100bpm boom bap or 140bpm trap",
-        "sampled jazz break or 808 bass, crisp snare, stutter trap hi-hats or boom bap kick",
-        "dark cinematic strings, vintage vinyl crackle sample, melodic synth hook",
-        "authentic Parisian French accent, razor-sharp lyrical flow, precise diction",
-        "confident street cadence, real breath between bars, gritty chest-voice delivery",
-        "introspective verse energy, explosive rapid-fire chorus flow, French slang",
-        "hyper-realistic human rap vocal, zero robotic artifacts, studio-quality performance"
+        "Classic French hip-hop, Parisian urban style, 90bpm boom bap or 140bpm trap",
+        "sampled jazz break, 808 bass, crisp snare, cinematic strings",
+        "very strong authentic European French accent, razor-sharp rap flow",
+        "precise Parisian diction, introspective verses, explosive chorus",
+        "extremely realistic human rap voice, premium urban mix"
       ].join(", "),
 
       "Rap Américain": [
-        "American hip-hop rap, Atlanta trap or New York boom bap, 130-148bpm",
-        "heavy 808 sub-bass with pitch glide, rapid trap hi-hats, punchy snare crack",
-        "dark melodic piano, haunting synth arpeggio, cinematic orchestral stabs",
-        "authentic native English-speaking American rapper vocal, US street accent",
-        "Atlanta melodic trap singing-rap blend or NY lyrical precision flow",
-        "confident aggressive delivery, ad-lib exclamations, real breath and cadence",
-        "hyper-realistic human rap voice, premium trap mixing, zero synthetic artifacts"
+        "American hip-hop rap, Atlanta trap or NY boom bap, 130-148bpm",
+        "heavy 808 sub-bass, rapid trap hi-hats, dark piano loop",
+        "very strong authentic American English accent, native US street cadence",
+        "aggressive delivery, ad-lib exclamations, rapid syllable stacking",
+        "extremely realistic human rap voice, premium trap mix"
       ].join(", "),
     };
     
