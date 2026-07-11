@@ -695,10 +695,37 @@ export default function NewCreatePage() {
                         <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4">
                           <Mic className={`w-8 h-8 ${isPromptRecording ? 'animate-pulse text-red-500' : ''}`} />
                         </div>
-                        <h4 className="font-bold text-lg mb-2">Chante ta mélodie</h4>
-                        <p className="text-sm text-gray-500 mb-6 max-w-sm">
-                          Fredonne un air ou chante tes paroles (max 30s). L&apos;IA utilisera cette mélodie pour composer la chanson.
+                        <h4 className="font-bold text-lg mb-1">Chante ta mélodie</h4>
+                        <p className="text-sm text-gray-500 mb-5 max-w-sm">
+                          Fredonne ou chante tes paroles (max 30s). L&apos;IA utilisera cette mélodie pour composer la chanson.
                         </p>
+
+                        {/* Bloc de conseils — visible uniquement avant l’enregistrement */}
+                        {!isPromptRecording && (
+                          <div className="w-full max-w-sm bg-white border border-purple-100 rounded-2xl p-4 mb-5 text-left shadow-sm space-y-2.5">
+                            <p className="text-xs font-bold text-purple-700 uppercase tracking-wide mb-1">💡 Conseils pour un meilleur résultat</p>
+                            <div className="flex items-start gap-2 text-xs text-gray-600">
+                              <span className="text-base leading-none mt-0.5">🥁</span>
+                              <span><strong>Tape le rythme</strong> sur la table ou frappe dans tes mains pendant que tu chantes — l&apos;IA capte le groove.</span>
+                            </div>
+                            <div className="flex items-start gap-2 text-xs text-gray-600">
+                              <span className="text-base leading-none mt-0.5">🎸</span>
+                              <span><strong>Tu joues d&apos;un instrument ?</strong> Lance-le et chante dessus — guitare, piano, djembé, tout fonctionne !</span>
+                            </div>
+                            <div className="flex items-start gap-2 text-xs text-gray-600">
+                              <span className="text-base leading-none mt-0.5">📱</span>
+                              <span><strong>Astuce avec un 2e téléphone</strong> : lance un instrumental YouTube sur un autre téléphone, approche-le du micro et chante dessus — résultat ultra réaliste !</span>
+                            </div>
+                            <div className="flex items-start gap-2 text-xs text-gray-600">
+                              <span className="text-base leading-none mt-0.5">🎤</span>
+                              <span><strong>Chante dès la 1ère seconde</strong> — les 5 premières secondes sont les plus importantes pour l&apos;IA.</span>
+                            </div>
+                            <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 rounded-xl p-2 border border-amber-100">
+                              <span className="text-base leading-none mt-0.5">🏷️</span>
+                              <span><strong>Le titre que tu as choisi guide aussi l&apos;IA</strong> : si ton titre dit &quot;Mariage de Mama&quot;, l&apos;IA va composer dans l&apos;esprit d&apos;une chanson de mariage, même sans paroles !</span>
+                            </div>
+                          </div>
+                        )}
                         
                         {isPromptRecording ? (
                           <div className="w-full max-w-xs space-y-4">
