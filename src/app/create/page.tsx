@@ -332,15 +332,19 @@ export default function NewCreatePage() {
 
       const finalFormData = {
         title: formData.title || "Ma Musique",
-        prompt: step2InputType === 'audio' ? "" : formData.prompt, // send just the prompt, actions.ts will format it
+        prompt: step2InputType === 'audio' ? "" : formData.prompt,
         style: formData.style,
         mood: "Énergique",
         language: "Français",
-        voice: formData.voice || "Duo", // use selected voice
+        voice: formData.voice || "Duo",
         duration: "1min30s",
         coverUrl: finalCoverUrl,
         voiceUrl: finalVoiceUrl,
-        promptAudioUrl: finalPromptAudioUrl
+        promptAudioUrl: finalPromptAudioUrl,
+        // Durée réelle de l'enregistrement en secondes (pour continueAt de l'API Suno)
+        audioRecordingDuration: step2InputType === 'audio'
+          ? Math.max(1, promptRecordingTime)   // enregistrement vocal pour l'ambiance
+          : Math.max(1, recordingTime)          // enregistrement pour clonage de voix
       };
 
       const result = await createTrack(finalFormData);

@@ -18,7 +18,9 @@ const trackSchema = z.object({
   duration: z.string().max(20).optional().default("2min30s"),
   coverUrl: z.string().url().optional().nullable(),
   voiceUrl: z.string().url().optional().nullable(),
-  promptAudioUrl: z.string().url().optional().nullable()
+  promptAudioUrl: z.string().url().optional().nullable(),
+  // Durée réelle de l'enregistrement vocal (en secondes) — requis par /upload-extend
+  audioRecordingDuration: z.number().min(1).max(60).optional().default(28)
 })
 
 export type TrackFormData = z.infer<typeof trackSchema>;
@@ -314,6 +316,10 @@ export async function createTrack(formData: TrackFormData) {
 
     if (audioInputUrl) {
       // ✅ CORRECT : Upload + Extend — l'IA continue la musique à partir de ta voix
+      // continueAt = point en secondes à partir duquel Suno étend l'audio (OBLIGATOIRE)
+      // On prend la durée réelle - 2s comme marge de sécurité, min 1s
+      const continueAt = Math.max(1, (validData.audioRecordingDuration ?? 28) - 2);
+
       apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-extend", {
         method: "POST",
         headers: {
@@ -327,6 +333,7 @@ export async function createTrack(formData: TrackFormData) {
           prompt: lyricsText,             // Les paroles générées
           style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
+          continueAt,                     // ✅ OBLIGATOIRE : point de départ de l'extension
           model: "V4_5",                  // V4_5 compatible avec upload-extend
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
