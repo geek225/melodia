@@ -279,7 +279,7 @@ export async function createTrack(formData: TrackFormData) {
     }
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
-    let lyricsText = "";
+    lyricsText = "";
 
     // Si le texte dépasse 200 caractères ou contient des balises de structure, on considère que ce sont les paroles finales
     if (validData.prompt && (validData.prompt.length > 200 || (validData.prompt.includes("[") && validData.prompt.includes("]")))) {
