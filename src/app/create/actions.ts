@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 const trackSchema = z.object({
   title: z.string().max(100, "Le titre ne doit pas dépasser 100 caractères").optional().default("Nouvelle Musique"),
-  prompt: z.string().max(1000, "La description ne doit pas dépasser 1000 caractères").optional().default(""),
+  prompt: z.string().max(5000, "La description ne doit pas dépasser 5000 caractères").optional().default(""),
   style: z.string().min(1, "Le style est requis").max(200, "Le style est trop long"),
   styles: z.array(z.string()).max(3).optional().default([]),
   mood: z.string().max(50).optional().default(""),
@@ -279,10 +279,16 @@ export async function createTrack(formData: TrackFormData) {
     }
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
-    const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
-    const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
+    let lyricsText = "";
+
+    // Si le texte dépasse 200 caractères ou contient des balises de structure, on considère que ce sont les paroles finales
+    if (validData.prompt && (validData.prompt.length > 200 || (validData.prompt.includes("[") && validData.prompt.includes("]")))) {
+      lyricsText = validData.prompt;
+    } else {
+      const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
+      const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
       
-    const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
+      const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
@@ -311,6 +317,7 @@ export async function createTrack(formData: TrackFormData) {
         }
       }
     }
+    } // Fin du else
 
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
     if (!lyricsText) {

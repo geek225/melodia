@@ -652,7 +652,7 @@ export default function NewCreatePage() {
                     <Textarea 
                       value={formData.prompt}
                       onChange={(e) => updateForm("prompt", e.target.value)}
-                      maxLength={1000}
+                      maxLength={5000}
                       placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, colle tes paroles ou donne quelques mots clés..."} 
                       className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-none transition-colors ${
                         isListening ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-50/50' : ''
@@ -670,8 +670,8 @@ export default function NewCreatePage() {
                         </button>
                       ))}
                     </div>
-                    <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 1000 ? 'text-red-500' : formData.prompt?.length > 900 ? 'text-orange-400' : 'text-gray-400'}`}>
-                      {formData.prompt?.length || 0} / 1000
+                    <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 5000 ? 'text-red-500' : formData.prompt?.length > 4900 ? 'text-orange-400' : 'text-gray-400'}`}>
+                      {formData.prompt?.length || 0} / 5000
                     </div>
                     <button
                       type="button"
