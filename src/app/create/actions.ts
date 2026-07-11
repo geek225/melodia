@@ -358,8 +358,9 @@ export async function createTrack(formData: TrackFormData) {
     if (audioInputUrl) {
       // ✅ CORRECT : Upload + Extend — l'IA continue la musique à partir de ta voix
       // continueAt = point en secondes à partir duquel Suno étend l'audio (OBLIGATOIRE)
-      // On prend la durée réelle - 2s comme marge de sécurité, min 1s
-      const continueAt = Math.max(1, (validData.audioRecordingDuration ?? 28) - 2);
+      // ⚠️ On limite à 6 secondes MAX : Suno n'a besoin que de 4-6s pour capter la mélodie
+      // et l'accent vocal. Au-delà, ça allonge juste la phase de voix brute sans instrumental.
+      const continueAt = Math.min(6, Math.max(1, (validData.audioRecordingDuration ?? 6) - 1));
 
       apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-extend", {
         method: "POST",
