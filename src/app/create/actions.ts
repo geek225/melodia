@@ -68,7 +68,7 @@ export async function createTrack(formData: TrackFormData) {
 
   if (profileError || !profile) {
     console.error("Profile fetch error:", profileError, "Profile:", profile);
-    throw new Error(`Erreur lors de la récupération du profil: ${profileError?.message || 'Profil non trouvé'}`)
+    return { success: false, error: `Erreur lors de la récupération du profil: ${profileError?.message || 'Profil non trouvé'}` }
   }
 
   if (profile.credits < cost) {
@@ -82,7 +82,8 @@ export async function createTrack(formData: TrackFormData) {
     .eq('id', user.id)
 
   if (updateError) {
-    throw new Error('Erreur lors de la déduction des Mélodies')
+    console.error("Deduction error:", updateError);
+    return { success: false, error: 'Erreur lors de la déduction des Mélodies' }
   }
 
   // 3. Appel de l'API Suno
@@ -352,7 +353,7 @@ export async function createTrack(formData: TrackFormData) {
           title: validData.title || "Nouvelle Musique",
           instrumental: false,
           customMode: true,
-          model: "V3_5",
+          model: "V4_5",
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
       });
@@ -364,12 +365,12 @@ export async function createTrack(formData: TrackFormData) {
         apiTaskId = result.data.taskId;
       } else {
         console.error("Erreur Format API Suno:", result);
-        throw new Error(`Suno API Error: ${result.msg}`);
+        return { success: false, error: `Erreur API Suno: ${result.msg || 'Format invalide'}` };
       }
     } else {
       const errorText = await apiRes.text();
-      console.error("Erreur HTTP API Suno:", errorText);
-      throw new Error(`Suno API HTTP Error: ${apiRes.status}`);
+      console.error("Erreur HTTP API Suno:", apiRes.status, errorText);
+      return { success: false, error: "Erreur de connexion à l'API Suno." };
     }
   } catch (err) {
     console.error("Erreur réseau API MusicAPI:", err);
@@ -378,7 +379,7 @@ export async function createTrack(formData: TrackFormData) {
       .from('profiles')
       .update({ credits: profile.credits })
       .eq('id', user.id);
-    throw new Error("L'API de génération musicale a rencontré une erreur.");
+    return { success: false, error: "L'API de génération musicale a rencontré une erreur." };
   }
 
   if (!apiTaskId) {
@@ -387,7 +388,7 @@ export async function createTrack(formData: TrackFormData) {
       .from('profiles')
       .update({ credits: profile.credits })
       .eq('id', user.id);
-    throw new Error("L'API a refusé la génération.");
+    return { success: false, error: "L'API a refusé la génération." };
   }
 
   // 4. Création de la musique dans la base de données
@@ -417,7 +418,7 @@ export async function createTrack(formData: TrackFormData) {
       .from('profiles')
       .update({ credits: profile.credits })
       .eq('id', user.id)
-    throw new Error('Erreur lors de la création de la musique')
+    return { success: false, error: 'Erreur lors de la création de la musique' }
   }
 
   // Return the track ID and success status
