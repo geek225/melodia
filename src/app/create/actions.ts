@@ -21,7 +21,7 @@ const trackSchema = z.object({
   voiceUrl: z.string().url().optional().nullable(),
   promptAudioUrl: z.string().url().optional().nullable(),
   // Durée réelle de l'enregistrement vocal (en secondes) — requis par /upload-extend
-  audioRecordingDuration: z.number().min(1).max(60).optional().default(28)
+  audioRecordingDuration: z.number().min(1).max(150).optional().default(28)
 })
 
 export type TrackFormData = z.infer<typeof trackSchema>;
