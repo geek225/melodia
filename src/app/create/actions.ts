@@ -346,15 +346,13 @@ export async function createTrack(formData: TrackFormData) {
     let apiRes: Response;
 
     if (audioInputUrl) {
-      // ✅ CORRECT : Upload + Extend — l'IA continue la musique à partir de ta voix
-      // continueAt = point en secondes à partir duquel Suno étend l'audio (OBLIGATOIRE)
-      // On utilise la fin de l'enregistrement de l'utilisateur pour qu'il garde tout son vocal
-      const continueAt = Math.max(1, Math.floor(validData.audioRecordingDuration ?? 6) - 1);
+      // ✅ NOUVEAU COMPORTEMENT : Upload + Cover (Create from Audio) — l'IA utilise la voix pour générer toute la musique
+      // Au lieu d'étendre à la fin, elle crée l'instrumental et la suite autour de la voix fournie.
       
       // V4_5 est limité à 60s d'upload. Si le vocal dépasse 59s, on bascule sur V3_5 (limite 8 minutes)
       const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
 
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-extend", {
+      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
@@ -362,12 +360,11 @@ export async function createTrack(formData: TrackFormData) {
         },
         body: JSON.stringify({
           uploadUrl: audioInputUrl,       // URL publique de l'audio vocal uploadé
-          defaultParamFlag: true,         // Mode custom (on fournit style + prompt)
+          customMode: true,               // Mode custom (on fournit style + prompt) pour "cover"
           instrumental: false,
           prompt: lyricsText,             // Les paroles générées
           style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
-          continueAt,                     // ✅ OBLIGATOIRE : point de départ de l'extension
           model: selectedModel,           // Bascule intelligente du modèle selon la durée
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
