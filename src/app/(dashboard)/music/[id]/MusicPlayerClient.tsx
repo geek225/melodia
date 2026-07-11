@@ -402,9 +402,18 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                   <h3 className="text-xl font-bold text-red-600 mb-3 text-balance">
                     Génération échouée
                   </h3>
-                  <p className="text-slate-500 text-sm text-balance">
+                  <p className="text-slate-500 text-sm text-balance mb-6">
                     La génération de cette musique a été rejetée par le système d&apos;intelligence artificielle, probablement parce qu&apos;elle contient des noms d&apos;artistes protégés.
                   </p>
+                  {!isPublic && (
+                    <a 
+                      href="/create"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white font-bold rounded-full shadow-lg transition-transform hover:scale-105"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                      Réessayer une nouvelle création
+                    </a>
+                  )}
                 </div>
               </div>
             ) : (
@@ -547,10 +556,23 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
           </div>
           <div className="flex flex-col gap-3 mt-6">
              <Button 
-               className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white flex items-center gap-2" 
-               onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`Écoute ma nouvelle musique générée par IA: ${currentTrack.title} 🎵 ${shareUrl}`)}`, '_blank')}
+               className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white flex items-center gap-2 font-semibold" 
+               onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`Écoute ma nouvelle musique générée par IA : ${currentTrack.title} 🎵 ${shareUrl}`)}`, '_blank')}
              >
-               Partager sur WhatsApp
+               📱 Partager sur WhatsApp
+             </Button>
+             <Button 
+               className="w-full bg-black hover:bg-gray-900 text-white flex items-center gap-2 font-semibold" 
+               onClick={() => window.open(`https://www.tiktok.com/share?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(`Écoute ma musique : ${currentTrack.title} 🎵`)}`, '_blank')}
+             >
+               🎵 Partager sur TikTok
+             </Button>
+             <Button 
+               className="w-full text-white flex items-center gap-2 font-semibold"
+               style={{ background: 'linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' }}
+               onClick={() => window.open(`https://www.instagram.com/share?url=${encodeURIComponent(shareUrl)}`, '_blank')}
+             >
+               📸 Partager sur Instagram
              </Button>
              <div className="flex justify-end mt-2">
                <AlertDialogCancel onClick={() => setShowShareModal(false)}>Fermer</AlertDialogCancel>

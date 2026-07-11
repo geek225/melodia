@@ -8,15 +8,29 @@ import { createClient } from "@/utils/supabase/client";
 
 const STYLE_FILTERS = [
   { id: "all", label: "Tendances", icon: "🔥" },
+  // Afrique de l'Ouest
   { id: "Afrobeats", label: "Afrobeat", icon: "🥁" },
-  { id: "Amapiano", label: "Amapiano", icon: "🎹" },
-  { id: "Pop / R&B", label: "R&B", icon: "🎤" },
-  { id: "Rap / Hip-Hop", label: "Rap / Hip-Hop", icon: "🎧" },
   { id: "Coupé-Décalé", label: "Coupé-Décalé", icon: "👞" },
+  { id: "Rap Ivoire / Drill", label: "Rap Ivoire", icon: "🎤" },
+  { id: "Zouglou", label: "Zouglou", icon: "🥁" },
+  { id: "Mbalax", label: "Mbalax", icon: "🇸🇳" },
+  // Afrique Centrale
+  { id: "Rumba Congolaise", label: "Rumba", icon: "🎸" },
+  { id: "Afro-Congo", label: "Afro-Congo", icon: "🕺" },
+  // Afrique Sud & Est
+  { id: "Amapiano", label: "Amapiano", icon: "🎹" },
+  { id: "Bongo Flava", label: "Bongo Flava", icon: "🇹🇿" },
+  // Maghreb & Diaspora
+  { id: "Raï / Pop Urbaine", label: "Raï", icon: "🇩🇿" },
+  { id: "Kizomba", label: "Kizomba", icon: "🇦🇴" },
+  { id: "Pop / R&B", label: "Pop R&B", icon: "🎧" },
   { id: "Gospel", label: "Gospel", icon: "🙏" },
-  { id: "Acoustique", label: "Acoustique", icon: "🎸" },
-  { id: "Reggae", label: "Reggae", icon: "🇯🇲" },
+  // Europe & Pop Française
+  { id: "Chanson Française", label: "Chanson FR", icon: "🥂" },
+  { id: "Afro Trap France", label: "Afro Trap", icon: "🏙️" },
+  { id: "Soul / Jazz France", label: "Soul Jazz", icon: "🎷" },
 ];
+
 
 type Track = {
   id: string;
