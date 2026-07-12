@@ -337,7 +337,7 @@ export async function createTrack(formData: TrackFormData) {
         }
       }
     } else {
-      lyricsText = (validData.prompt || "") + "\n[End]";
+      lyricsText = validData.prompt ? (validData.prompt + "\n[End]") : " ";
     }
 
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
