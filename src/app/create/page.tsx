@@ -40,6 +40,7 @@ const STYLE_CATEGORIES = [
       { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Nouchi flow authentique", icon: "🎤" },
       { id: "Zouglou", label: "Zouglou", desc: "Woyo, contes, ambiance", icon: "🥁" },
       { id: "Afrobeats", label: "Afrobeats", desc: "Naija groove Lagos", icon: "🇳🇬" },
+      { id: "Afrobeats Nigeria", label: "Afrobeats Nigeria", desc: "Lagos club, heavy bass", icon: "🇳🇬" },
       { id: "Mbalax", label: "Mbalax", desc: "Sabar, kora, Dakar", icon: "🇸🇳" },
     ]
   },
@@ -84,6 +85,7 @@ const STYLE_CATEGORIES = [
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
       { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
       { id: "Soul / Jazz France", label: "Soul Jazz", desc: "Club intime, soul, sax", icon: "🎷" },
+      { id: "R&B Français", label: "R&B Français", desc: "Pop R&B contemporaine", icon: "🎵" },
       { id: "Rap Français", label: "Rap Français", desc: "Flow FR, Boom Bap / Trap", icon: "🇫🇷" },
     ]
   },
@@ -92,6 +94,7 @@ const STYLE_CATEGORIES = [
     title: "Rap International 🇺🇸 🌐",
     styles: [
       { id: "Rap Américain", label: "Rap Américain", desc: "Flow US, Trap Atlanta / NY", icon: "🇺🇸" },
+      { id: "R&B Américain", label: "R&B Américain", desc: "US modern R&B, trap soul", icon: "🌟" },
     ]
   }
 ];
@@ -663,7 +666,7 @@ export default function NewCreatePage() {
                       onChange={(e) => updateForm("prompt", e.target.value)}
                       maxLength={5000}
                       placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, colle tes paroles ou donne quelques mots clés..."} 
-                      className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-none transition-colors ${
+                      className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-y transition-colors ${
                         isListening ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-50/50' : ''
                       }`}
                     />

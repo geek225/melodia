@@ -95,203 +95,56 @@ export async function createTrack(formData: TrackFormData) {
   
   try {
     const styleEnrichments: Record<string, string> = {
-      // ─── AFRIQUE DE L'OUEST ───────────────────────────────────────────────
-      "Coupé-Décalé": [
-        "Ivorian Coupé-Décalé, pure Abidjan club rhythm, 130-140bpm",
-        "heavy syncopated drum machine loop, deep driving bassline, bright repetitive electric guitar sebene",
-        "shakers, cowbell hits, energetic synthesizer stabs, electronic snare rolls",
-        "very strong authentic West African Ivorian accent, energetic hype man shouts (atalaku)",
-        "call-and-response vocal structure, raw party energy, nouchi slang cadence",
-        "extremely realistic human vocal performance, NO robotic artifacts"
-      ].join(", "),
-
-      "Rap Ivoire / Drill": [
-        "Ivorian Drill, Abidjan hip-hop, 140bpm sliding 808 bass, dark piano melody",
-        "staccato trap hi-hats, syncopated African percussion layer, hard hitting snare",
-        "very strong authentic West African Ivorian accent, gritty nouchi slang rap flow",
-        "aggressive chest voice delivery, razor-sharp street cadence",
-        "extremely realistic human rap vocal, NO robotic artifacts"
-      ].join(", "),
-
-      "Zouglou": [
-        "Traditional Ivorian Zouglou, 95-105bpm, authentic Abidjan woyo style",
-        "live acoustic conga, djembe, syncopated shaker rhythms, acoustic bass",
-        "very strong authentic West African Ivorian accent, soulful choir harmonies",
-        "emotional tenor lead vocal, call-and-response structure, storytelling cadence",
-        "extremely realistic human voice, organic acoustic production"
-      ].join(", "),
-
-      "Afrobeats": [
-        "Modern Nigerian Afrobeats, 100-110bpm Naija pop groove, smooth dancehall rhythm",
-        "log drum bass, syncopated clave, shekere, lush synthesizer chords, muted guitar",
-        "very strong authentic West African Nigerian accent, smooth melodic delivery",
-        "pidgin english and local dialect inflections, warm breathy vocal tone",
-        "extremely realistic human vocal, premium afro-pop studio mix"
-      ].join(", "),
-
-      "Mbalax": [
-        "Traditional Senegalese Mbalax, 120-135bpm, explosive Sabar drum rhythms",
-        "tama talking drum, bougarabou, repetitive xalam lute, bright brass section",
-        "very strong authentic West African Senegalese accent, powerful high-energy vocal",
-        "intense passionate phrasing, Wolof language inflections, guttural ornaments",
-        "extremely realistic human voice, vibrant live acoustic energy"
-      ].join(", "),
-
-      // ─── AFRIQUE CENTRALE ─────────────────────────────────────────────────
-      "Rumba Congolaise": [
-        "Classic Congolese Rumba, Kinshasa romantic music, 75-85bpm",
-        "complex fingerpicked acoustic guitar sebene, warm upright bass, gentle shaker",
-        "very strong authentic Central African Congolese accent, silky smooth tenor voice",
-        "Lingala language inflections, romantic melismatic phrasing, emotional warmth",
-        "extremely realistic human voice, intimate acoustic atmosphere"
-      ].join(", "),
-
-      "Afro-Congo": [
-        "Modern Afro-Congo pop, Ndombolo dance rhythm, 115-125bpm",
-        "heavy club kick drum, layered electronic bass, fast electric guitar riff",
-        "very strong authentic Central African Congolese accent, energetic animator shouts",
-        "confident chest projection, Lingala party energy, call-and-response",
-        "extremely realistic human voice, punchy dancefloor production"
-      ].join(", "),
-
-      // ─── AFRIQUE DU SUD & EST ─────────────────────────────────────────────
-      "Amapiano": [
-        "South African Amapiano deep house, 110-115bpm",
-        "heavy signature log drum bassline, dusty shaker loops, deep sub-kick",
-        "jazz piano chords, soulful synth melodies",
-        "very strong authentic South African accent, smooth soulful vocal delivery",
-        "Zulu language inflections, whispered ad-libs, relaxed cool vibe",
-        "extremely realistic human voice, premium deep house mix"
-      ].join(", "),
-
-      "Bongo Flava": [
-        "East African Bongo Flava, Tanzanian urban pop, 90-105bpm",
-        "Swahili rhythmic groove, light electronic drums, melodic guitar",
-        "very strong authentic East African Tanzanian accent, smooth R&B infused vocal",
-        "Swahili language inflections, sweet falsetto runs, laid-back delivery",
-        "extremely realistic human voice, warm radio-friendly production"
-      ].join(", "),
-
-      // ─── MAGHREB & DIASPORA ───────────────────────────────────────────────
-      "Raï / Pop Urbaine": [
-        "Modern Algerian Raï fused with urban pop, 95-108bpm",
-        "darbuka and bendir percussion, 808 sub bass, oriental synth arpeggio",
-        "very strong authentic North African Maghreb accent, passionate emotional delivery",
-        "Arabic melismatic vocal ornamentation, controlled rasp, powerful chorus",
-        "extremely realistic human voice, cinematic urban production"
-      ].join(", "),
-
-      "Kizomba": [
-        "Angolan Kizomba slow dance, 60-75bpm romantic groove",
-        "deep semba bass, soft programmed kick, cabasa rhythm, lush synthesizer pad",
-        "very strong authentic African Lusophone Angolan accent, intimate sensual vocal",
-        "Portuguese language inflections, soft breathy delivery, emotional warmth",
-        "extremely realistic human voice, deep romantic atmosphere"
-      ].join(", "),
-
-      // ─── EUROPE & POP INTERNATIONALE ──────────────────────────────────────
-      "Pop / R&B": [
-        "Contemporary Pop R&B, radio hit production, 90-105bpm",
-        "polished trap-influenced drums, warm synth bass, lush strings",
-        "very strong authentic European French accent, smooth professional vocal",
-        "clear Parisian diction, natural vibrato, powerful belted chorus",
-        "extremely realistic human voice, glossy premium mix"
-      ].join(", "),
-
-      "Gospel Américain": [
-        "American Gospel worship choir, RnB soul influence, 80-100bpm",
-        "live Hammond B3 organ, grand piano, tight gospel drum kit, deep bass",
-        "very strong authentic American English accent, African-American gospel soul vocal",
-        "powerful lead vocal, massive energetic four-part choir harmonies, incredible emotional belts",
-        "extremely realistic human voice, authentic black church acoustics, lively spirit"
-      ].join(", "),
-
-      "Gospel Africain": [
-        "African Gospel praise and worship, highly rhythmic, 110-120bpm",
-        "African percussion, talking drum, upbeat joyful guitar, clapping",
-        "very strong authentic African accent, energetic joyful delivery",
-        "call-and-response choir, vibrant dancing rhythm, spiritual celebration",
-        "extremely realistic human voice, warm dynamic production"
-      ].join(", "),
-
-      "Gospel Européen": [
-        "European Gospel, classic chorale, harmonious and melodic, 75-90bpm",
-        "acoustic piano, soft strings, classical choral arrangement",
-        "very strong authentic European French accent, clear and pristine vocal",
-        "structured harmonies, serene and solemn delivery, classical vibrato",
-        "extremely realistic human voice, cathedral acoustics, majestic"
-      ].join(", "),
-
-      // ─── NOUVEAUX STYLES EUROPÉENS ────────────────────────────────────────
-      "Chanson Française": [
-        "Classic French Chanson, Paris cabaret atmosphere, 80-95bpm",
-        "acoustic guitar, upright bass, light accordion, subtle jazz drums",
-        "very strong authentic European French accent, iconic Parisian diction",
-        "poetic phrasing, intimate close-mic delivery, melancholic warmth",
-        "extremely realistic human voice, timeless acoustic production"
-      ].join(", "),
-
-      "Afro Trap France": [
-        "French Afro Trap, Paris urban rap, 140bpm",
-        "808 sub-bass, rapid hi-hats, hard snare, afrobeat guitar sample",
-        "very strong authentic European French banlieue accent, confident rap flow",
-        "street-smart energy, melodic sung bridges, modern slang",
-        "extremely realistic human voice, hard-hitting urban mix"
-      ].join(", "),
-
-      "Soul / Jazz France": [
-        "French Soul Jazz, intimate club session, 75-90bpm",
-        "brushed jazz drums, walking upright bass, Rhodes piano, muted trumpet",
-        "very strong authentic European French accent, smooth husky soul vocal",
-        "intimate jazzy phrasing, breathy falsetto moments",
-        "extremely realistic human voice, warm live acoustic room tone"
-      ].join(", "),
-
-      // ─── EUROPE & RAP INTERNATIONAL ──────────────────────────────────────────────────────
-      "Rap Français": [
-        "Classic French hip-hop, Parisian urban style, 90bpm boom bap or 140bpm trap",
-        "sampled jazz break, 808 bass, crisp snare, cinematic strings",
-        "very strong authentic European French accent, razor-sharp rap flow",
-        "precise Parisian diction, introspective verses, explosive chorus",
-        "extremely realistic human rap voice, premium urban mix"
-      ].join(", "),
-
-      "Rap Américain": [
-        "American hip-hop rap, Atlanta trap or NY boom bap, 130-148bpm",
-        "heavy 808 sub-bass, rapid trap hi-hats, dark piano loop",
-        "very strong authentic American English accent, native US street cadence",
-        "aggressive delivery, ad-lib exclamations, rapid syllable stacking",
-        "extremely realistic human rap voice, premium trap mix"
-      ].join(", "),
+      "Acoustique / Guitare Voix": "acoustic guitar and voice, intimate, 80bpm",
+      "Piano / Voix": "piano and voice, emotional ballad, 70bpm",
+      "Musique du monde (World Music)": "world music fusion, ethnic instruments, 95bpm",
+      "Coupé-Décalé": "ivorian coupe decale, club rhythm, 135bpm, energetic",
+      "Rap Ivoire / Drill": "ivorian drill, 140bpm sliding 808 bass, dark piano",
+      "Zouglou": "ivorian zouglou, 100bpm, acoustic conga, choir harmonies",
+      "Afrobeats": "afrobeats, west african pop, upbeat, 105bpm, percussive",
+      "Afropop": "afropop, melodic afrobeat, radio hit, 100bpm, smooth",
+      "Highlife": "highlife, classic west african, guitar loops, lively",
+      "Afrobeats Nigeria": "nigerian afrobeats, lagos club, heavy bass, 110bpm",
+      "Mbalax": "senegalese mbalax, 130bpm, sabar drum, brass section",
+      "Rumba Congolaise": "congolese rumba, slow sweet guitar, 80bpm, romantic",
+      "Ndombolo": "ndombolo, fast congolese dance, animator shouts, 120bpm",
+      "Afro-Congo": "afro congo pop, ndombolo dance, 120bpm, punchy",
+      "Amapiano": "amapiano, south african deep house, log drum, 112bpm",
+      "Bongo Flava": "bongo flava, east african pop, swahili r&b, 95bpm",
+      "Raï / Pop Urbaine": "algerian rai, urban pop, darbuka rhythm, emotional",
+      "Kizomba": "kizomba, romantic semba dance, soft beat, 70bpm",
+      "Pop / R&B": "contemporary pop rnb, polished, radio hit, 95bpm",
+      "Gospel Américain": "black american gospel choir, hammond organ, powerful",
+      "Gospel Africain": "african gospel praise, energetic, joyful clapping",
+      "Gospel Européen": "european chorale gospel, solemn, classical piano",
+      "Chanson Française": "classic french chanson, acoustic, poetic, parisian",
+      "Afro Trap France": "french afro trap, 140bpm, 808 bass, urban rap",
+      "Soul / Jazz France": "french soul jazz, intimate club, rhodes piano",
+      "R&B Français": "french contemporary rnb, smooth slow jam, 85bpm",
+      "R&B Américain": "us modern rnb, trap soul, deep bass, 90bpm",
+      "Rap Français": "french hip-hop, boom bap, sharp flow, paris urban",
+      "Rap Américain": "us hip-hop trap, 140bpm, aggressive flow, 808s"
     };
-    
-    const voiceTag = validData.voice === "Homme"
-      ? "authentic warm human male vocal, natural chest resonance, real breath, slightly breathy low register"
-      : validData.voice === "Femme"
-      ? "authentic warm human female vocal, natural chest and head voice mix, real breath, emotional vibrato"
-      : "authentic human vocal, natural breathing, real human voice texture";
 
-    // Construire le style enrichi : si plusieurs styles, on fusionne leurs descriptions
+    const voiceTag = validData.voice === "Homme"
+      ? "male vocals"
+      : validData.voice === "Femme"
+      ? "female vocals"
+      : "human vocal";
+
     let enrichedStyle: string;
     const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
 
     if (selectedStyles.length > 1) {
-      // Fusion multi-styles : on prend les 3 premiers descripteurs de chaque style
-      const blendedParts = selectedStyles.map(s => {
-        const enriched = styleEnrichments[s] || s;
-        return enriched.split(", ").slice(0, 3).join(", ");
-      });
-      enrichedStyle = blendedParts.join(" | ")
-        + `, ${voiceTag}`
-        + ", extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
+      const blendedParts = selectedStyles.map(s => styleEnrichments[s] || s);
+      enrichedStyle = blendedParts.join(", ") + `, ${voiceTag}`;
     } else {
-      enrichedStyle = (styleEnrichments[selectedStyles[0]] || selectedStyles[0])
-        + `, ${voiceTag}`
-        + ", sung in French, extremely realistic human voice, NO robotic artifacts, NO synthetic sound, pure organic human performance";
+      enrichedStyle = (styleEnrichments[selectedStyles[0]] || selectedStyles[0]) + `, ${voiceTag}`;
     }
-    // Tronquer à 490 chars max pour respecter la limite Suno (500 chars)
-    if (enrichedStyle.length > 490) {
-      enrichedStyle = enrichedStyle.substring(0, 490);
+    
+    // Limite absolue à 120 caractères pour Suno V3.5
+    if (enrichedStyle.length > 120) {
+      enrichedStyle = enrichedStyle.substring(0, 117) + "...";
     }
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
