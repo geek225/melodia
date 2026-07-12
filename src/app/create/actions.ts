@@ -349,21 +349,24 @@ export async function createTrack(formData: TrackFormData) {
     let apiRes: Response;
 
     if (audioInputUrl) {
-      // ✅ RETOUR AU COMPORTEMENT "ADD-INSTRUMENTAL"
-      // C'est le SEUL moyen de garantir que la voix et les paroles de l'utilisateur sont conservées.
-      // Le mode "Cover" sans paroles écrites force l'IA à générer un instrumental.
+      // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
+      // Grâce à la reconnaissance vocale silencieuse du navigateur, 'validData.prompt' contient maintenant les paroles chantées !
+      // L'IA va donc utiliser la voix ET chanter les bonnes paroles.
       
       const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
 
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/add-instrumental", {
+      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          uploadUrl: audioInputUrl,       // L'enregistrement vocal brut
-          tags: enrichedStyle,            // Le style musical (Gospel, etc.)
+          uploadUrl: audioInputUrl,
+          customMode: true,
+          instrumental: false,
+          prompt: lyricsText || " ",
+          style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
           model: selectedModel,
           callBackUrl: "https://melodia.vercel.app/api/webhook"
@@ -395,11 +398,15 @@ export async function createTrack(formData: TrackFormData) {
         apiTaskId = result.data.taskId;
       } else {
         console.error("Erreur Format API Suno:", result);
+        // On rembourse l'utilisateur
+        await adminAuthClient.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
         return { success: false, error: `Erreur API Suno: ${result.msg || 'Format invalide'}` };
       }
     } else {
       const errorText = await apiRes.text();
       console.error("Erreur HTTP API Suno:", apiRes.status, errorText);
+      // On rembourse l'utilisateur
+      await adminAuthClient.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
       return { success: false, error: "Erreur de connexion à l'API Suno." };
     }
   } catch (err) {
