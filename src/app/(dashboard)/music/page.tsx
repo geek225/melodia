@@ -31,6 +31,15 @@ export default async function MyMusicPage() {
         </Link>
       </div>
 
+      <div className="bg-orange-50 border border-orange-200 text-orange-800 p-4 rounded-[20px] flex items-start gap-3">
+        <span className="text-xl">⚠️</span>
+        <div className="text-sm">
+          <strong>Optimisation du stockage :</strong> Pour garantir la rapidité de l&apos;application, les musiques générées sont stockées sur les serveurs de l&apos;IA. 
+          Elles risquent d&apos;être supprimées au bout de <strong>7 jours</strong>. 
+          Il est fortement recommandé de télécharger vos musiques dès qu&apos;elles sont prêtes en utilisant le bouton de téléchargement !
+        </div>
+      </div>
+
       {TRACKS.length === 0 ? (
         <div className="text-center py-20 bg-muted/30 rounded-[32px] border border-border border-dashed">
           <span className="text-6xl mb-4 block">🎵</span>

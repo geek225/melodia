@@ -16,7 +16,8 @@ import {
   LogOut,
   User,
   Menu,
-  X
+  X,
+  MessageSquare
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
@@ -47,6 +48,7 @@ const NAV_ITEMS = [
   { href: "/explore", label: "Explorer", icon: Compass },
   { href: "/credits", label: "Mélodies", icon: CreditCard },
   { href: "/stats", label: "Statistiques", icon: BarChart3 },
+  { href: "/support", label: "Support", icon: MessageSquare },
   { href: "/settings", label: "Paramètres", icon: Settings },
 ];
 
