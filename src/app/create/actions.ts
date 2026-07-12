@@ -296,63 +296,66 @@ export async function createTrack(formData: TrackFormData) {
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
     lyricsText = "";
+    const audioInputUrl = validData.promptAudioUrl || validData.voiceUrl;
 
-    // Si le texte dépasse 200 caractères ou contient des balises de structure, on considère que ce sont les paroles finales
-    if (validData.prompt && (validData.prompt.length > 200 || (validData.prompt.includes("[") && validData.prompt.includes("]")))) {
-      lyricsText = validData.prompt;
-    } else {
-      const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
-      const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
-      
-      const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
-    });
+    if (!audioInputUrl) {
+      // Si le texte dépasse 200 caractères ou contient des balises de structure, on considère que ce sont les paroles finales
+      if (validData.prompt && (validData.prompt.length > 200 || (validData.prompt.includes("[") && validData.prompt.includes("]")))) {
+        lyricsText = validData.prompt;
+      } else {
+        const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
+        const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
+        
+        const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+        });
 
-    if (lyricsRes && lyricsRes.ok) {
-      const result = await lyricsRes.json();
-      if (result.code === 200 && result.data?.taskId) {
-        const lyricsTaskId = result.data.taskId;
-        // Polling pour récupérer les paroles (max 10 secondes = 5 essais de 2s)
-        for (let i = 0; i < 5; i++) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          const checkRes = await fetch(`https://api.sunoapi.org/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
-            headers: { "Authorization": `Bearer ${apiKey}` },
-            cache: "no-store"
-          });
-          if (checkRes.ok) {
-            const checkData = await checkRes.json();
-            if (checkData.data?.status === "SUCCESS" && checkData.data?.response?.data?.[0]?.text) {
-              lyricsText = checkData.data.response.data[0].text;
-              break;
-            } else if (checkData.data?.status?.includes("FAILED") || checkData.data?.status === "SENSITIVE_WORD_ERROR") {
-              break;
+        if (lyricsRes && lyricsRes.ok) {
+          const result = await lyricsRes.json();
+          if (result.code === 200 && result.data?.taskId) {
+            const lyricsTaskId = result.data.taskId;
+            // Polling pour récupérer les paroles (max 10 secondes = 5 essais de 2s)
+            for (let i = 0; i < 5; i++) {
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              const checkRes = await fetch(`https://api.sunoapi.org/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
+                headers: { "Authorization": `Bearer ${apiKey}` },
+                cache: "no-store"
+              });
+              if (checkRes.ok) {
+                const checkData = await checkRes.json();
+                if (checkData.data?.status === "SUCCESS" && checkData.data?.response?.data?.[0]?.text) {
+                  lyricsText = checkData.data.response.data[0].text;
+                  break;
+                } else if (checkData.data?.status?.includes("FAILED") || checkData.data?.status === "SENSITIVE_WORD_ERROR") {
+                  break;
+                }
+              }
             }
           }
         }
       }
+    } else {
+      lyricsText = validData.prompt || "[Chant]";
     }
-    } // Fin du else
 
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
-    if (!lyricsText) {
+    if (!lyricsText && !audioInputUrl) {
       lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt || "Chant en français"}\n[Chorus]\nOn y va !\n[Outro]`;
     }
 
     // --- ETAPE 2 : GENERER LA MUSIQUE ---
-    const audioInputUrl = validData.promptAudioUrl || validData.voiceUrl;
-
     let apiRes: Response;
 
     if (audioInputUrl) {
-      // ✅ NOUVEAU COMPORTEMENT (ADD INSTRUMENTAL) : l'IA conserve LA VOIX EXACTE de l'utilisateur
-      // et ajoute l'instrumental (la musique) tout autour de cette voix sans essayer de générer de nouvelles paroles.
+      // ✅ RETOUR AU COMPORTEMENT "COVER" (Create from Audio)
+      // L'IA va utiliser la mélodie de la voix et l'embellir (l'arranger) avec les instruments.
       
       // V4_5 est limité à 60s d'upload. Si le vocal dépasse 59s, on bascule sur V3_5 (limite 8 minutes)
       const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
 
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/add-instrumental", {
+      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
@@ -360,9 +363,11 @@ export async function createTrack(formData: TrackFormData) {
         },
         body: JSON.stringify({
           uploadUrl: audioInputUrl,       // L'enregistrement vocal brut
+          customMode: true,               // Mode custom pour fournir le style
+          instrumental: false,
+          prompt: lyricsText || " ",      // Les paroles exactes tapées par l'user (ou un espace vide pour forcer l'IA à utiliser l'audio)
+          style: enrichedStyle,           // Le style musical (Gospel, etc.)
           title: validData.title || "Nouvelle Musique",
-          tags: enrichedStyle,            // Le style musical généré (Gospel, etc.)
-          negativeTags: "",               // Requis par l'API
           model: selectedModel,           // Bascule intelligente du modèle selon la durée
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
