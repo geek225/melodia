@@ -6,13 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
-import { Loader2, MessageSquare, Send } from "lucide-react";
+import { Loader2, MessageSquare, Send, ImagePlus, X } from "lucide-react";
+import Image from "next/image";
 
 export default function SupportPage() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const supabase = createClient();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("L'image ne doit pas dépasser 5MB.");
+        return;
+      }
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +42,36 @@ export default function SupportPage() {
         return;
       }
 
+      let image_url = null;
+
+      if (image) {
+        const fileExt = image.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('support_images')
+          .upload(filePath, image);
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          toast.error("Erreur lors de l'envoi de l'image.");
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('support_images')
+          .getPublicUrl(filePath);
+
+        image_url = publicUrlData.publicUrl;
+      }
+
       const { error } = await supabase.from("support_tickets").insert([
         {
           user_id: user.id,
           subject,
           message,
+          image_url,
         }
       ]);
 
@@ -40,6 +80,8 @@ export default function SupportPage() {
       toast.success("Votre message a bien été envoyé à notre équipe !");
       setSubject("");
       setMessage("");
+      setImage(null);
+      setImagePreview(null);
     } catch (error) {
       console.error("Erreur d'envoi du ticket:", error);
       toast.error("Une erreur est survenue lors de l'envoi de votre message.");
@@ -82,6 +124,44 @@ export default function SupportPage() {
               required
               className="min-h-37.5 bg-gray-50 rounded-xl resize-y"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Capture d&apos;écran (optionnelle)</label>
+            <div className="flex items-center gap-4">
+              <Input 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+                id="support-image-upload"
+              />
+              <label 
+                htmlFor="support-image-upload"
+                className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-xl cursor-pointer font-medium transition-colors text-sm border border-purple-100"
+              >
+                <ImagePlus className="w-4 h-4" />
+                Ajouter une image
+              </label>
+              
+              {imagePreview && (
+                <div className="relative group">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                    <Image src={imagePreview} alt="Aperçu" width={64} height={64} className="object-cover w-full h-full" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImage(null);
+                      setImagePreview(null);
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <Button 
