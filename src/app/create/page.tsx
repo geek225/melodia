@@ -705,7 +705,7 @@ export default function NewCreatePage() {
                         </div>
                         <h4 className="font-bold text-lg mb-1">Chante ta mélodie</h4>
                         <div className="text-gray-500 text-sm max-w-sm mb-6 leading-relaxed">
-                          Fredonne ou chante tes paroles (max 2min30). L&apos;IA utilisera cette mélodie pour composer la chanson.
+                          Fredonne ou chante tes paroles (max 1min30). L&apos;IA utilisera cette mélodie pour composer la chanson.
                         </div>
 
                         {/* Bloc de conseils — visible uniquement avant l’enregistrement */}
@@ -753,7 +753,7 @@ export default function NewCreatePage() {
                           </div>
                         ) : (
                           <Button onClick={startPromptRecording} className="bg-purple-600 hover:bg-purple-700 text-white rounded-full h-12 px-8">
-                            🎤 Commencer (2min30)
+                            🎤 Commencer (1min30)
                           </Button>
                         )}
                       </>
@@ -923,7 +923,7 @@ export default function NewCreatePage() {
                     {!voiceBlob ? (
                       <>
                         <div className="text-center mb-6">
-                          <h3 className="font-bold text-xl mb-2">Enregistre ta voix (2min30 max)</h3>
+                          <h3 className="font-bold text-xl mb-2">Enregistre ta voix (1min30 max)</h3>
                           <p className="text-gray-500 text-sm">Parle ou chante ton idée, l&apos;IA s&apos;occupe du reste.</p>
                         </div>
                         
