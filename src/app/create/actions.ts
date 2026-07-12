@@ -346,25 +346,23 @@ export async function createTrack(formData: TrackFormData) {
     let apiRes: Response;
 
     if (audioInputUrl) {
-      // ✅ NOUVEAU COMPORTEMENT : Upload + Cover (Create from Audio) — l'IA utilise la voix pour générer toute la musique
-      // Au lieu d'étendre à la fin, elle crée l'instrumental et la suite autour de la voix fournie.
+      // ✅ NOUVEAU COMPORTEMENT (ADD INSTRUMENTAL) : l'IA conserve LA VOIX EXACTE de l'utilisateur
+      // et ajoute l'instrumental (la musique) tout autour de cette voix sans essayer de générer de nouvelles paroles.
       
       // V4_5 est limité à 60s d'upload. Si le vocal dépasse 59s, on bascule sur V3_5 (limite 8 minutes)
       const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
 
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
+      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/add-instrumental", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          uploadUrl: audioInputUrl,       // URL publique de l'audio vocal uploadé
-          customMode: true,               // Mode custom (on fournit style + prompt) pour "cover"
-          instrumental: false,
-          prompt: lyricsText,             // Les paroles générées
-          style: enrichedStyle,
+          uploadUrl: audioInputUrl,       // L'enregistrement vocal brut
           title: validData.title || "Nouvelle Musique",
+          tags: enrichedStyle,            // Le style musical généré (Gospel, etc.)
+          negativeTags: "",               // Requis par l'API
           model: selectedModel,           // Bascule intelligente du modèle selon la durée
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
