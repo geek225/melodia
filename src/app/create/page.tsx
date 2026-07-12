@@ -185,8 +185,6 @@ export default function NewCreatePage() {
   const promptMediaRecorderRef = useRef<MediaRecorder | null>(null);
   const promptAudioChunksRef = useRef<Blob[]>([]);
   const promptRecordingTimerRef = useRef<NodeJS.Timeout | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const promptRecognitionRef = useRef<any>(null);
 
   const startPromptRecording = async () => {
     try {
@@ -217,28 +215,6 @@ export default function NewCreatePage() {
 
       mediaRecorder.start();
       
-      // Lancer la reconnaissance vocale silencieusement en arrière-plan
-      setFormData(prev => ({ ...prev, prompt: "" }));
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        promptRecognitionRef.current = recognition;
-        recognition.lang = "fr-FR";
-        recognition.continuous = true;
-        recognition.interimResults = false;
-        
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        recognition.onresult = (event: any) => {
-          const current = event.results[event.results.length - 1][0].transcript;
-          setFormData(prev => ({ 
-            ...prev, 
-            prompt: prev.prompt ? `${prev.prompt} ${current}` : current 
-          }));
-        };
-        recognition.start();
-      }
-
       setIsPromptRecording(true);
       promptRecordingTimerRef.current = setInterval(() => {
         setPromptRecordingTime((prev) => {
@@ -260,13 +236,6 @@ export default function NewCreatePage() {
       promptMediaRecorderRef.current.stop();
     }
     if (promptRecordingTimerRef.current) clearInterval(promptRecordingTimerRef.current);
-    if (promptRecognitionRef.current) {
-      try {
-        promptRecognitionRef.current.stop();
-      } catch (e) {
-        console.error(e);
-      }
-    }
     setIsPromptRecording(false);
   };
 
@@ -790,15 +759,65 @@ export default function NewCreatePage() {
                         )}
                       </>
                     ) : (
-                      <div className="w-full max-w-sm">
-                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-                          <Check className="w-8 h-8" />
+                      <div className="w-full w-full">
+                        <div className="max-w-sm mx-auto text-center mb-6">
+                          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mx-auto">
+                            <Check className="w-8 h-8" />
+                          </div>
+                          <h4 className="font-bold text-lg mb-2">Mélodie enregistrée !</h4>
+                          <audio src={promptAudioPreviewUrl!} controls className="w-full h-12 mb-4" />
+                          <Button variant="outline" onClick={() => { setPromptAudioBlob(null); setPromptAudioPreviewUrl(null); }} className="w-full rounded-full h-10 border-gray-200">
+                            Recommencer
+                          </Button>
                         </div>
-                        <h4 className="font-bold text-lg mb-2">Mélodie enregistrée !</h4>
-                        <audio src={promptAudioPreviewUrl!} controls className="w-full h-12 mb-4" />
-                        <Button variant="outline" onClick={() => { setPromptAudioBlob(null); setPromptAudioPreviewUrl(null); }} className="w-full rounded-full h-10 border-gray-200">
-                          Recommencer
-                        </Button>
+
+                        {/* Textarea for Lyrics after audio recording */}
+                        <div className="text-left mt-8 pt-8 border-t border-purple-100/50">
+                          <label className="text-sm font-bold flex items-center gap-2 mb-3">
+                            Maintenant, écris tes paroles (obligatoire) ✍️
+                          </label>
+                          <p className="text-xs text-gray-500 mb-4">
+                            L&apos;IA a besoin de connaître tes paroles pour les chanter correctement sur ta voix. Tu peux les taper ou utiliser le micro pour les dicter plus vite !
+                          </p>
+                          <div className="relative">
+                            <Textarea 
+                              value={formData.prompt}
+                              onChange={(e) => updateForm("prompt", e.target.value)}
+                              maxLength={5000}
+                              placeholder={isListening ? "Écoute en cours..." : "Tape tes paroles ici ou utilise le micro pour les dicter..."} 
+                              className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-y transition-colors ${
+                                isListening ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-50/50' : ''
+                              }`}
+                            />
+                            <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5 max-w-[60%]">
+                              {['[Intro]', '[Couplet]', '[Refrain]', '[Pont]', '[Solo]', '[End]'].map((tag) => (
+                                <button
+                                  key={tag}
+                                  type="button"
+                                  onClick={() => updateForm("prompt", formData.prompt ? `${formData.prompt}\n${tag}\n` : `${tag}\n`)}
+                                  className="text-[10px] md:text-xs bg-gray-100 hover:bg-purple-100 text-gray-600 hover:text-purple-600 px-2 py-1 rounded border border-gray-200 transition-colors"
+                                >
+                                  {tag}
+                                </button>
+                              ))}
+                            </div>
+                            <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 5000 ? 'text-red-500' : formData.prompt?.length > 4900 ? 'text-orange-400' : 'text-gray-400'}`}>
+                              {formData.prompt?.length || 0} / 5000
+                            </div>
+                            <button
+                              type="button"
+                              onClick={toggleListening}
+                              className={`absolute bottom-3 right-3 p-2.5 rounded-full flex items-center justify-center transition-all ${
+                                isListening 
+                                  ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30 animate-pulse' 
+                                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-purple-600'
+                              }`}
+                              title={isListening ? "Arrêter l'enregistrement" : "Parler"}
+                            >
+                              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
