@@ -12,14 +12,23 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, MessageSquare, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Search, MessageSquare, AlertCircle, CheckCircle2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function AdminSupportClient() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
   useEffect(() => {
     fetchTickets();
@@ -106,8 +115,13 @@ export default function AdminSupportClient() {
                     {new Date(ticket.created_at).toLocaleDateString('fr-FR')}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10">
-                      <MessageSquare className="w-4 h-4 mr-2" /> Répondre
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-primary hover:text-primary hover:bg-primary/10"
+                      onClick={() => setSelectedTicket(ticket)}
+                    >
+                      <MessageSquare className="w-4 h-4 mr-2" /> Lire le message
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -116,6 +130,51 @@ export default function AdminSupportClient() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={!!selectedTicket} onOpenChange={(open) => !open && setSelectedTicket(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Détails du ticket</DialogTitle>
+            <DialogDescription>
+              Ticket envoyé par {selectedTicket?.profiles?.email || "Inconnu"} le {selectedTicket && new Date(selectedTicket.created_at).toLocaleDateString('fr-FR')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <h4 className="text-sm font-semibold text-muted-foreground mb-1">Sujet</h4>
+              <p className="font-medium text-lg">{selectedTicket?.subject}</p>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-semibold text-muted-foreground mb-1">Message</h4>
+              <div className="bg-muted p-4 rounded-xl text-sm whitespace-pre-wrap">
+                {selectedTicket?.message}
+              </div>
+            </div>
+
+            {selectedTicket?.image_url && (
+              <div>
+                <h4 className="text-sm font-semibold text-muted-foreground mb-1">Capture d&apos;écran attachée</h4>
+                <a href={selectedTicket.image_url} target="_blank" rel="noopener noreferrer">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={selectedTicket.image_url} alt="Capture" className="w-full h-auto rounded-xl border border-border" />
+                </a>
+              </div>
+            )}
+
+            <div className="pt-4 border-t border-border flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setSelectedTicket(null)}>Fermer</Button>
+              <Button 
+                onClick={() => window.open(`mailto:${selectedTicket?.profiles?.email}?subject=RE: ${encodeURIComponent(selectedTicket?.subject)}`)}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                <Mail className="w-4 h-4 mr-2" /> Répondre par Email
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
