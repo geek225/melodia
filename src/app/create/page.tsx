@@ -185,6 +185,8 @@ export default function NewCreatePage() {
   const promptMediaRecorderRef = useRef<MediaRecorder | null>(null);
   const promptAudioChunksRef = useRef<Blob[]>([]);
   const promptRecordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const promptRecognitionRef = useRef<any>(null);
 
   const startPromptRecording = async () => {
     try {
@@ -214,6 +216,29 @@ export default function NewCreatePage() {
       };
 
       mediaRecorder.start();
+      
+      // Lancer la reconnaissance vocale silencieusement en arrière-plan
+      setFormData(prev => ({ ...prev, prompt: "" }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        promptRecognitionRef.current = recognition;
+        recognition.lang = "fr-FR";
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        recognition.onresult = (event: any) => {
+          const current = event.results[event.results.length - 1][0].transcript;
+          setFormData(prev => ({ 
+            ...prev, 
+            prompt: prev.prompt ? `${prev.prompt} ${current}` : current 
+          }));
+        };
+        recognition.start();
+      }
+
       setIsPromptRecording(true);
       promptRecordingTimerRef.current = setInterval(() => {
         setPromptRecordingTime((prev) => {
@@ -235,6 +260,13 @@ export default function NewCreatePage() {
       promptMediaRecorderRef.current.stop();
     }
     if (promptRecordingTimerRef.current) clearInterval(promptRecordingTimerRef.current);
+    if (promptRecognitionRef.current) {
+      try {
+        promptRecognitionRef.current.stop();
+      } catch (e) {
+        console.error(e);
+      }
+    }
     setIsPromptRecording(false);
   };
 
