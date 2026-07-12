@@ -80,7 +80,7 @@ export default function SupportPage() {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Expliquez-nous votre problème en détail..."
               required
-              className="min-h-[150px] bg-gray-50 rounded-xl resize-y"
+              className="min-h-37.5 bg-gray-50 rounded-xl resize-y"
             />
           </div>
 
