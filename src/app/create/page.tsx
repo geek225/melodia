@@ -759,7 +759,7 @@ export default function NewCreatePage() {
                         )}
                       </>
                     ) : (
-                      <div className="w-full w-full">
+                      <div className="w-full">
                         <div className="max-w-sm mx-auto text-center mb-6">
                           <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mx-auto">
                             <Check className="w-8 h-8" />
