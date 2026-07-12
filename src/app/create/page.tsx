@@ -155,9 +155,9 @@ export default function NewCreatePage() {
       setIsRecording(true);
       recordingTimerRef.current = setInterval(() => {
         setRecordingTime((prev) => {
-          if (prev >= 149) {
+          if (prev >= 89) {
              stopRecording();
-             return 150;
+             return 90;
           }
           return prev + 1;
         });
@@ -217,9 +217,9 @@ export default function NewCreatePage() {
       setIsPromptRecording(true);
       promptRecordingTimerRef.current = setInterval(() => {
         setPromptRecordingTime((prev) => {
-          if (prev >= 149) {
+          if (prev >= 89) {
              stopPromptRecording();
-             return 150;
+             return 90;
           }
           return prev + 1;
         });
@@ -742,10 +742,10 @@ export default function NewCreatePage() {
                                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                 Enregistrement...
                               </span>
-                              <span>{Math.floor(promptRecordingTime / 60)}:{(promptRecordingTime % 60).toString().padStart(2, '0')} / 2:30</span>
+                              <span>{Math.floor(promptRecordingTime / 60)}:{(promptRecordingTime % 60).toString().padStart(2, '0')} / 1:30</span>
                             </div>
                             <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                              <div className="bg-red-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(promptRecordingTime / 150) * 100}%` }}></div>
+                              <div className="bg-red-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(promptRecordingTime / 90) * 100}%` }}></div>
                             </div>
                             <Button onClick={stopPromptRecording} className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full h-12">
                               Arrêter l&apos;enregistrement
