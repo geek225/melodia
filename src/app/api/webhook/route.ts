@@ -61,11 +61,52 @@ export async function POST(request: Request) {
 
     if (status === 'SUCCESS' || status === 'TEXT_SUCCESS' || status === 'COMPLETE') {
       if (audioUrl) {
+        let finalAudioUrl = audioUrl;
+
+        // Téléchargement du fichier audio depuis Suno pour le stocker de manière permanente
+        try {
+          console.log(`⏳ Téléchargement de l'audio depuis: ${audioUrl}`);
+          const audioRes = await fetch(audioUrl);
+          if (audioRes.ok) {
+            const arrayBuffer = await audioRes.arrayBuffer();
+            const fileName = `track_${taskId}_${Date.now()}.mp3`;
+
+            // Vérification et création du bucket "tracks" s'il n'existe pas
+            const { data: buckets } = await adminClient.storage.listBuckets();
+            const tracksBucketExists = buckets?.some(b => b.name === 'tracks');
+            if (!tracksBucketExists) {
+              await adminClient.storage.createBucket('tracks', { public: true });
+            }
+
+            // Upload vers Supabase Storage
+            const { error: uploadError } = await adminClient.storage
+              .from('tracks')
+              .upload(fileName, arrayBuffer, {
+                contentType: 'audio/mpeg',
+                upsert: true
+              });
+
+            if (!uploadError) {
+              const { data: { publicUrl } } = adminClient.storage
+                .from('tracks')
+                .getPublicUrl(fileName);
+              finalAudioUrl = publicUrl;
+              console.log(`✅ Fichier audio sauvegardé de manière permanente: ${finalAudioUrl}`);
+            } else {
+              console.error("❌ Erreur lors de l'upload vers Supabase Storage:", uploadError);
+            }
+          } else {
+             console.error("❌ Erreur de téléchargement depuis l'URL Suno:", audioRes.statusText);
+          }
+        } catch (uploadErr) {
+          console.error("❌ Exception lors de la sauvegarde permanente de l'audio:", uploadErr);
+        }
+
         await adminClient
           .from('tracks')
           .update({
             status: 'completed',
-            audio_url: audioUrl,
+            audio_url: finalAudioUrl,
             ...(imageUrl && { cover_url: imageUrl }),
             ...(lyrics && { lyrics }),
           })

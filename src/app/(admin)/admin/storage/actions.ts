@@ -43,3 +43,41 @@ export async function getAdminStorageStats() {
     return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
+
+export async function cleanupOldStorage(daysToKeep = 7) {
+  try {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+
+    // 1. Trouver les fichiers dans le bucket "tracks" qui sont vieux
+    const { data: files, error: listError } = await adminAuthClient.storage.from('tracks').list('', { limit: 5000 });
+    
+    let deletedCount = 0;
+    if (!listError && files) {
+      const filesToDelete = files
+        .filter(f => f.name !== '.emptyFolderPlaceholder')
+        .filter(f => f.created_at && new Date(f.created_at) < cutoffDate)
+        .map(f => f.name);
+
+      if (filesToDelete.length > 0) {
+        // 2. Supprimer les fichiers
+        const { error: removeError } = await adminAuthClient.storage.from('tracks').remove(filesToDelete);
+        if (!removeError) {
+          deletedCount = filesToDelete.length;
+        }
+      }
+    }
+
+    // 3. Mettre à jour la base de données (mettre audio_url à null pour les anciens)
+    await adminAuthClient
+      .from('tracks')
+      .update({ audio_url: null })
+      .lt('created_at', cutoffDate.toISOString())
+      .not('audio_url', 'is', null);
+
+    return { success: true, count: deletedCount };
+  } catch (error: unknown) {
+    console.error("Error during storage cleanup:", error);
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
