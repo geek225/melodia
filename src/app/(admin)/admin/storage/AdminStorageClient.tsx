@@ -12,10 +12,13 @@ import {
 } from "@/components/ui/table";
 
 import { useEffect, useState } from "react";
-import { getAdminStorageStats } from "./actions";
+import { getAdminStorageStats, cleanupOldStorage } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export default function AdminStorageClient() {
   const [loading, setLoading] = useState(true);
+  const [cleaning, setCleaning] = useState(false);
   const [storageData, setStorageData] = useState([
     { type: 'Musiques (MP3)', bucket: 'tracks', size: '0 MB', sizeBytes: 0, files: 0, icon: Music, color: 'text-blue-500', bg: 'bg-blue-500/10' },
     { type: 'Covers (Images)', bucket: 'covers', size: '0 MB', sizeBytes: 0, files: 0, icon: ImageIcon, color: 'text-purple-500', bg: 'bg-purple-500/10' },
@@ -28,6 +31,20 @@ export default function AdminStorageClient() {
   useEffect(() => {
     fetchStorageStats();
   }, []);
+
+  const handleCleanup = async () => {
+    if (!confirm("Voulez-vous vraiment supprimer définitivement tous les sons (fichiers audio) générés il y a plus de 7 jours ?")) return;
+    
+    setCleaning(true);
+    const res = await cleanupOldStorage(7);
+    if (res.success) {
+      alert(`Nettoyage terminé ! ${res.count} fichiers supprimés avec succès.`);
+      await fetchStorageStats();
+    } else {
+      alert("Une erreur est survenue lors du nettoyage.");
+    }
+    setCleaning(false);
+  };
 
   const fetchStorageStats = async () => {
     setLoading(true);
@@ -77,8 +94,18 @@ export default function AdminStorageClient() {
       </div>
 
       <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-border/50">
+        <div className="p-6 border-b border-border/50 flex justify-between items-center">
           <h2 className="text-xl font-bold tracking-tight">Détails par Bucket Supabase</h2>
+          <Button 
+            variant="destructive" 
+            size="sm" 
+            onClick={handleCleanup} 
+            disabled={cleaning}
+            className="flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            {cleaning ? "Nettoyage..." : "Nettoyer l'espace (fichiers > 7 jours)"}
+          </Button>
         </div>
         <Table>
           <TableHeader>
