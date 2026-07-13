@@ -203,10 +203,13 @@ export async function createTrack(formData: TrackFormData) {
 
     if (audioInputUrl) {
       // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
-      // Grâce à la reconnaissance vocale silencieuse du navigateur, 'validData.prompt' contient maintenant les paroles chantées !
-      // L'IA va donc utiliser la voix ET chanter les bonnes paroles.
+      // On utilise la voix et on limite la durée.
       
-      const selectedModel = (validData.audioRecordingDuration && validData.audioRecordingDuration > 59) ? "V3_5" : "V4_5";
+      // On utilise V4 ou V5 car V4_5 va jusqu'à 8 minutes. V4 et V5 sont limités à 4 min max.
+      const selectedModel = "V5";
+      
+      // On force la fin rapide dans les paroles pour ne pas dépasser ~2m30
+      const finalPrompt = (lyricsText || " ") + "\n\n[Outro]\n[Fade Out]\n[End]";
 
       apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
         method: "POST",
@@ -218,10 +221,11 @@ export async function createTrack(formData: TrackFormData) {
           uploadUrl: audioInputUrl,
           customMode: true,
           instrumental: false,
-          prompt: lyricsText || " ",
+          prompt: finalPrompt,
           style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
           model: selectedModel,
+          audioWeight: 0.95, // Force la conservation de la voix d'origine (comme au studio)
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
       });
