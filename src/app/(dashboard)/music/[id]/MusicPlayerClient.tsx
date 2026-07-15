@@ -331,26 +331,33 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                     ref={fileInputRef} 
                     onChange={handleUploadCover} 
                   />
-              <Button 
-                onClick={() => fileInputRef.current?.click()} 
-                disabled={isUploading}
-                size="lg"
-                className="rounded-full bg-black/80 hover:bg-black text-white shadow-xl"
-              >
-                {isUploading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Upload className="w-5 h-5 mr-2" />}
-                {isUploading ? "Upload..." : "Changer la pochette"}
+                  <Button 
+                    onClick={() => fileInputRef.current?.click()} 
+                    disabled={isUploading}
+                    size="lg"
+                    className="rounded-full bg-black/80 hover:bg-black text-white shadow-xl"
+                  >
+                    {isUploading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Upload className="w-5 h-5 mr-2" />}
+                    {isUploading ? "Upload..." : "Changer la pochette"}
                   </Button>
-                  <p className="absolute bottom-6 text-sm font-semibold text-gray-900 bg-white/80 px-4 py-2 rounded-full shadow-md">
-                    Changement 100% Gratuit
-                  </p>
                 </div>
               )}
             </div>
 
             {!isPublic && (
-              <p className="text-sm text-gray-500 text-center font-medium px-4">
-                💡 Survolez la pochette pour uploader votre propre image et la sauvegarder gratuitement.
-              </p>
+              <div className="flex flex-col items-center gap-3 w-full px-4 mb-2">
+                <Button 
+                  onClick={() => fileInputRef.current?.click()} 
+                  disabled={isUploading}
+                  className="rounded-full w-full max-w-70 bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white shadow-lg h-12 text-base font-bold transition-transform hover:scale-105"
+                >
+                  {isUploading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Upload className="w-5 h-5 mr-2" />}
+                  {isUploading ? "Upload en cours..." : "Personnaliser la pochette"}
+                </Button>
+                <p className="text-xs text-gray-500 text-center font-medium">
+                  💡 Personnalisez votre musique avec votre propre pochette 100% gratuitement.
+                </p>
+              </div>
             )}
         
           {/* Contrôles Principaux */}

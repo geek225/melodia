@@ -58,6 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [credits, setCredits] = useState<number | null>(null);
   const [userInitial, setUserInitial] = useState("U");
   const [userName, setUserName] = useState("Utilisateur");
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userRole, setUserRole] = useState("user");
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -144,6 +145,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           if (profile.full_name) {
             setUserName(profile.full_name);
             setUserInitial(profile.full_name.charAt(0).toUpperCase());
+          }
+          if (profile.avatar_url) {
+            setUserAvatar(profile.avatar_url);
           }
 
           // Fetch server notifications
@@ -353,9 +357,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <DropdownMenuTrigger 
                 render={
                   <button id="profile-trigger" className="flex items-center gap-3 pl-4 border-l border-gray-200 cursor-pointer hover:opacity-80 transition-opacity outline-none">
-                    <div className="w-9 h-9 bg-purple-500/10 text-purple-600 border border-purple-500/20 rounded-full flex items-center justify-center overflow-hidden">
-                      <span className="text-sm font-bold">{userInitial}</span>
-                    </div>
+                    {userAvatar ? (
+                      <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200">
+                        <Image src={userAvatar} alt={userName} width={36} height={36} className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="w-9 h-9 bg-purple-500/10 text-purple-600 border border-purple-500/20 rounded-full flex items-center justify-center overflow-hidden">
+                        <span className="text-sm font-bold">{userInitial}</span>
+                      </div>
+                    )}
                     <span className="text-sm font-semibold hidden md:block text-gray-900">{userName}</span>
                   </button>
                 } 
@@ -424,9 +434,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* User info */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-white/5">
-          <div className="w-10 h-10 bg-purple-500/20 border border-purple-500/30 rounded-full flex items-center justify-center text-purple-400 font-bold">
-            {userInitial}
-          </div>
+          {userAvatar ? (
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+              <Image src={userAvatar} alt={userName} width={40} height={40} className="w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="w-10 h-10 bg-purple-500/20 border border-purple-500/30 rounded-full flex items-center justify-center text-purple-400 font-bold">
+              {userInitial}
+            </div>
+          )}
           <div>
             <p className="text-white text-sm font-semibold">{userName}</p>
             <p className="text-white/40 text-xs">Artiste Melodia</p>
