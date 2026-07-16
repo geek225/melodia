@@ -76,7 +76,7 @@ export default function AdminMusicClient() {
     if (!track.audio_url || track.audio_url.startsWith('task:')) return;
     try {
       toast.success("Téléchargement en cours...");
-      const res = await fetch(`/api/audio-proxy?url=${encodeURIComponent(track.audio_url)}`);
+      const res = await fetch(track.audio_url);
       const audioBlob = await res.blob();
       const url = window.URL.createObjectURL(audioBlob);
       const a = document.createElement("a");

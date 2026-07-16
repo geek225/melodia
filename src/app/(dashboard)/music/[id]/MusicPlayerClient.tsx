@@ -75,8 +75,8 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   const handleDownload = async () => {
     if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
     try {
-      // Fetch Audio via proxy to avoid CORS/403
-      const res = await fetch(`/api/audio-proxy?url=${encodeURIComponent(currentTrack.audio_url)}`);
+      // Fetch Audio directly since proxy gets 403 blocked by Suno
+      const res = await fetch(currentTrack.audio_url);
       const audioBuffer = await res.arrayBuffer();
       
       const writer = new ID3Writer(audioBuffer);
@@ -449,7 +449,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                 </div>
 
                 {currentTrack.audio_url && !currentTrack.audio_url.startsWith('task:') && (
-                  <audio ref={audioRef} src={`/api/audio-proxy?url=${encodeURIComponent(currentTrack.audio_url!)}`} onEnded={() => setIsPlaying(false)} className="hidden" />
+                  <audio ref={audioRef} src={currentTrack.audio_url} onEnded={() => setIsPlaying(false)} className="hidden" />
                 )}
 
                 <Button 
