@@ -71,12 +71,54 @@ export async function GET(request: Request) {
             null;
             
           if (finalAudioUrl) {
+            let permanentAudioUrl = finalAudioUrl;
+            const permanentCoverUrl = finalCoverUrl;
+
+            // Sauvegarde de l'audio sur Supabase Storage
+            try {
+              console.log(`⏳ Téléchargement de l'audio depuis: ${finalAudioUrl}`);
+              const audioRes = await fetch(finalAudioUrl);
+              if (audioRes.ok) {
+                const arrayBuffer = await audioRes.arrayBuffer();
+                const fileName = `track_${taskId}_${Date.now()}.mp3`;
+
+                // Vérification et création du bucket "tracks" s'il n'existe pas
+                const { data: buckets } = await adminClient.storage.listBuckets();
+                const tracksBucketExists = buckets?.some((b: { name: string }) => b.name === 'tracks');
+                if (!tracksBucketExists) {
+                  await adminClient.storage.createBucket('tracks', { public: true });
+                }
+
+                // Upload vers Supabase Storage
+                const { error: uploadError } = await adminClient.storage
+                  .from('tracks')
+                  .upload(fileName, arrayBuffer, {
+                    contentType: 'audio/mpeg',
+                    upsert: true
+                  });
+
+                if (!uploadError) {
+                  const { data: { publicUrl } } = adminClient.storage
+                    .from('tracks')
+                    .getPublicUrl(fileName);
+                  permanentAudioUrl = publicUrl;
+                  console.log(`✅ Fichier audio sauvegardé: ${permanentAudioUrl}`);
+                } else {
+                  console.error("❌ Erreur upload audio:", uploadError);
+                }
+              }
+            } catch (err) {
+              console.error("❌ Exception lors de la sauvegarde de l'audio:", err);
+            }
+
+            // (Optionnel) on pourrait aussi faire de même pour permanentCoverUrl si on le souhaite
+
             await adminClient
               .from('tracks')
               .update({
                 status: 'completed',
-                audio_url: finalAudioUrl,
-                cover_url: finalCoverUrl,
+                audio_url: permanentAudioUrl,
+                cover_url: permanentCoverUrl,
                 lyrics: finalLyrics
               })
               .eq('id', track.id);
@@ -84,8 +126,8 @@ export async function GET(request: Request) {
             return NextResponse.json({ 
               ...track, 
               status: 'completed', 
-              audio_url: finalAudioUrl, 
-              cover_url: finalCoverUrl, 
+              audio_url: permanentAudioUrl, 
+              cover_url: permanentCoverUrl, 
               lyrics: finalLyrics 
             });
           }

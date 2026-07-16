@@ -1,0 +1,14 @@
+                  
+                  
+┌────────────────┐
+│ 1 Code Finding │
+└────────────────┘
+                         
+    .vscode/settings.json
+   ❯❯❱ generic.secrets.security.detected-snyk-api-key.detected-snyk-api-key
+          ❰❰ Blocking ❱❱
+          Snyk API Key detected       
+          Details: https://sg.run/lxO9
+                                      
+            2┆ "snyk.advanced.organization": "53a5a40a-8e0c-4b61-a22b-d757d5e779ab",
+

@@ -30,8 +30,20 @@ function CreditsContent() {
     const result = await buyMelodies(melodies, price, packName);
     
     if (result.success && result.redirect_url) {
-      // Redirect user to Winipayer secure checkout
-      window.location.href = result.redirect_url;
+      try {
+        const parsed = new URL(result.redirect_url);
+        const isWinipayer = parsed.hostname === 'winipayer.com' || parsed.hostname.endsWith('.winipayer.com');
+        if (['http:', 'https:'].includes(parsed.protocol) && isWinipayer) {
+          // deepcode ignore OpenRedirect: URL is securely verified to belong to winipayer.com
+          // Redirect user to Winipayer secure checkout
+          window.location.href = result.redirect_url;
+        } else {
+          throw new Error("Invalid URL protocol or domain");
+        }
+      } catch (err) {
+        setLoadingPack(null);
+        setErrorMsg("URL de redirection invalide.");
+      }
     } else {
       setLoadingPack(null);
       setErrorMsg(`❌ Erreur : ${result.error || "Une erreur est survenue."}`);
@@ -56,7 +68,7 @@ function CreditsContent() {
       </div>
       
       {successMsg && (
-        <div className="bg-green-500/10 border border-green-500 text-green-700 dark:text-green-400 p-4 rounded-xl flex items-center justify-center gap-2 max-w-2xl mx-auto font-medium shadow-sm animate-in fade-in slide-in-from-top-4">
+        <div className="bg-green-500/10 border border-green-500 text-green-700 p-4 rounded-xl flex items-center justify-center gap-2 max-w-2xl mx-auto font-medium shadow-sm animate-in fade-in slide-in-from-top-4">
           <CheckCircle2 className="w-5 h-5" />
           {successMsg}
         </div>

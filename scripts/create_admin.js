@@ -21,15 +21,21 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 })
 
 async function createAdmin() {
-  const email = 'admin@melodia.ai'
-  const password = 'password123'
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPwd = process.env.ADMIN_PASSWORD
 
-  console.log(`Creating user: ${email}...`)
+  if (!adminEmail || !adminPwd) {
+    console.error("Missing ADMIN_EMAIL or ADMIN_PASSWORD in .env.local")
+    process.exit(1)
+  }
+
+  console.log(`Creating user: ${adminEmail}...`)
   
   // Create user using Admin API to bypass email confirmation
   const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-    email: email,
-    password: password,
+    email: adminEmail,
+    // deepcode ignore HardcodedCredential: Password is read securely from environment variables
+    password: adminPwd,
     email_confirm: true,
     user_metadata: {
       full_name: 'Super Admin',
@@ -61,8 +67,8 @@ async function createAdmin() {
   }
 
   console.log("Success! Admin user created.")
-  console.log(`Email: ${email}`)
-  console.log(`Password: ${password}`)
+  console.log(`Email: ${adminEmail}`)
+  console.log(`Password: ${adminPwd}`)
 }
 
 createAdmin()

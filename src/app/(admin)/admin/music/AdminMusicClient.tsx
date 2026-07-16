@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Search, Play, Pause, AlertCircle, Star } from "lucide-react";
+import { Search, Play, Pause, AlertCircle, Star, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -72,6 +72,24 @@ export default function AdminMusicClient() {
     }
   };
 
+  const handleDownload = async (track: { audio_url?: string; title?: string }) => {
+    if (!track.audio_url || track.audio_url.startsWith('task:')) return;
+    try {
+      toast.success("Téléchargement en cours...");
+      const res = await fetch(`/api/audio-proxy?url=${encodeURIComponent(track.audio_url)}`);
+      const audioBlob = await res.blob();
+      const url = window.URL.createObjectURL(audioBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${track.title || 'Meliodia_Music'}.mp3`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Erreur de téléchargement", e);
+      toast.error("Erreur lors du téléchargement.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <audio ref={audioRef} onEnded={() => setPlayingTrackId(null)} className="hidden" />
@@ -98,6 +116,7 @@ export default function AdminMusicClient() {
               <TableHead>Date</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>À la une</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -111,7 +130,7 @@ export default function AdminMusicClient() {
               </TableRow>
             ) : filteredTracks.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
                   Aucune musique trouvée.
                 </TableCell>
               </TableRow>
@@ -151,14 +170,26 @@ export default function AdminMusicClient() {
                   </TableCell>
                   <TableCell>
                     {track.status === 'completed' && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleToggleFeatured(track.id, track.is_featured)}
-                        className={track.is_featured ? "text-yellow-500 hover:text-yellow-600" : "text-gray-300 hover:text-yellow-500"}
-                      >
-                        <Star className="w-5 h-5" fill={track.is_featured ? "currentColor" : "none"} />
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleToggleFeatured(track.id, track.is_featured)}
+                          className={track.is_featured ? "text-yellow-500 hover:text-yellow-600" : "text-gray-300 hover:text-yellow-500"}
+                          title="Mettre à la une"
+                        >
+                          <Star className="w-5 h-5" fill={track.is_featured ? "currentColor" : "none"} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDownload(track)}
+                          className="text-gray-400 hover:text-gray-900"
+                          title="Télécharger en MP3"
+                        >
+                          <Download className="w-5 h-5" />
+                        </Button>
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>

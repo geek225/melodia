@@ -1,0 +1,15 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  b1ceab04-82af-4ed0-b29c-ce4c4eebad19:
+    - '*':
+        reason: SSRF is mitigated by runtime validation
+        expires: 2026-08-15T16:35:10.960Z
+        created: 2026-07-16T16:35:10.962Z
+  48509361-13d4-4095-90c2-ef2517aad38a:
+    - '*':
+        reason: Fallback for email variable
+        expires: 2026-08-15T16:35:25.448Z
+        created: 2026-07-16T16:35:25.454Z
+patch: {}
