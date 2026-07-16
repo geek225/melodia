@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
     headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
     headers.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
     headers.delete('content-disposition'); // Ensure it plays inline and doesn't download
+    headers.delete('content-encoding'); // Prevent decoding errors on the client
+    headers.delete('content-length'); // Prevent mismatch if chunked or uncompressed
 
     return new NextResponse(response.body, {
       status: 200,
