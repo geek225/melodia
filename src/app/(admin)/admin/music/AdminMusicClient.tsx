@@ -80,10 +80,13 @@ export default function AdminMusicClient() {
       const audioBlob = await res.blob();
       const url = window.URL.createObjectURL(audioBlob);
       const a = document.createElement("a");
+      a.style.display = "none";
       a.href = url;
       a.download = `${track.title || 'Meliodia_Music'}.mp3`;
+      document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (e) {
       console.error("Erreur de téléchargement", e);
       toast.error("Erreur lors du téléchargement.");

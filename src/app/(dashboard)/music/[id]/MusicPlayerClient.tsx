@@ -105,10 +105,13 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       const url = window.URL.createObjectURL(taggedBlob);
       
       const a = document.createElement("a");
+      a.style.display = "none";
       a.href = url;
       a.download = `${currentTrack.title || 'Meliodia_Music'}.mp3`;
+      document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (e) {
       console.error("Erreur de téléchargement", e);
       alert("Erreur lors du téléchargement.");
