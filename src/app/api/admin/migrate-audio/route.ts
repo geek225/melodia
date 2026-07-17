@@ -3,12 +3,12 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-const adminClient = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-/**
+function getAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}/**
  * Vérifie si une URL audio pointe vers un CDN Suno/externe (non archivé sur Supabase).
  * Les URLs Supabase contiennent le domaine de stockage Supabase.
  */
@@ -48,6 +48,7 @@ async function archiveAudioToSupabase(audioUrl: string, trackId: string): Promis
 
     const buffer = await res.arrayBuffer();
 
+    const adminClient = getAdminClient();
     // S'assurer que le bucket existe
     const { data: buckets } = await adminClient.storage.listBuckets();
     if (!buckets?.some(b => b.name === 'tracks')) {
@@ -81,6 +82,7 @@ export async function GET(request: Request) {
   }
 
   // Récupérer toutes les pistes "completed" avec une URL externe
+  const adminClient = getAdminClient();
   const { data: tracks, error } = await adminClient
     .from('tracks')
     .select('id, audio_url, title')
@@ -133,6 +135,7 @@ export async function POST(request: Request) {
   const { trackId } = await request.json();
   if (!trackId) return NextResponse.json({ error: 'trackId required' }, { status: 400 });
 
+  const adminClient = getAdminClient();
   const { data: track } = await adminClient
     .from('tracks')
     .select('id, audio_url')

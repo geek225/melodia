@@ -2,23 +2,27 @@
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-const SUPABASE_STORAGE_HOST = (() => {
-  try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).hostname; } catch { return ''; }
-})();
+function getSupabaseStorageHost() {
+  try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost').hostname; } catch { return ''; }
+}
 
 function isExternalAudioUrl(url: string): boolean {
   if (!url || url.startsWith('task:')) return false;
-  if (SUPABASE_STORAGE_HOST && url.includes(SUPABASE_STORAGE_HOST)) return false;
+  const host = getSupabaseStorageHost();
+  if (host && url.includes(host)) return false;
   return url.startsWith('http://') || url.startsWith('https://');
 }
 
-const adminAuthClient = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getAdminAuthClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export async function getAdminTracks() {
   try {
+    const adminAuthClient = getAdminAuthClient();
     const { data, error } = await adminAuthClient
       .from('tracks')
       .select('*, profiles(email)')
@@ -35,6 +39,7 @@ export async function getAdminTracks() {
 
 export async function toggleFeaturedTrack(trackId: string, currentStatus: boolean) {
   try {
+    const adminAuthClient = getAdminAuthClient();
     if (!currentStatus) {
       // Trying to feature it. Check how many are currently featured.
       const { count, error: countError } = await adminAuthClient
@@ -67,6 +72,7 @@ export async function toggleFeaturedTrack(trackId: string, currentStatus: boolea
  */
 export async function getUnarchivedTracksCount() {
   try {
+    const adminAuthClient = getAdminAuthClient();
     const { data, error } = await adminAuthClient
       .from('tracks')
       .select('id, audio_url')
@@ -87,6 +93,7 @@ export async function getUnarchivedTracksCount() {
  */
 export async function archiveSingleTrack(trackId: string) {
   try {
+    const adminAuthClient = getAdminAuthClient();
     const { data: track, error } = await adminAuthClient
       .from('tracks')
       .select('id, audio_url')
@@ -137,6 +144,7 @@ export async function deleteOldUnarchivedTracks(daysOld = 7) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
+    const adminAuthClient = getAdminAuthClient();
     const { data: tracks, error } = await adminAuthClient
       .from('tracks')
       .select('id, audio_url, created_at')
