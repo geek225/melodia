@@ -387,7 +387,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <span>Mon Profil</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
-                  className="cursor-pointer text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-xl mt-1"
+                  className="cursor-pointer text-red-400 focus:bg-red-500/10 rounded-xl mt-1"
                   onClick={() => {
                     setShowLogoutAlert(true);
                   }}
