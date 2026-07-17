@@ -105,22 +105,11 @@ export default function AdminMusicClient() {
 
   const handleDownload = async (track: { audio_url?: string; title?: string }) => {
     if (!track.audio_url || track.audio_url.startsWith('task:')) return;
-    try {
-      toast.success("Téléchargement en cours...");
-      const res = await fetch(track.audio_url);
-      const audioBlob = await res.blob();
-      const url = window.URL.createObjectURL(audioBlob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.setAttribute("href", url);
-      a.setAttribute("download", `${track.title || 'Meliodia_Music'}.mp3`);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
-    } catch (e) {
-      toast.error("Erreur lors du téléchargement.");
-    }
+    toast.success("Téléchargement de la musique...");
+    const url = new URL('/api/download', window.location.origin);
+    url.searchParams.set('url', track.audio_url);
+    url.searchParams.set('filename', `${track.title || 'Meliodia_Music'}.mp3`);
+    window.location.assign(url.toString());
   };
 
   /** Archive une seule piste vers Supabase */

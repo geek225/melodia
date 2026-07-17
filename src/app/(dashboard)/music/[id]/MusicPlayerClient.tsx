@@ -75,8 +75,9 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   const handleDownload = async () => {
     if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
     try {
-      // Fetch Audio directly since proxy gets 403 blocked by Suno
-      const res = await fetch(currentTrack.audio_url);
+      // Fetch Audio via proxy to bypass CORS and get the actual buffer
+      const proxyUrl = `/api/download?url=${encodeURIComponent(currentTrack.audio_url)}`;
+      const res = await fetch(proxyUrl);
       const audioBuffer = await res.arrayBuffer();
       
       const writer = new ID3Writer(audioBuffer);
