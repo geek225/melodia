@@ -1,0 +1,47 @@
+Voici la liste de toutes les catégories et styles musicaux disponibles dans l'application Meliodia :
+
+1. Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳
+   - Coupé-Décalé (Atalaku, boucan, Abidjan)
+   - Rap Ivoire (Nouchi flow authentique)
+   - Zouglou (Woyo, contes, ambiance)
+   - Afrobeats (Naija groove Lagos)
+   - Afrobeats Nigeria (Lagos club, heavy bass)
+   - Mbalax (Sabar, kora, Dakar)
+
+2. Afrique Centrale 🇨🇩 🇨🇲
+   - Rumba Congolaise (Sebene, romantique, Kinshasa)
+   - Afro-Congo (Ndombolo, énergie, club)
+
+3. Afrique Sud & Est 🇿🇦 🇹🇿
+   - Amapiano (Log drum, deep house, Joburg)
+   - Bongo Flava (Swahili pop, Dar es Salaam)
+
+4. Maghreb & Diaspora 🌍
+   - Raï Moderne (Oran, darbuka, urbain)
+   - Kizomba (Sensuel, Luanda, semba)
+   - Pop R&B (Radio, mélodies émotives)
+
+5. Gospel & Louange 🙏
+   - Gospel Américain (Chœur, soul, église US)
+   - Gospel Africain (Rythmé, percussions, danse)
+   - Gospel Européen (Classique, harmonieux, FR)
+
+6. Europe & Pop Française 🇫🇷 🎶
+   - Chanson Française (Cabaret, Paris, poétique)
+   - Afro Trap France (Banlieue, afro, urban)
+   - Soul Jazz (Club intime, soul, sax)
+   - R&B Français (Pop R&B contemporaine)
+   - Rap Français (Flow FR, Boom Bap / Trap)
+
+7. Rap International 🇺🇸 🌐
+   - Rap Américain (Flow US, Trap Atlanta / NY)
+   - R&B Américain (US modern R&B, trap soul)
+
+---
+*Informations complémentaires :*
+Raisons de création disponibles dans l'application :
+- Offrir un cadeau unique (Crée une chanson personnalisée pour un être cher)
+- Faire une surprise (Fais plaisir avec une chanson qui marque les esprits)
+- Exprimer mes sentiments (Mets tes émotions en mots et en musique)
+- Juste pour le fun (Crée quelque chose de cool, original et amusant)
+- Je veux découvrir (Laisse l'IA t'inspirer et t'aider à créer ta musique)

@@ -5,6 +5,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { ratelimit } from '@/lib/rate-limit'
+import { buildEnrichedStyle, buildEnrichedLyricsPrompt } from '@/lib/music-knowledge'
 
 import { z } from 'zod'
 
@@ -94,58 +95,16 @@ export async function createTrack(formData: TrackFormData) {
   let lyricsText = "";
   
   try {
-    const styleEnrichments: Record<string, string> = {
-      "Acoustique / Guitare Voix": "acoustic guitar and voice, intimate, 80bpm",
-      "Piano / Voix": "piano and voice, emotional ballad, 70bpm",
-      "Musique du monde (World Music)": "world music fusion, ethnic instruments, 95bpm",
-      "Coupé-Décalé": "ivorian coupe decale, club rhythm, 135bpm, energetic",
-      "Rap Ivoire / Drill": "ivorian drill, 140bpm sliding 808 bass, dark piano",
-      "Zouglou": "ivorian zouglou, 100bpm, acoustic conga, choir harmonies",
-      "Afrobeats": "afrobeats, west african pop, upbeat, 105bpm, percussive",
-      "Afropop": "afropop, melodic afrobeat, radio hit, 100bpm, smooth",
-      "Highlife": "highlife, classic west african, guitar loops, lively",
-      "Afrobeats Nigeria": "nigerian afrobeats, lagos club, heavy bass, 110bpm",
-      "Mbalax": "senegalese mbalax, 130bpm, sabar drum, brass section",
-      "Rumba Congolaise": "congolese rumba, slow sweet guitar, 80bpm, romantic",
-      "Ndombolo": "ndombolo, fast congolese dance, animator shouts, 120bpm",
-      "Afro-Congo": "afro congo pop, ndombolo dance, 120bpm, punchy",
-      "Amapiano": "amapiano, south african deep house, log drum, 112bpm",
-      "Bongo Flava": "bongo flava, east african pop, swahili r&b, 95bpm",
-      "Raï / Pop Urbaine": "algerian rai, urban pop, darbuka rhythm, emotional",
-      "Kizomba": "kizomba, romantic semba dance, soft beat, 70bpm",
-      "Pop / R&B": "contemporary pop rnb, polished, radio hit, 95bpm",
-      "Gospel Américain": "black american gospel choir, hammond organ, powerful",
-      "Gospel Africain": "african gospel praise, energetic, joyful clapping",
-      "Gospel Européen": "european chorale gospel, solemn, classical piano",
-      "Chanson Française": "classic french chanson, acoustic, poetic, parisian",
-      "Afro Trap France": "french afro trap, 140bpm, 808 bass, urban rap",
-      "Soul / Jazz France": "french soul jazz, intimate club, rhodes piano",
-      "R&B Français": "french contemporary rnb, smooth slow jam, 85bpm",
-      "R&B Américain": "us modern rnb, trap soul, deep bass, 90bpm",
-      "Rap Français": "french hip-hop, boom bap, sharp flow, paris urban",
-      "Rap Américain": "us hip-hop trap, 140bpm, aggressive flow, 808s"
-    };
-
     const voiceTag = validData.voice === "Homme"
       ? "male vocals"
       : validData.voice === "Femme"
       ? "female vocals"
       : "human vocal";
 
-    let enrichedStyle: string;
     const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
 
-    if (selectedStyles.length > 1) {
-      const blendedParts = selectedStyles.map(s => styleEnrichments[s] || s);
-      enrichedStyle = blendedParts.join(", ") + `, ${voiceTag}`;
-    } else {
-      enrichedStyle = (styleEnrichments[selectedStyles[0]] || selectedStyles[0]) + `, ${voiceTag}`;
-    }
-    
-    // Limite absolue à 120 caractères pour Suno V3.5
-    if (enrichedStyle.length > 120) {
-      enrichedStyle = enrichedStyle.substring(0, 117) + "...";
-    }
+    // Utiliser la knowledge base pour construire un style enrichi et précis
+    const enrichedStyle = buildEnrichedStyle(selectedStyles, voiceTag);
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
     lyricsText = "";
@@ -157,7 +116,7 @@ export async function createTrack(formData: TrackFormData) {
         lyricsText = validData.prompt;
       } else {
         const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
-        const lyricsPrompt = `Chanson en français. Sujet : ${lyricsSubject}. Format court avec intro, couplet, refrain, fin nette.`;
+        const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject);
         
         const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
           method: "POST",

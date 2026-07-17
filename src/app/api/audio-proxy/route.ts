@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
       headers,
     });
   } catch (error) {
-    console.error('Audio proxy error:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

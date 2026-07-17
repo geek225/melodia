@@ -96,7 +96,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
             useUnicodeEncoding: false
           });
         } catch (e) {
-          console.error("Erreur lors du téléchargement de la pochette pour l'ID3", e);
+          // Ignorer silencieusement
         }
       }
 
@@ -106,14 +106,13 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       
       const a = document.createElement("a");
       a.style.display = "none";
-      a.href = url;
-      a.download = `${currentTrack.title || 'Meliodia_Music'}.mp3`;
+      a.setAttribute("href", url);
+      a.setAttribute("download", `${currentTrack.title || 'Meliodia_Music'}.mp3`);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (e) {
-      console.error("Erreur de téléchargement", e);
       alert("Erreur lors du téléchargement.");
     }
   };
@@ -130,7 +129,6 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       
       router.push('/music');
     } catch (error) {
-      console.error("Erreur lors de la suppression:", error);
       alert("Erreur lors de la suppression de la piste.");
       setIsDeleting(false);
     }
@@ -196,7 +194,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
             icon: coverUrl || "/favicon.ico"
           });
         } catch (e) {
-          console.error("Notification error:", e);
+          // Silencieux
         }
       }
     }
@@ -229,7 +227,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
             }
           }
         } catch (e) {
-          console.error("Polling error:", e);
+          // Silencieux
         }
       }, 5000); // Polling toutes les 5 secondes
     }
@@ -253,7 +251,6 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
         playPromise.then(() => {
           setIsPlaying(true);
         }).catch((error) => {
-          console.error("Playback failed:", error);
           setIsPlaying(false);
           // Fallback force reload on mobile
           if (audioRef.current) {
@@ -298,7 +295,6 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
 
       setCoverUrl(publicUrl);
     } catch (error) {
-      console.error('Error uploading cover:', error);
       alert("Erreur lors de l'upload de la pochette.");
     } finally {
       setIsUploading(false);

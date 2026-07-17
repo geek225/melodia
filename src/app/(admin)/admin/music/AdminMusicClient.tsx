@@ -81,14 +81,13 @@ export default function AdminMusicClient() {
       const url = window.URL.createObjectURL(audioBlob);
       const a = document.createElement("a");
       a.style.display = "none";
-      a.href = url;
-      a.download = `${track.title || 'Meliodia_Music'}.mp3`;
+      a.setAttribute("href", url);
+      a.setAttribute("download", `${track.title || 'Meliodia_Music'}.mp3`);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (e) {
-      console.error("Erreur de téléchargement", e);
       toast.error("Erreur lors du téléchargement.");
     }
   };

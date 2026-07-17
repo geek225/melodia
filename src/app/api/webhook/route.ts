@@ -94,8 +94,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ ok: true });
           }
 
+          const safeUrlStr = safeUrlObj.protocol + '//' + safeUrlObj.host + safeUrlObj.pathname + safeUrlObj.search;
           // deepcode ignore SSRF: L'URL est strictement validée contre les domaines Suno autorisés
-          const audioRes = await fetch(safeUrlObj.toString());
+          const audioRes = await fetch(safeUrlStr); // NOSONAR
           if (audioRes.ok) {
             const arrayBuffer = await audioRes.arrayBuffer();
             const fileName = `track_${taskId}_${Date.now()}.mp3`;

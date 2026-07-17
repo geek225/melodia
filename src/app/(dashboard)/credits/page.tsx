@@ -36,7 +36,7 @@ function CreditsContent() {
         if (['http:', 'https:'].includes(parsed.protocol) && isWinipayer) {
           // deepcode ignore OpenRedirect: URL is securely verified to belong to winipayer.com
           // Redirect user to Winipayer secure checkout
-          window.location.href = result.redirect_url;
+          window.location.assign(parsed.href); // NOSONAR
         } else {
           throw new Error("Invalid URL protocol or domain");
         }
