@@ -23,6 +23,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import SidebarPlayer from "@/components/SidebarPlayer";
+import ExpiryWarningBanner from "@/components/ExpiryWarningBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -402,6 +403,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Page Content */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
+            <ExpiryWarningBanner />
             {children}
           </div>
         </main>
