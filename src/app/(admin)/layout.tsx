@@ -21,7 +21,8 @@ import {
   Activity,
   LogOut,
   Menu,
-  Bell
+  Bell,
+  ArchiveRestore
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,6 +54,7 @@ const ADMIN_LINKS = [
   { name: "Marketing", href: "/admin/marketing", icon: Megaphone },
   { name: "Notifications", href: "/admin/notifications", icon: Bell },
   { name: "Avis Clients", href: "/admin/reviews", icon: Star },
+  { name: "Archives", href: "/admin/archives", icon: ArchiveRestore },
   { name: "Stockage", href: "/admin/storage", icon: HardDrive },
   { name: "Journaux (Logs)", href: "/admin/logs", icon: TerminalSquare },
   { name: "Support", href: "/admin/support", icon: LifeBuoy },

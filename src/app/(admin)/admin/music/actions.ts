@@ -108,10 +108,18 @@ export async function archiveSingleTrack(trackId: string) {
     const parsed = new URL(track.audio_url);
     const safeUrl = `${parsed.protocol}//${parsed.host}${parsed.pathname}${parsed.search}`;
     // deepcode ignore SSRF: URL validated
-    const res = await fetch(safeUrl); // NOSONAR
+    const res = await fetch(safeUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5',
+      }
+    }); // NOSONAR
     if (!res.ok) return { success: false, error: 'URL expired or unreachable' };
 
     const buffer = await res.arrayBuffer();
+    if (buffer.byteLength === 0) {
+      return { success: false, error: 'Suno a retourné un fichier vide (0 octet). URL expirée ou bloquée.' };
+    }
 
     // S'assurer que le bucket existe
     const { data: buckets } = await adminAuthClient.storage.listBuckets();
