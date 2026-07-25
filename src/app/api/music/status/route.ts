@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { getMusicApiConfig } from '@/lib/music-provider';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -27,10 +28,10 @@ export async function GET(request: Request) {
 
     if (track.status === 'processing' && track.audio_url?.startsWith('task:')) {
       const taskId = track.audio_url.replace('task:', '');
-      const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
+      const { baseUrl, apiKey } = getMusicApiConfig();
       
-      // 1. Vérifier le statut de la génération Suno
-      const resStatus = await fetch(`https://api.sunoapi.org/api/v1/generate/record-info?taskId=${taskId}`, {
+      // 1. Vérifier le statut de la génération via l'API (KIE.AI ou SunoAPI)
+      const resStatus = await fetch(`${baseUrl}/api/v1/generate/record-info?taskId=${taskId}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${apiKey}` },
         cache: "no-store"

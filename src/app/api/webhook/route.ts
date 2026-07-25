@@ -76,12 +76,13 @@ export async function POST(request: Request) {
                const hostname = parsedUrl.hostname.toLowerCase();
                const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./) || hostname === '::1';
                
-               // Valider strictement les domaines Suno (évite les attaques par préfixe comme evilsuno.com)
-               const isSunoDomain = 
+               // Valider strictement les domaines autorisés (Suno & KIE.AI)
+               const isAllowedDomain = 
                  hostname === 'suno.com' || hostname.endsWith('.suno.com') || 
-                 hostname === 'suno.ai' || hostname.endsWith('.suno.ai');
+                 hostname === 'suno.ai' || hostname.endsWith('.suno.ai') ||
+                 hostname === 'kie.ai' || hostname.endsWith('.kie.ai');
 
-               if (!isLocalhost && isSunoDomain) {
+               if (!isLocalhost && isAllowedDomain) {
                    safeUrlObj = parsedUrl;
                }
             }

@@ -6,6 +6,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { ratelimit } from '@/lib/rate-limit'
 import { buildEnrichedStyle, buildEnrichedLyricsPrompt } from '@/lib/music-knowledge'
+import { getMusicApiConfig } from '@/lib/music-provider'
 
 import { z } from 'zod'
 
@@ -88,8 +89,8 @@ export async function createTrack(formData: TrackFormData) {
     return { success: false, error: 'Erreur lors de la déduction des Mélodies' }
   }
 
-  // 3. Appel de l'API Suno
-  const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
+  // 3. Appel de l'API de Génération Musicale (KIE.AI ou SunoAPI)
+  const { baseUrl, apiKey } = getMusicApiConfig();
   
   let apiTaskId = null;
   let lyricsText = "";
@@ -118,7 +119,7 @@ export async function createTrack(formData: TrackFormData) {
         const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
         const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject);
         
-        const lyricsRes = await fetch("https://api.sunoapi.org/api/v1/lyrics", {
+        const lyricsRes = await fetch(`${baseUrl}/api/v1/lyrics`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
@@ -131,7 +132,7 @@ export async function createTrack(formData: TrackFormData) {
             // Polling pour récupérer les paroles (max 10 secondes = 5 essais de 2s)
             for (let i = 0; i < 5; i++) {
               await new Promise(resolve => setTimeout(resolve, 2000));
-              const checkRes = await fetch(`https://api.sunoapi.org/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
+              const checkRes = await fetch(`${baseUrl}/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
                 headers: { "Authorization": `Bearer ${apiKey}` },
                 cache: "no-store"
               });
@@ -162,15 +163,10 @@ export async function createTrack(formData: TrackFormData) {
 
     if (audioInputUrl) {
       // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
-      // On utilise la voix et on limite la durée.
-      
-      // On utilise V4 ou V5 car V4_5 va jusqu'à 8 minutes. V4 et V5 sont limités à 4 min max.
       const selectedModel = "V5";
-      
-      // On force la fin rapide dans les paroles pour ne pas dépasser ~2m30
       const finalPrompt = (lyricsText || " ") + "\n\n[Outro]\n[Fade Out]\n[End]";
 
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate/upload-cover", {
+      apiRes = await fetch(`${baseUrl}/api/v1/generate/upload-cover`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
@@ -184,13 +180,13 @@ export async function createTrack(formData: TrackFormData) {
           style: enrichedStyle,
           title: validData.title || "Nouvelle Musique",
           model: selectedModel,
-          audioWeight: 0.95, // Force la conservation de la voix d'origine (comme au studio)
+          audioWeight: 0.95,
           callBackUrl: "https://melodia.vercel.app/api/webhook"
         })
       });
     } else {
       // Génération normale sans audio de référence
-      apiRes = await fetch("https://api.sunoapi.org/api/v1/generate", {
+      apiRes = await fetch(`${baseUrl}/api/v1/generate`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
