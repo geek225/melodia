@@ -9,7 +9,7 @@ et ajoutez les variables ci-dessous :
    Valeur: kie
 
 2. KIE_API_KEY
-   Valeur: feaa5c1517f0105bb7f8af9bfb27dfb18f93821928bc7181b5a264a897e8d245
+   Valeur: 89e5a9b71427e4d811622834cbd293d7
 
 3. KIE_HMAC_KEY
    Valeur: feaa5c1517f0105bb7f8af9bfb27dfb18f93821928bc7181b5a264a897e8d245
