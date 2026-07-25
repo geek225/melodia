@@ -917,7 +917,7 @@ export default function NewCreatePage() {
               <div className="text-center mb-6 md:mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Choisis la <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">voix</span> 🎤</h2>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
                 <div 
                   onClick={() => {
                     if (step2InputType !== 'audio') updateForm('voice', 'Homme')
@@ -927,7 +927,7 @@ export default function NewCreatePage() {
                     ${formData.voice === 'Homme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
                   <div className="text-4xl mb-3">👨🏽‍🎤</div>
-                  <h3 className="font-bold text-lg">Homme</h3>
+                  <h3 className="font-bold text-base md:text-lg">Homme</h3>
                 </div>
                 <div 
                   onClick={() => {
@@ -938,7 +938,19 @@ export default function NewCreatePage() {
                     ${formData.voice === 'Femme' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
                   <div className="text-4xl mb-3">👩🏽‍🎤</div>
-                  <h3 className="font-bold text-lg">Femme</h3>
+                  <h3 className="font-bold text-base md:text-lg">Femme</h3>
+                </div>
+                <div 
+                  onClick={() => {
+                    if (step2InputType !== 'audio') updateForm('voice', 'Duo')
+                  }}
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center relative
+                    ${step2InputType === 'audio' ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'cursor-pointer hover:shadow-lg'}
+                    ${formData.voice === 'Duo' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
+                >
+                  <div className="text-4xl mb-3">👩‍🎤👨‍🎤</div>
+                  <h3 className="font-bold text-base md:text-lg">Duo</h3>
+                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">Homme & Femme</p>
                 </div>
                 <div 
                   onClick={() => {
@@ -946,7 +958,7 @@ export default function NewCreatePage() {
                       updateForm('voice', 'Clonage');
                     }
                   }}
-                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center col-span-2 md:col-span-1 relative
+                  className={`bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 transition-all flex flex-col items-center text-center relative
                     ${step2InputType === 'audio' ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'cursor-pointer hover:shadow-lg'}
                     ${formData.voice === 'Clonage' ? 'border-purple-500 shadow-xl shadow-purple-500/10' : 'border-transparent shadow-sm'}`}
                 >
@@ -954,9 +966,9 @@ export default function NewCreatePage() {
                     15 Mélodies
                   </div>
                   <div className="text-4xl mb-3">🎙️</div>
-                  <h3 className="font-bold text-lg">Ma Voix</h3>
+                  <h3 className="font-bold text-base md:text-lg">Ma Voix</h3>
                   <p className="text-[10px] text-gray-500 mt-1 leading-tight">
-                    {step2InputType === 'audio' ? 'Désactivé (Chansonnette utilisée)' : 'Clonage vocal'}
+                    {step2InputType === 'audio' ? 'Désactivé' : 'Clonage vocal'}
                   </p>
                 </div>
               </div>

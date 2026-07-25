@@ -23,21 +23,18 @@ const afriqueOuest: MusicStyleKnowledge[] = [
   {
     name: "Coupé-Décalé",
     country: "Côte d'Ivoire",
-    bpm: "124-128",
+    bpm: "125-130",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate an authentic Coupé-Décalé track.
-Country: Côte d'Ivoire
-Tempo: 124-128 BPM
-Languages: Français,Nouchi
+    systemPrompt: `Generate an explosive authentic Coupé-Décalé track.
+Country: Côte d'Ivoire (Abidjan)
+Tempo: 125-130 BPM
+Languages: Français, Nouchi
 Style guide:
-- Atalaku, dance, club, bass puissante.
-- Commercial quality
-- Rich arrangement
-- Emotional authenticity
-- Modern mix & mastering
-- Strong hook
-- Respect the cultural identity of the genre.`,
-    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
+- Atalaku hypeman vocal shouts, roukaskas drums, heavy percussive bassline, boucan ambiance.
+- Energetic dancehall polyrhythms, brass stabs, Abidjan club groove.
+- Commercial quality, rich arrangement, explosive drop, strong infectious hook.
+- Respect the cultural identity of Coupé-Décalé.`,
+    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals, slow tempo",
   },
   {
     name: "Rap Ivoire",
@@ -577,14 +574,18 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
 export function buildEnrichedLyricsPrompt(
   styleName: string,
   subject: string,
+  isDuo: boolean = false
 ): string {
   const knowledge = getStyleKnowledge(styleName);
+  const duoDirective = isDuo 
+    ? " C'est un DUO HOMME ET FEMME. Tu DOIS structurer impérativement les paroles avec des balises de rôles alternés : [Homme], [Femme], et [Ensemble] (ou [Refrain - Ensemble]) pour créer un vrai dialogue vivant entre les deux voix." 
+    : "";
 
   if (knowledge) {
     const langs = knowledge.languages.join(", ");
-    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM. Format court avec intro, couplet, refrain, fin nette.`;
+    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM.${duoDirective} Format court avec intro, couplets alternés, refrain et fin nette.`;
   }
 
   // Fallback sans knowledge
-  return `Chanson en français. Sujet : ${subject}. Format court avec intro, couplet, refrain, fin nette.`;
+  return `Chanson en français. Sujet : ${subject}.${duoDirective} Format court avec intro, couplets, refrain et fin nette.`;
 }

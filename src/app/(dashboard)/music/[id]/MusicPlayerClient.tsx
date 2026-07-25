@@ -476,6 +476,45 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
                 </Button>
               )}
             </div>
+
+            {/* Outils Avancés Studio KIE.AI */}
+            {currentTrack.audio_url && !currentTrack.audio_url.startsWith('task:') && (
+              <div className="w-full bg-linear-to-r from-purple-500/10 via-orange-500/10 to-amber-500/10 rounded-3xl p-4 border border-purple-100/50 flex flex-col gap-2.5 text-left mt-4 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🎛️</span>
+                  <h4 className="font-bold text-xs text-gray-900 uppercase tracking-wider">Outils Avancés Studio</h4>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleDownload}
+                    className="bg-white hover:bg-purple-50 text-purple-700 border-purple-200 rounded-xl text-[11px] font-bold py-2 flex flex-col items-center gap-1 h-auto shadow-2xs"
+                  >
+                    <span className="text-base">🎤</span>
+                    <span>A cappella</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleDownload}
+                    className="bg-white hover:bg-orange-50 text-orange-700 border-orange-200 rounded-xl text-[11px] font-bold py-2 flex flex-col items-center gap-1 h-auto shadow-2xs"
+                  >
+                    <span className="text-base">🎸</span>
+                    <span>Instrumental</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => router.push('/create')}
+                    className="bg-white hover:bg-amber-50 text-amber-700 border-amber-200 rounded-xl text-[11px] font-bold py-2 flex flex-col items-center gap-1 h-auto shadow-2xs"
+                  >
+                    <span className="text-base">⏱️</span>
+                    <span>Prolonger</span>
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         

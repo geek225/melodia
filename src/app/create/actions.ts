@@ -96,10 +96,13 @@ export async function createTrack(formData: TrackFormData) {
   let lyricsText = "";
   
   try {
+    const isDuo = validData.voice === "Duo";
     const voiceTag = validData.voice === "Homme"
       ? "male vocals"
       : validData.voice === "Femme"
       ? "female vocals"
+      : isDuo
+      ? "male and female duo vocals, duet, call and response"
       : "human vocal";
 
     const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
@@ -117,7 +120,7 @@ export async function createTrack(formData: TrackFormData) {
         lyricsText = validData.prompt;
       } else {
         const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
-        const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject);
+        const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject, isDuo);
         
         const lyricsRes = await fetch(`${baseUrl}/api/v1/lyrics`, {
           method: "POST",
