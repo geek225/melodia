@@ -1,0 +1,23 @@
+=================================================
+VARIABLES D'ENVIRONNEMENT VERCEL (KIE.AI - MELIODIA)
+=================================================
+
+Rendez-vous dans Vercel > Settings > Environment Variables
+et ajoutez les variables ci-dessous :
+
+1. MUSIC_AI_PROVIDER
+   Valeur: kie
+
+2. KIE_API_KEY
+   Valeur: feaa5c1517f0105bb7f8af9bfb27dfb18f93821928bc7181b5a264a897e8d245
+
+3. KIE_HMAC_KEY
+   Valeur: feaa5c1517f0105bb7f8af9bfb27dfb18f93821928bc7181b5a264a897e8d245
+
+
+-------------------------------------------------
+CONSERVÉ EN SECOURS (Si vous souhaitez revenir sur SunoAPI) :
+-------------------------------------------------
+Pour repasser sur SunoAPI sans toucher au code, changez simplement :
+MUSIC_AI_PROVIDER=sunoapi
+=================================================
