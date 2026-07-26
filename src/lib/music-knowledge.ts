@@ -25,16 +25,16 @@ const afriqueOuest: MusicStyleKnowledge[] = [
     country: "Côte d'Ivoire",
     bpm: "125-130",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate an explosive authentic Coupé-Décalé track.
+    systemPrompt: `Generate a highly melodic, energetic, authentic Abidjan Coupé-Décalé anthem inspired by Serge Beynaud, DJ Arafat, Bebi Philip, and Kedjevara.
 Country: Côte d'Ivoire (Abidjan)
 Tempo: 125-130 BPM
 Languages: Français, Nouchi
-Style guide:
-- Atalaku hypeman vocal shouts, roukaskas drums, heavy percussive bassline, boucan ambiance.
-- Energetic dancehall polyrhythms, brass stabs, Abidjan club groove.
-- Commercial quality, rich arrangement, explosive drop, strong infectious hook.
-- Respect the cultural identity of Coupé-Décalé.`,
-    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals, slow tempo",
+Melody & Harmony Guide:
+- Melodic african electric guitar sebene solo riffs, bright catchy synth lead melodies, marimba & synth brass hooks.
+- Rich harmonic afro piano chord progression, bouncy melodic bassline, infectious singalong chorus hook.
+- Atalaku hypeman vocal shouts, roukaskas drums, boucan ambiance, explosive Abidjan club dance groove.
+- Polished studio mix, high energy, commercial hit arrangement.`,
+    negativePrompt: "metal, hard rock, monotonous beat, no melody, bad mix, off beat, low quality, distorted vocals, slow tempo",
   },
   {
     name: "Rap Ivoire",
@@ -549,8 +549,11 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
   for (const name of styleNames) {
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
-      // Construire un tag compact mais riche à partir du knowledge
-      parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
+      if (knowledge.name === "Coupé-Décalé") {
+        parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
+      } else {
+        parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
+      }
     } else {
       // Fallback : utiliser le nom brut
       parts.push(name);
@@ -559,9 +562,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
 
   let result = parts.join(", ") + `, ${voiceTag}`;
 
-  // Limite Suno V3.5 : 120 caractères max
-  if (result.length > 120) {
-    result = result.substring(0, 117) + "...";
+  // Limite recommandée Suno V4 / KIE.AI : 180 caractères max
+  if (result.length > 180) {
+    result = result.substring(0, 177) + "...";
   }
 
   return result;
