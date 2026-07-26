@@ -310,45 +310,44 @@ Style guide:
   },
   {
     name: "Gospel Adoration",
-    country: "Afrique",
+    country: "RDC / Côte d'Ivoire",
     bpm: "65-78",
-    languages: ["Français", "Lingala", "English"],
-    systemPrompt: `Generate a deeply moving, serene, spiritual African Gospel Worship & Adoration song inspired by Dena Mwana, Jonathan C. Gambela, and Morijah.
-Country: Afrique (RDC / Côte d'Ivoire / Cameroun)
-Tempo: 65-78 BPM (Slow & reverent)
-Languages: Français, Lingala, English
-Melody & Harmony Guide:
-- Majestic grand piano intro and chords, warm acoustic guitar picking, soft expressive electric guitar solos.
-- Anointed, soul-stirring lead vocal delivery, heavenly African worship choir harmonies, gentle string pads.
-- Emotional dynamic build-up, peaceful spiritual atmosphere, deep reverence, studio worship mix.`,
-    negativePrompt: "fast dance beat, club drums, aggressive synth, techno, rap, metal, hard rock, loud percussions",
+    languages: ["Français", "Lingala"],
+    systemPrompt: `Generate a deeply moving, anointed African French Gospel Adoration song in the authentic Congolese and Ivorian worship style, inspired by Dena Mwana, Jonathan C. Gambela, Morijah, Deborah Lukalu, and Gaël Music.
+Country: RDC / Côte d'Ivoire (Gospel Congolais & Ivoirien en français)
+Tempo: 65-78 BPM (Slow & spiritual reverent worship)
+Languages: Français (with subtle Lingala / local worship refrains)
+Instrumentation & Sound Guide:
+- Majestic grand piano chords, warm acoustic guitar picking, clean Congolese rumba-gospel electric guitar solos.
+- Anointed soul-stirring lead vocals in French with authentic African worship cadence, heavenly polyphonic African choir call-and-response.
+- Gentle orchestral string pads, subtle organ swells, emotional spiritual build-up, pure studio worship atmosphere.`,
+    negativePrompt: "fast dance beat, club drums, aggressive synth, techno, rap, metal, hard rock, loud electronic percussions, bad mix",
   },
   {
     name: "Gospel Louange Africain",
-    country: "Afrique",
-    bpm: "105-125",
-    languages: ["French", "English", "Lingala"],
-    systemPrompt: `Generate a joyful, high-energy African Gospel Praise & Celebration song.
-Country: Afrique
-Tempo: 105-125 BPM
-Languages: French, English, Lingala
-Style guide:
-- Upbeat afro percussions, brass section, joyful choir call-and-response, acoustic & electric guitar groove.
-- Celebratory atmosphere, infectious rhythm, triumphant vocal harmonies.`,
-    negativePrompt: "metal, hard rock, dark ambient, slow depression, bad mix",
+    country: "RDC / Côte d'Ivoire",
+    bpm: "105-120",
+    languages: ["Français", "Lingala"],
+    systemPrompt: `Generate a joyful, triumphant Congolese and Ivorian Gospel Praise song in French inspired by Dena Mwana, Deborah Lukalu, Morijah, and Mike Kalambay.
+Country: RDC / Côte d'Ivoire (Gospel Louange Africain en français)
+Tempo: 105-120 BPM
+Languages: Français (with joyful local praise interjections)
+Sound & Rhythm:
+- Congolese rumba-gospel guitar sebene, joyful brass section, buoyant afro-gospel drums and tam-tams.
+- Powerful lead vocals in French with authentic African vocal accent, energetic polyphonic choir celebration.`,
+    negativePrompt: "metal, hard rock, dark ambient, slow depression, bad mix, off beat",
   },
   {
     name: "Gospel Africain",
     country: "Afrique",
-    bpm: "95-125",
-    languages: ["French", "English"],
-    systemPrompt: `Generate an authentic Gospel Africain track.
-Country: Afrique
-Tempo: 95-125 BPM
-Languages: French,English
-Style guide:
-- Percussions, danse, louange.
-- Commercial quality, rich arrangement, emotional authenticity.`,
+    bpm: "85-115",
+    languages: ["Français", "Lingala"],
+    systemPrompt: `Generate an authentic Francophone African Gospel song inspired by Dena Mwana, Morijah, and Jonathan C. Gambela.
+Country: Afrique francophone (RDC / Côte d'Ivoire)
+Tempo: 85-115 BPM
+Languages: Français
+Sound guide:
+- Piano, acoustic guitar, clean guitar sebene, anointed African choir, spiritual atmosphere in French with authentic African vocal delivery.`,
     negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
   },
   {
@@ -596,7 +595,7 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, powerful expressive vocals, afro guitar riffs, brass stabs`);
         if (!accentTag) accentTag = "authentic West African vocal accent";
       } else if (knowledge.name === "Gospel Adoration") {
-        parts.push(`Gospel Adoration, Afrique, 72 BPM, slow worship, grand piano, acoustic guitar, heavenly choir`);
+        parts.push(`Gospel Adoration, RDC, Côte d'Ivoire, 72 BPM, slow congolese worship, grand piano, acoustic guitar, clean rumba guitar solo, anointed african choir, french worship`);
         if (!accentTag) accentTag = "authentic African worship vocal accent";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
