@@ -2,6 +2,7 @@ Voici la liste de toutes les catégories et styles musicaux disponibles dans l'a
 
 1. Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳
    - Coupé-Décalé (Atalaku, boucan, Abidjan)
+   - Musique Urbaine Ivoire (Roseline Layo, Josey, Abidjan)
    - Rap Ivoire (Nouchi flow authentique)
    - Zouglou (Woyo, contes, ambiance)
    - Afrobeats (Naija groove Lagos)
@@ -22,8 +23,9 @@ Voici la liste de toutes les catégories et styles musicaux disponibles dans l'a
    - Pop R&B (Radio, mélodies émotives)
 
 5. Gospel & Louange 🙏
+   - Gospel Adoration (Posé, recueillement, Dena Mwana, piano-voix)
+   - Gospel Louange Africain (Rythmé, percussions, célébration)
    - Gospel Américain (Chœur, soul, église US)
-   - Gospel Africain (Rythmé, percussions, danse)
    - Gospel Européen (Classique, harmonieux, FR)
 
 6. Europe & Pop Française 🇫🇷 🎶

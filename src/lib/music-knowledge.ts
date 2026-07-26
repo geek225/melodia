@@ -37,6 +37,21 @@ Melody & Harmony Guide:
     negativePrompt: "metal, hard rock, monotonous beat, no melody, bad mix, off beat, low quality, distorted vocals, slow tempo",
   },
   {
+    name: "Musique Urbaine Ivoire",
+    country: "Côte d'Ivoire",
+    bpm: "95-108",
+    languages: ["Français", "Nouchi", "Dioula", "Baoulé"],
+    systemPrompt: `Generate an authentic, highly emotional Ivorian Urban Pop anthem inspired by Roseline Layo and Josey.
+Country: Côte d'Ivoire (Abidjan)
+Tempo: 95-108 BPM
+Languages: Français, Nouchi, Dioula, Baoulé
+Melody & Harmony Guide:
+- Powerful expressive lead vocal performance, lush choir harmonies.
+- Melodic acoustic and electric afro guitar riffs, smooth brass stabs, warm synth pads, afro-pop groove.
+- Polished modern Abidjan urban production, catchy emotional chorus hook, rich acoustic-electro fusion.`,
+    negativePrompt: "metal, hard rock, monotonous beat, aggressive electronic noise, bad mix, off beat, low quality",
+  },
+  {
     name: "Rap Ivoire",
     country: "Côte d'Ivoire",
     bpm: "90-150",
@@ -300,6 +315,35 @@ Style guide:
     negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
   },
   {
+    name: "Gospel Adoration",
+    country: "Afrique",
+    bpm: "65-78",
+    languages: ["Français", "Lingala", "English"],
+    systemPrompt: `Generate a deeply moving, serene, spiritual African Gospel Worship & Adoration song inspired by Dena Mwana, Jonathan C. Gambela, and Morijah.
+Country: Afrique (RDC / Côte d'Ivoire / Cameroun)
+Tempo: 65-78 BPM (Slow & reverent)
+Languages: Français, Lingala, English
+Melody & Harmony Guide:
+- Majestic grand piano intro and chords, warm acoustic guitar picking, soft expressive electric guitar solos.
+- Anointed, soul-stirring lead vocal delivery, heavenly African worship choir harmonies, gentle string pads.
+- Emotional dynamic build-up, peaceful spiritual atmosphere, deep reverence, studio worship mix.`,
+    negativePrompt: "fast dance beat, club drums, aggressive synth, techno, rap, metal, hard rock, loud percussions",
+  },
+  {
+    name: "Gospel Louange Africain",
+    country: "Afrique",
+    bpm: "105-125",
+    languages: ["French", "English", "Lingala"],
+    systemPrompt: `Generate a joyful, high-energy African Gospel Praise & Celebration song.
+Country: Afrique
+Tempo: 105-125 BPM
+Languages: French, English, Lingala
+Style guide:
+- Upbeat afro percussions, brass section, joyful choir call-and-response, acoustic & electric guitar groove.
+- Celebratory atmosphere, infectious rhythm, triumphant vocal harmonies.`,
+    negativePrompt: "metal, hard rock, dark ambient, slow depression, bad mix",
+  },
+  {
     name: "Gospel Africain",
     country: "Afrique",
     bpm: "95-125",
@@ -309,13 +353,8 @@ Country: Afrique
 Tempo: 95-125 BPM
 Languages: French,English
 Style guide:
-- Percussions, danse.
-- Commercial quality
-- Rich arrangement
-- Emotional authenticity
-- Modern mix & mastering
-- Strong hook
-- Respect the cultural identity of the genre.`,
+- Percussions, danse, louange.
+- Commercial quality, rich arrangement, emotional authenticity.`,
     negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
   },
   {

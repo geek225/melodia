@@ -37,6 +37,7 @@ const STYLE_CATEGORIES = [
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
       { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Atalaku, boucan, Abidjan", icon: "👞" },
+      { id: "Musique Urbaine Ivoire", label: "Musique Urbaine Ivoire", desc: "Roseline Layo, Josey, Abidjan", icon: "✨" },
       { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Nouchi flow authentique", icon: "🎤" },
       { id: "Zouglou", label: "Zouglou", desc: "Woyo, contes, ambiance", icon: "🥁" },
       { id: "Afrobeats", label: "Afrobeats", desc: "Naija groove Lagos", icon: "🇳🇬" },
@@ -73,8 +74,9 @@ const STYLE_CATEGORIES = [
     id: "gospel",
     title: "Gospel & Louange 🙏",
     styles: [
+      { id: "Gospel Adoration", label: "Gospel Adoration", desc: "Posé, Dena Mwana, piano-voix", icon: "🕊️" },
+      { id: "Gospel Louange Africain", label: "Gospel Louange", desc: "Rythmé, percussions, danse", icon: "🌍" },
       { id: "Gospel Américain", label: "Gospel Américain", desc: "Chœur, soul, église US", icon: "🇺🇸" },
-      { id: "Gospel Africain", label: "Gospel Africain", desc: "Rythmé, percussions, danse", icon: "🌍" },
       { id: "Gospel Européen", label: "Gospel Européen", desc: "Classique, harmonieux, FR", icon: "🇪🇺" },
     ]
   },
