@@ -54,21 +54,18 @@ Melody & Harmony Guide:
   {
     name: "Rap Ivoire",
     country: "Côte d'Ivoire",
-    bpm: "90-150",
+    bpm: "135-148",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate an authentic Rap Ivoire track.
-Country: Côte d'Ivoire
-Tempo: 90-150 BPM
-Languages: Français,Nouchi
-Style guide:
-- Flow nouchi, 808, trap ivoire.
-- Commercial quality
-- Rich arrangement
-- Emotional authenticity
-- Modern mix & mastering
-- Strong hook
-- Respect the cultural identity of the genre.`,
-    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
+    systemPrompt: `Generate a hard-hitting, authentic Rap Ivoire & Afro-Drill anthem inspired by Didi B (Shogün / Batman), Himra (Nabo Cleman / He Tchai), Suspect 95, and Ameka Zrai.
+Country: Côte d'Ivoire (Abidjan street rap)
+Tempo: 135-148 BPM
+Languages: Français, Nouchi (authentic Abidjan slang flow)
+Beat & Sound Guide:
+- Heavy sliding 808 sub-bass, fast triplet hi-hat glides, aggressive drill snare & hard rimshots.
+- Dark cinematic synth bells, melodic flute or electric guitar loops, brass stabs.
+- Fast energetic Nouchi rap flow, punchy rhythm, aggressive Abidjan street attitude, catchy chant chorus hook.
+- Loud crisp trap-drill mix, heavy low-end impact.`,
+    negativePrompt: "metal, hard rock, gentle acoustic guitar, slow r&b, bad mix, off beat, low quality, soft vocals",
   },
   {
     name: "Zouglou",
@@ -590,6 +587,8 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
     if (knowledge) {
       if (knowledge.name === "Coupé-Décalé") {
         parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
+      } else if (knowledge.name === "Rap Ivoire") {
+        parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark synth lead, nouchi rap flow`);
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
