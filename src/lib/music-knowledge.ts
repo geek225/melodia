@@ -70,21 +70,18 @@ Beat & Sound Guide:
   {
     name: "Zouglou",
     country: "Côte d'Ivoire",
-    bpm: "92-108",
+    bpm: "102-114",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate an authentic Zouglou track.
-Country: Côte d'Ivoire
-Tempo: 92-108 BPM
-Languages: Français,Nouchi
-Style guide:
-- Live band, choeurs, message social.
-- Commercial quality
-- Rich arrangement
-- Emotional authenticity
-- Modern mix & mastering
-- Strong hook
-- Respect the cultural identity of the genre.`,
-    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
+    systemPrompt: `Generate a deeply authentic, highly melodic Ivorian Zouglou anthem inspired by Espoir 2000 (Respectez / Kouadio), Magic System (1er Gaou), Yodé & Siro (Mon gbonhi), VDA (Voix des Anges), Les Patrons, and Lunic.
+Country: Côte d'Ivoire (Abidjan)
+Tempo: 102-114 BPM
+Languages: Français, Nouchi
+Melody & Sound Guide:
+- Melodic acoustic & electric guitar arpeggios, clean West African guitar sebene solos, accordion or synth brass lead accents.
+- Authentic polyrhythmic Woyo percussions (tambour woyo, djembe, shekere shaker, cowbell, bouncy acoustic snare & kick).
+- Storytelling lead vocal delivery, warm polyphonic Woyo choir call-and-response harmonies.
+- Dynamic bouncy bassline, rich acoustic-live band feel, infectious celebratory chorus hook.`,
+    negativePrompt: "metal, hard rock, monotonous electronic beat, aggressive trap 808, bad mix, off beat, low quality",
   },
   {
     name: "Afrobeats",
@@ -589,6 +586,8 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
       } else if (knowledge.name === "Rap Ivoire") {
         parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark synth lead, nouchi rap flow`);
+      } else if (knowledge.name === "Zouglou") {
+        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, woyo percussions, acoustic electric guitar sebene solo, polyphonic choir call and response`);
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
