@@ -72,16 +72,16 @@ Beat & Sound Guide:
     country: "Côte d'Ivoire",
     bpm: "102-114",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a deeply authentic, highly melodic Ivorian Zouglou anthem inspired by Espoir 2000 (Respectez / Kouadio), Magic System (1er Gaou), Yodé & Siro (Mon gbonhi), VDA (Voix des Anges), Les Patrons, and Lunic.
+    systemPrompt: `Generate a deeply authentic Ivorian Zouglou acoustic song with heavy traditional African percussions and authentic African vocal accent inspired by Espoir 2000, Magic System, Yodé & Siro, and VDA.
 Country: Côte d'Ivoire (Abidjan)
 Tempo: 102-114 BPM
-Languages: Français, Nouchi
-Melody & Sound Guide:
-- Melodic acoustic & electric guitar arpeggios, clean West African guitar sebene solos, accordion or synth brass lead accents.
-- Authentic polyrhythmic Woyo percussions (tambour woyo, djembe, shekere shaker, cowbell, bouncy acoustic snare & kick).
-- Storytelling lead vocal delivery, warm polyphonic Woyo choir call-and-response harmonies.
-- Dynamic bouncy bassline, rich acoustic-live band feel, infectious celebratory chorus hook.`,
-    negativePrompt: "metal, hard rock, monotonous electronic beat, aggressive trap 808, bad mix, off beat, low quality",
+Languages: Français, Nouchi (authentic West African vocal accent)
+Instrumentation & Rhythm:
+- Heavy acoustic West African tam-tam percussions, authentic woyo djembe drums, shekere shaker, metallic cowbell rhythm.
+- Acoustic & electric guitar arpeggios, clean high-life guitar sebene solo, accordion lead accents, bouncy bassline.
+- Storytelling lead vocals with authentic African vocal accent, warm polyphonic Woyo choir call-and-response harmonies.
+- Pure acoustic live band feel, no euro pop synths.`,
+    negativePrompt: "euro pop synth, electro pop, urban pop, autotune pop, hiro naza style, metal, hard rock, monotonous electronic beat, bad mix, off beat",
   },
   {
     name: "Afrobeats",
@@ -578,26 +578,50 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
   if (styleNames.length === 0) return voiceTag;
 
   const parts: string[] = [];
+  let accentTag = "";
 
   for (const name of styleNames) {
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "Coupé-Décalé") {
         parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
+        if (!accentTag) accentTag = "authentic West African vocal accent";
       } else if (knowledge.name === "Rap Ivoire") {
         parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark synth lead, nouchi rap flow`);
+        if (!accentTag) accentTag = "authentic Abidjan nouchi vocal accent";
       } else if (knowledge.name === "Zouglou") {
-        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, woyo percussions, acoustic electric guitar sebene solo, polyphonic choir call and response`);
+        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, heavy acoustic West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
+        if (!accentTag) accentTag = "authentic West African vocal accent, raw woyo choir";
+      } else if (knowledge.name === "Musique Urbaine Ivoire") {
+        parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, powerful expressive vocals, afro guitar riffs, brass stabs`);
+        if (!accentTag) accentTag = "authentic West African vocal accent";
+      } else if (knowledge.name === "Gospel Adoration") {
+        parts.push(`Gospel Adoration, Afrique, 72 BPM, slow worship, grand piano, acoustic guitar, heavenly choir`);
+        if (!accentTag) accentTag = "authentic African worship vocal accent";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
+
+      // Détection automatique de l'accent vocal selon le pays / style
+      if (!accentTag) {
+        const countryLower = knowledge.country.toLowerCase();
+        if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
+          accentTag = "authentic African vocal accent";
+        } else if (knowledge.name === "Afro Trap France") {
+          accentTag = "French urban vocal accent with African rhythmic inflections";
+        } else if (["france", "europe"].includes(countryLower)) {
+          accentTag = "authentic French vocal accent";
+        } else if (["usa", "international"].includes(countryLower)) {
+          accentTag = "authentic American vocal accent";
+        }
+      }
     } else {
-      // Fallback : utiliser le nom brut
       parts.push(name);
     }
   }
 
-  let result = parts.join(", ") + `, ${voiceTag}`;
+  const finalAccent = accentTag ? `, ${accentTag}` : "";
+  let result = parts.join(", ") + `, ${voiceTag}` + finalAccent;
 
   // Limite recommandée Suno V4 / KIE.AI : 180 caractères max
   if (result.length > 180) {
@@ -623,7 +647,20 @@ export function buildEnrichedLyricsPrompt(
 
   if (knowledge) {
     const langs = knowledge.languages.join(", ");
-    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM.${duoDirective} Format court avec intro, couplets alternés, refrain et fin nette.`;
+    let accentDirective = "Accent et phrasé authentiques de l'artiste.";
+    const countryLower = knowledge.country.toLowerCase();
+
+    if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
+      accentDirective = "IMPORTANT : Le texte et la livraison vocale DOIVENT avoir l'accent, le rythme et la cadence authentique africaine (expressions locales imagées, intonations chaleureuses).";
+    } else if (knowledge.name === "Afro Trap France") {
+      accentDirective = "IMPORTANT : Le texte combine le phrasé urbain français avec des expressions et intonations afro-urbaines.";
+    } else if (["france", "europe"].includes(countryLower)) {
+      accentDirective = "IMPORTANT : Accent et prononciation française claire et authentique.";
+    } else if (["usa"].includes(countryLower)) {
+      accentDirective = "IMPORTANT : Accent et flow américain authentique.";
+    }
+
+    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM.${duoDirective} ${accentDirective} Format court avec intro, couplets alternés, refrain et fin nette.`;
   }
 
   // Fallback sans knowledge
