@@ -27,11 +27,17 @@ export async function GET() {
        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // 1. Fetch Suno API Limit
-    const apiKey = process.env.SUNO_API_KEY || "d2bc9f7d7213c3adff53851705b3e6ac";
+    // 1. Fetch Music API Limit
+    const { getMusicApiConfig } = require('@/lib/music-provider');
+    const { provider, baseUrl, apiKey } = getMusicApiConfig();
     let sunoLimitData = null;
+    
     try {
-      const res = await fetch("https://api.sunoapi.org/api/v1/generate/credit", {
+      const endpoint = provider === 'kie' 
+        ? `${baseUrl}/api/v1/chat/credit`
+        : `${baseUrl}/api/v1/generate/credit`;
+
+      const res = await fetch(endpoint, {
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json"
@@ -42,7 +48,7 @@ export async function GET() {
         sunoLimitData = await res.json();
       }
     } catch (e) {
-      console.error("Error fetching Suno limit:", e);
+      console.error("Error fetching API limit:", e);
     }
 
     // 2. Fetch last 24h stats from Tracks

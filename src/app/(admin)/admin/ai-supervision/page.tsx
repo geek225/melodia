@@ -150,7 +150,7 @@ export default function AISupervisionPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Tableau de bord API</h1>
-          <p className="text-muted-foreground mt-1">Suivez vos activités et analysez vos performances en temps réel avec Suno.</p>
+          <p className="text-muted-foreground mt-1">Suivez vos activités et analysez vos performances en temps réel avec l'IA musicale.</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="gap-2">
@@ -228,7 +228,7 @@ export default function AISupervisionPage() {
               <p className="text-6xl md:text-7xl font-black">{creditsLeft}</p>
             )}
             <p className="text-gray-400 mt-4 text-sm">
-              Assurez-vous de recharger votre compte sur Suno lorsque ce solde devient faible pour éviter les interruptions de service.
+              Assurez-vous de recharger votre compte chez votre fournisseur API lorsque ce solde devient faible pour éviter les interruptions de service.
             </p>
           </div>
         </div>
