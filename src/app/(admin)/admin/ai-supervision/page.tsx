@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Copy, Check, RefreshCw, Key, AlertCircle } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Copy, Check, RefreshCw, Key, AlertCircle, Download, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type TrackLog = {
   id: string;
@@ -37,6 +38,67 @@ export default function AISupervisionPage() {
   const [logs, setLogs] = useState<TrackLog[]>([]);
   const [sunoData, setSunoData] = useState<SunoData>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio();
+    audioRef.current.onended = () => setPlayingTrackId(null);
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
+    };
+  }, []);
+
+  const togglePlay = (url: string | null, id: string) => {
+    if (!url || url.startsWith('task:') || !audioRef.current) return;
+    if (playingTrackId === id) {
+      audioRef.current.pause();
+      setPlayingTrackId(null);
+    } else {
+      audioRef.current.pause();
+      audioRef.current.src = url;
+      audioRef.current.play();
+      setPlayingTrackId(id);
+    }
+  };
+
+  const handleDownload = async (log: TrackLog) => {
+    if (!log.audio_url || log.audio_url.startsWith('task:')) {
+      toast.error("Aucune URL audio disponible pour ce journal.");
+      return;
+    }
+    const toastId = toast.loading("Préparation du téléchargement...");
+    try {
+      const url = new URL('/api/download', window.location.origin);
+      url.searchParams.set('url', log.audio_url);
+      url.searchParams.set('filename', `${log.title || 'Meliodia_Track'}.mp3`);
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error(errorText || "Impossible de télécharger le fichier audio (lien expiré).", { id: toastId });
+        return;
+      }
+
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `${log.title || 'Meliodia_Track'}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+
+      toast.success("Téléchargement réussi !", { id: toastId });
+    } catch (error) {
+      console.error("Erreur de téléchargement:", error);
+      toast.error("Erreur réseau lors du téléchargement.", { id: toastId });
+    }
+  };
 
   const fetchStats = async () => {
     setLoading(true);
@@ -187,22 +249,24 @@ export default function AISupervisionPage() {
                 <th className="px-6 py-4">Prompt & Style</th>
                 <th className="px-6 py-4">Statut</th>
                 <th className="px-6 py-4">Task ID</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-10 text-gray-400">Chargement des journaux...</td>
+                  <td colSpan={6} className="text-center py-10 text-gray-400">Chargement des journaux...</td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-10 text-gray-400">Aucun journal trouvé dans les dernières 24h.</td>
+                  <td colSpan={6} className="text-center py-10 text-gray-400">Aucun journal trouvé dans les dernières 24h.</td>
                 </tr>
               ) : (
                 logs.map((log) => {
                   const isSuccess = log.status === 'completed' || (log.status === 'processing' && log.audio_url && !log.audio_url.startsWith('task:'));
                   const isFailed = log.status === 'failed';
                   const taskId = log.audio_url?.startsWith('task:') ? log.audio_url.replace('task:', '') : (log.audio_url ? 'terminé' : 'N/A');
+                  const hasAudio = !!log.audio_url && !log.audio_url.startsWith('task:');
 
                   return (
                     <tr key={log.id} className="border-b border-white/5 hover:bg-white/5">
@@ -243,6 +307,30 @@ export default function AISupervisionPage() {
                       </td>
                       <td className="px-6 py-4 text-xs font-mono text-gray-400">
                         {taskId}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        {hasAudio && (
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => togglePlay(log.audio_url, log.id)}
+                              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-white/10"
+                              title="Écouter"
+                            >
+                              {playingTrackId === log.id ? <Pause className="w-4 h-4 text-emerald-400" /> : <Play className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDownload(log)}
+                              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-white/10"
+                              title="Télécharger en MP3"
+                            >
+                              <Download className="w-4 h-4 text-blue-400" />
+                            </Button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );

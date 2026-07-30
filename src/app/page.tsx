@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Sparkles, Play, Pause, Mic2, Heart, Shield, SkipBack, SkipForward } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import CommunityGallery from "./components/CommunityGallery";
+import UseCasesSlider from "./components/UseCasesSlider";
 
 export default function LandingPage() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -243,6 +244,9 @@ export default function LandingPage() {
 
       {/* ─── COMMUNITY GALLERY ─── */}
       <CommunityGallery />
+
+      {/* ─── USE CASES SLIDER ─── */}
+      <UseCasesSlider />
 
       {/* ─── FEATURES ─── */}
       <section id="features" className="py-20 px-6 md:px-12 bg-linear-to-br from-purple-50 to-orange-50">

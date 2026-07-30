@@ -59,13 +59,39 @@ export default function AdminArchivesClient() {
     }
   };
 
-  const handleDownload = (track: any) => {
-    if (!track.audio_url) return;
-    toast.success("Téléchargement de la musique...");
-    const url = new URL('/api/download', window.location.origin);
-    url.searchParams.set('url', track.audio_url);
-    url.searchParams.set('filename', `${track.title || 'Meliodia_Music'}.mp3`);
-    window.location.assign(url.toString());
+  const handleDownload = async (track: any) => {
+    if (!track.audio_url || track.audio_url.startsWith('task:')) {
+      toast.error("Aucune URL audio disponible pour cette musique.");
+      return;
+    }
+    const toastId = toast.loading("Préparation du téléchargement...");
+    try {
+      const url = new URL('/api/download', window.location.origin);
+      url.searchParams.set('url', track.audio_url);
+      url.searchParams.set('filename', `${track.title || 'Meliodia_Music'}.mp3`);
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error(errorText || "Impossible de télécharger ce fichier audio (lien expiré).", { id: toastId });
+        return;
+      }
+
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `${track.title || 'Meliodia_Music'}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+
+      toast.success("Téléchargement réussi !", { id: toastId });
+    } catch (error) {
+      console.error("Erreur de téléchargement:", error);
+      toast.error("Erreur réseau lors du téléchargement.", { id: toastId });
+    }
   };
 
   const handleDelete = async (track: any) => {
