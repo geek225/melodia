@@ -68,8 +68,8 @@ export default function UseCasesSlider() {
 
   return (
     <section className="py-24 bg-white overflow-hidden border-t border-gray-100">
-      <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center space-y-3 px-6 md:px-12">
+      <div className="space-y-12 w-full">
+        <div className="max-w-7xl mx-auto text-center space-y-3 px-6 md:px-12">
           <p className="text-sm font-bold text-pink-500 uppercase tracking-widest">Une infinité de possibilités</p>
           <h2 className="text-3xl md:text-5xl font-black text-gray-900">Pourquoi utiliser Meliodia ?</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
@@ -77,11 +77,11 @@ export default function UseCasesSlider() {
           </p>
         </div>
 
-        <motion.div ref={carousel} className="cursor-grab pt-4 pb-12" whileTap={{ cursor: "grabbing" }}>
+        <motion.div ref={carousel} className="cursor-grab pt-4 pb-12 w-full" whileTap={{ cursor: "grabbing" }}>
           <motion.div 
             drag="x" 
             dragConstraints={{ right: 0, left: -width }} 
-            className="flex gap-6 px-6 md:px-12"
+            className="flex gap-6 px-6 md:px-12 xl:pl-[calc((100vw-80rem)/2+3rem)] xl:pr-[calc((100vw-80rem)/2+3rem)]"
           >
             {useCases.map((useCase) => (
               <motion.div 
