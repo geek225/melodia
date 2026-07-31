@@ -12,6 +12,7 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff } from "lucide-react";
+import { AFRICAN_PROFILES } from "@/lib/african-profiles";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -114,6 +115,7 @@ export default function NewCreatePage() {
     title: "",
     prompt: "",
     styles: [] as string[], // tableau de styles sélectionnés (max 3)
+    africanProfiles: [] as string[], // profils de sonorités africaines
     voice: "",
   });
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -283,14 +285,47 @@ export default function NewCreatePage() {
     setFormData(prev => {
       const current = prev.styles;
       if (current.includes(styleId)) {
-        // Désélectionner
         return { ...prev, styles: current.filter(s => s !== styleId) };
-      } else if (current.length < 3) {
-        // Sélectionner (max 3)
-        return { ...prev, styles: [...current, styleId] };
       }
-      return prev; // Déjà 3 sélectionnés, on ignore
+      if (current.length >= 3) return prev; // max 3
+      return { ...prev, styles: [...current, styleId] };
     });
+  };
+
+  const toggleAfricanProfile = (profileId: string) => {
+    setFormData(prev => {
+      const current = prev.africanProfiles || [];
+      if (current.includes(profileId)) {
+        return { ...prev, africanProfiles: current.filter(id => id !== profileId) };
+      }
+      return { ...prev, africanProfiles: [...current, profileId] };
+    });
+  };
+
+  const handlePromptChange = (val: string) => {
+    let cleaned = val;
+    let found = false;
+    const artists = ["magic system", "espoir 2000", "dj arafat", "burna boy", "wizkid", "davido", "fally ipupa", "roseline layo", "josey", "didi b", "asake", "rema", "aya nakamura", "tayc", "yodé", "siro", "vda"];
+    
+    for (const artist of artists) {
+      const regex = new RegExp(`\\b${artist}\\b`, 'gi');
+      if (regex.test(cleaned)) {
+        found = true;
+        cleaned = cleaned.replace(regex, '');
+      }
+    }
+    
+    const styleRegex = /dans le style de|à la façon de|type beat|like/gi;
+    if (styleRegex.test(cleaned)) {
+      found = true;
+      cleaned = cleaned.replace(styleRegex, '');
+    }
+
+    if (found) {
+      toast.error("Veuillez décrire l'énergie ou les instruments plutôt que de citer un artiste.");
+    }
+    
+    updateForm("prompt", cleaned);
   };
 
   const handleGenerate = async () => {
@@ -376,6 +411,7 @@ export default function NewCreatePage() {
         prompt: step2InputType === 'audio' ? "" : formData.prompt,
         style: styleLabelMerged,
         styles: formData.styles,
+        africanProfiles: formData.africanProfiles,
         mood: "Énergique",
         language: "Français",
         voice: formData.voice || "Duo",
@@ -665,7 +701,7 @@ export default function NewCreatePage() {
                   <div className="relative">
                     <Textarea 
                       value={formData.prompt}
-                      onChange={(e) => updateForm("prompt", e.target.value)}
+                      onChange={(e) => handlePromptChange(e.target.value)}
                       maxLength={5000}
                       placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, colle tes paroles ou donne quelques mots clés..."} 
                       className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-y transition-colors ${
@@ -787,7 +823,7 @@ export default function NewCreatePage() {
                           <div className="relative">
                             <Textarea 
                               value={formData.prompt}
-                              onChange={(e) => updateForm("prompt", e.target.value)}
+                              onChange={(e) => handlePromptChange(e.target.value)}
                               maxLength={5000}
                               placeholder={isListening ? "Écoute en cours..." : "Tape tes paroles ici ou utilise le micro pour les dicter..."} 
                               className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-y transition-colors ${
@@ -915,6 +951,61 @@ export default function NewCreatePage() {
                   </div>
                 ))}
               </div>
+
+              {/* African Sound Profiles Section */}
+              {formData.styles.some(styleId => AFRICAN_PROFILES.some(cat => cat.categoryId === styleId)) && (
+                <div className="mt-8 mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold flex items-center gap-2">Affine ta sonorité 🌍</h3>
+                      <p className="text-gray-500 text-sm">Donne des instructions musicales précises (sélection multiple).</p>
+                    </div>
+                    {formData.africanProfiles && formData.africanProfiles.length > 0 && (
+                      <button 
+                        onClick={() => setFormData(prev => ({ ...prev, africanProfiles: [] }))}
+                        className="text-xs font-semibold text-gray-500 hover:text-purple-600 transition-colors"
+                      >
+                        Réinitialiser
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-6">
+                    {formData.styles
+                      .map(styleId => AFRICAN_PROFILES.find(cat => cat.categoryId === styleId))
+                      .filter(Boolean)
+                      .map((category) => (
+                        <div key={category!.categoryId} className="bg-purple-50/30 rounded-2xl p-4 md:p-6 border border-purple-100">
+                          <h4 className="font-bold text-lg mb-4 text-purple-900">{category!.categoryLabel}</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {category!.profiles.map(profile => {
+                              const isSelected = formData.africanProfiles?.includes(profile.id);
+                              return (
+                                <div 
+                                  key={profile.id}
+                                  onClick={() => toggleAfricanProfile(profile.id)}
+                                  className={`p-3 md:p-4 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col ${
+                                    isSelected 
+                                      ? 'border-purple-500 bg-white shadow-md' 
+                                      : 'border-transparent bg-white/60 hover:bg-white hover:shadow-sm'
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <div className="absolute top-3 right-3 w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
+                                      <Check className="w-3 h-3 text-white" />
+                                    </div>
+                                  )}
+                                  <span className="font-bold text-sm text-gray-900 mb-1 pr-6">{profile.label}</span>
+                                  <span className="text-xs text-gray-500 leading-tight">{profile.description}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               <div className="text-center mb-6 md:mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Choisis la <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-[#FF6B00]">voix</span> 🎤</h2>

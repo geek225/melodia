@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import { ratelimit } from '@/lib/rate-limit'
 import { buildEnrichedStyle, buildEnrichedLyricsPrompt } from '@/lib/music-knowledge'
 import { getMusicApiConfig } from '@/lib/music-provider'
+import { AFRICAN_PROFILES } from '@/lib/african-profiles'
 
 import { z } from 'zod'
 
@@ -15,6 +16,7 @@ const trackSchema = z.object({
   prompt: z.string().max(5000, "La description ne doit pas dépasser 5000 caractères").optional().default(""),
   style: z.string().min(1, "Le style est requis").max(200, "Le style est trop long"),
   styles: z.array(z.string()).max(3).optional().default([]),
+  africanProfiles: z.array(z.string()).optional().default([]),
   mood: z.string().max(50).optional().default(""),
   language: z.string().max(50).optional().default("fr"),
   voice: z.string().max(50).optional().default(""),
@@ -159,6 +161,23 @@ export async function createTrack(formData: TrackFormData) {
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
     if (!lyricsText && !audioInputUrl) {
       lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt || "Chant en français"}\n[Chorus]\nOn y va !\n[Outro]`;
+    }
+
+    // Injection du profil sonore africain si sélectionné
+    if (validData.africanProfiles && validData.africanProfiles.length > 0) {
+      const instructions = validData.africanProfiles.map(id => {
+        for (const cat of AFRICAN_PROFILES) {
+          const prof = cat.profiles.find(p => p.id === id);
+          if (prof) return prof.promptInstruction;
+        }
+        return null;
+      }).filter(Boolean);
+
+      if (instructions.length > 0) {
+        const baseStyle = validData.style || "African Music";
+        const africanSoundMeta = `\n[Style Instructions: ${baseStyle}. African sound direction: ${instructions.join(". ")}. Use original composition, original melody, original vocal phrasing. Do not imitate, reference, or evoke any specific artist, group, or song.]\n\n`;
+        lyricsText = africanSoundMeta + lyricsText;
+      }
     }
 
     // --- ETAPE 2 : GENERER LA MUSIQUE ---
