@@ -1267,7 +1267,7 @@ export default function NewCreatePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Solde de Mélodies insuffisant</AlertDialogTitle>
             <AlertDialogDescription>
-              Vous n&apos;avez pas assez de Mélodies pour générer cette musique. Une chanson coûte 10 Mélodies.
+              Vous n&apos;avez pas assez de Mélodies pour générer cette musique. Vérifiez que vous avez suffisamment de crédits pour l&apos;option choisie (une chanson simple coûte 10 Mélodies, avec option vocale : 15 Mélodies).
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

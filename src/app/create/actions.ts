@@ -65,7 +65,7 @@ export async function createTrack(formData: TrackFormData) {
   // 1. Vérifier le solde de Mélodies
   const cost = (validData.voiceUrl || validData.promptAudioUrl) ? 15 : 10;
   
-  const { data: profile, error: profileError } = await adminAuthClient
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('credits')
     .eq('id', user.id)
