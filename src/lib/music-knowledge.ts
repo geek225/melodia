@@ -351,6 +351,23 @@ Sound guide:
     negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
   },
   {
+    name: "Afro Gospel Urbain",
+    country: "Côte d'Ivoire / RDC / Nigeria",
+    bpm: "118-128",
+    languages: ["Français", "Nouchi", "Lingala"],
+    systemPrompt: `Generate a high-energy, explosive, joyful Afro-Gospel Ambiance & Gospel Afrobeats dance hit inspired by Tim Storm ("Suspendu"), Joy Awu ("Pour Toujours"), Kano Choir ("Tout donner x Rebanav Gospel Remix"), KS Bloom, Morijah, and Limoblaze.
+Country: Côte d'Ivoire / RDC / Nigeria (Afro-Gospel Urbain & Louange Festive)
+Tempo: 118-128 BPM (explosive, highly danceable, joyful praise)
+Languages: Français, Nouchi, Lingala (with joyful local praise interjections)
+Sound & Instrumentation:
+- Bright West African electric guitar sebene licks, catchy synth brass hooks, bouncy 808 sub-bass.
+- Heavy West African tam-tam percussions, woyo djembe drums, roukaskas, and crisp 4/4 afrobeat percussion groove.
+- Powerful lead vocal performance in French with authentic West African accent and street praise energy.
+- Massive polyphonic choir singing energetic call-and-response ("Alléluia !", "Hosanna !", "Jésus est au contrôle !").
+- Production: Pristine commercial studio mix, explosive energy, radio-ready afro-gospel hit arrangement.`,
+    negativePrompt: "metal, hard rock, dark ambient, sad depression, slow ballad, bad mix, off beat, low quality, distorted audio",
+  },
+  {
     name: "Gospel Européen",
     country: "Europe",
     bpm: "70-90",
@@ -664,8 +681,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
       } else if (knowledge.name === "Pop Acoustique & Piano") {
         parts.push(`Acoustic Pop, 92 BPM, fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
-      } else if (knowledge.name === "Dark Pop Ambient") {
-        parts.push(`Dark Pop Ambient, 72 BPM, minimalist piano motif, cinematic cello, atmospheric sub bass, breathy whisper falsetto vocal duet`);
+      } else if (knowledge.name === "Afro Gospel Urbain") {
+        parts.push(`Afro-Gospel Ambiance, Gospel Afrobeats, Côte d'Ivoire, RDC, 124 BPM, bright electric guitar sebene solo, synth brass hooks, tam-tam percussions, joyful praise choir`);
+        if (!accentTag) accentTag = "authentic African gospel praise vocal accent";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }

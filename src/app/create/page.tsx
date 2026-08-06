@@ -82,6 +82,7 @@ const STYLE_CATEGORIES = [
     id: "gospel",
     title: "Gospel & Louange 🙏",
     styles: [
+      { id: "Afro Gospel Urbain", label: "Afro Gospel Ambiance", desc: "Tim Storm (Suspendu), Joy Awu, Kano Choir (124 BPM)", icon: "🔥" },
       { id: "Gospel Adoration", label: "Gospel Adoration", desc: "Posé, Dena Mwana, piano-voix", icon: "🕊️" },
       { id: "Gospel Louange Africain", label: "Gospel Louange", desc: "Rythmé, percussions, danse", icon: "🌍" },
       { id: "Gospel Américain", label: "Gospel Américain", desc: "Chœur, soul, église US", icon: "🇺🇸" },

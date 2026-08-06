@@ -63,7 +63,8 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
    - Afro R&B / Pop Urbaine (Hiro "C'est Mort", KeBlack "J'ai Déconné", Locko "Let Go", Tayc, Dadju) : Vulnérabilité amoureuse poignante, remords sincères, refus de laisser filer l'être cher, refrain ultra-mélodique avec hooks addictifs.
    - Zouglou / Coupé-Décalé / Rap Ivoire : Argot Nouchi fluide et percutant d'Abidjan, philosophie de rue, humour subtil, résilience et punchlines sociales.
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.
-   - Gospel : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.
+   - Gospel Adoration & Classique : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.
+   - Afro Gospel Urbain / Ambiance (Tim Storm "Suspendu", Joy Awu "Pour Toujours", Kano Choir "Naza x Chily Gospel Remix", KS Bloom) : Louange festive, explosive et ultra-dansante (120-128 BPM). Célébration de la grâce, de la victoire et des bénédictions avec de puissants chœurs polyphoniques en parenthèses (Alléluia !), (Hosanna !), (Jésus est au contrôle !), (On saute pour le Roi !).
 
 5. COMPLÉTITUDE TOTALE DU MORCEAU :
    - Rédige la chanson COMPLÈTE de l'Intro jusqu'à l'Outro sans t'arrêter en cours de route.
