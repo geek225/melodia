@@ -21,67 +21,36 @@ export interface MusicStyleKnowledge {
 // ─── Afrique de l'Ouest ──────────────────────────────────────────────
 const afriqueOuest: MusicStyleKnowledge[] = [
   {
-    name: "Coupé-Décalé",
+    name: "Musique Rap Décalé Urban",
     country: "Côte d'Ivoire",
-    bpm: "125-130",
+    bpm: "128-135",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a highly melodic, energetic, authentic Abidjan Coupé-Décalé anthem inspired by Serge Beynaud, DJ Arafat, Bebi Philip, and Kedjevara.
+    systemPrompt: `Generate a highly melodic, energetic, modern fusion hit of Rap Ivoire, Coupé-Décalé club bounce, and Abidjan Urban Pop inspired by Didi B, Serge Beynaud, DJ Arafat, and Himra.
 Country: Côte d'Ivoire (Abidjan)
-Tempo: 125-130 BPM
+Tempo: 128-135 BPM
 Languages: Français, Nouchi
-Melody & Harmony Guide:
-- Melodic african electric guitar sebene solo riffs, bright catchy synth lead melodies, marimba & synth brass hooks.
-- Rich harmonic afro piano chord progression, bouncy melodic bassline, infectious singalong chorus hook.
+Melody & Rhythm Fusion Guide:
+- Melodic african electric guitar sebene solo riffs, fast Nouchi rap flow, bright catchy synth lead melodies.
+- Heavy sliding 808 sub bass combined with bouncy coupé-décalé drum beat, marimba & synth brass hooks.
 - Atalaku hypeman vocal shouts, roukaskas drums, boucan ambiance, explosive Abidjan club dance groove.
 - Polished studio mix, high energy, commercial hit arrangement.`,
     negativePrompt: "metal, hard rock, monotonous beat, no melody, bad mix, off beat, low quality, distorted vocals, slow tempo",
   },
   {
-    name: "Musique Urbaine Ivoire",
-    country: "Côte d'Ivoire",
-    bpm: "95-108",
-    languages: ["Français", "Nouchi", "Dioula", "Baoulé"],
-    systemPrompt: `Generate an authentic, highly emotional Ivorian Urban Pop anthem inspired by Roseline Layo and Josey.
-Country: Côte d'Ivoire (Abidjan)
-Tempo: 95-108 BPM
-Languages: Français, Nouchi, Dioula, Baoulé
-Melody & Harmony Guide:
-- Powerful expressive lead vocal performance, lush choir harmonies.
-- Melodic acoustic and electric afro guitar riffs, smooth brass stabs, warm synth pads, afro-pop groove.
-- Polished modern Abidjan urban production, catchy emotional chorus hook, rich acoustic-electro fusion.`,
-    negativePrompt: "metal, hard rock, monotonous beat, aggressive electronic noise, bad mix, off beat, low quality",
-  },
-  {
-    name: "Rap Ivoire",
-    country: "Côte d'Ivoire",
-    bpm: "135-148",
-    languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a hard-hitting, authentic Rap Ivoire & Afro-Drill anthem inspired by Didi B (Shogün / Batman), Himra (Nabo Cleman / He Tchai), Suspect 95, and Ameka Zrai.
-Country: Côte d'Ivoire (Abidjan street rap)
-Tempo: 135-148 BPM
-Languages: Français, Nouchi (authentic Abidjan slang flow)
-Beat & Sound Guide:
-- Heavy sliding 808 sub-bass, fast triplet hi-hat glides, aggressive drill snare & hard rimshots.
-- Dark cinematic synth bells, melodic flute or electric guitar loops, brass stabs.
-- Fast energetic Nouchi rap flow, punchy rhythm, aggressive Abidjan street attitude, catchy chant chorus hook.
-- Loud crisp trap-drill mix, heavy low-end impact.`,
-    negativePrompt: "metal, hard rock, gentle acoustic guitar, slow r&b, bad mix, off beat, low quality, soft vocals",
-  },
-  {
-    name: "Zouglou",
+    name: "Musique Urbaine & Zouglou",
     country: "Côte d'Ivoire",
     bpm: "102-114",
-    languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a deeply authentic Ivorian Zouglou acoustic song with heavy traditional African percussions and authentic African vocal accent inspired by Espoir 2000, Magic System, Yodé & Siro, and VDA.
+    languages: ["Français", "Nouchi", "Dioula", "Baoulé"],
+    systemPrompt: `Generate a deeply emotional, highly melodic Ivorian Urban Pop & Zouglou acoustic song inspired by Roseline Layo, Josey, Espoir 2000, Magic System, Yodé & Siro, and VDA.
 Country: Côte d'Ivoire (Abidjan)
 Tempo: 102-114 BPM
-Languages: Français, Nouchi (authentic West African vocal accent)
-Instrumentation & Rhythm:
+Languages: Français, Nouchi, Dioula, Baoulé
+Melody & Rhythm Fusion Guide:
 - Heavy acoustic West African tam-tam percussions, authentic woyo djembe drums, shekere shaker, metallic cowbell rhythm.
-- Acoustic & electric guitar arpeggios, clean high-life guitar sebene solo, accordion lead accents, bouncy bassline.
+- Clean high-life guitar sebene solo, acoustic guitar arpeggios, accordion lead accents, bouncy bassline.
 - Storytelling lead vocals with authentic African vocal accent, warm polyphonic Woyo choir call-and-response harmonies.
-- Pure acoustic live band feel, no euro pop synths.`,
-    negativePrompt: "euro pop synth, electro pop, urban pop, autotune pop, hiro naza style, metal, hard rock, monotonous electronic beat, bad mix, off beat",
+- Pure acoustic live band feel combined with modern Abidjan urban production.`,
+    negativePrompt: "metal, hard rock, monotonous electronic beat, aggressive noise, bad mix, off beat, low quality",
   },
   {
     name: "Afro Zouk",
@@ -669,6 +638,10 @@ for (const style of ALL_MUSIC_KNOWLEDGE) {
 
 // Alias pour correspondre aux noms utilisés dans STYLE_CATEGORIES de create/page.tsx
 const ALIASES: Record<string, string> = {
+  "Coupé-Décalé": "Musique Rap Décalé Urban",
+  "Rap Décalé": "Musique Rap Décalé Urban",
+  "Zouglou": "Musique Urbaine & Zouglou",
+  "Musique Urbaine Ivoire": "Musique Urbaine & Zouglou",
   "Raï / Pop Urbaine": "Raï Moderne",
   "Pop / R&B": "Pop R&B",
   "Soul / Jazz France": "Soul Jazz",
@@ -717,18 +690,12 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
   for (const name of styleNames) {
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
-      if (knowledge.name === "Coupé-Décalé") {
-        parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, highly melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
-        if (!accentTag) accentTag = "authentic West African vocal accent";
-      } else if (knowledge.name === "Rap Ivoire") {
-        parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark melodic synth lead, nouchi rap flow`);
+      if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
+        parts.push(`Musique Rap Decale Urban, Coupe Decale, Rap Ivoire, Cote d'Ivoire, 130 BPM, heavy sliding 808 sub bass, highly melodic electric guitar sebene solo, catchy synth lead hook, nouchi rap flow`);
         if (!accentTag) accentTag = "authentic Abidjan nouchi vocal accent";
-      } else if (knowledge.name === "Zouglou") {
-        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, highly melodic acoustic guitar arpeggios, heavy West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
+      } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
+        parts.push(`Musique Urbaine Ivoire, Zouglou, Cote d'Ivoire, 108 BPM, highly melodic acoustic guitar arpeggios, heavy West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
         if (!accentTag) accentTag = "authentic West African vocal accent, raw woyo choir";
-      } else if (knowledge.name === "Musique Urbaine Ivoire") {
-        parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, expressive melodic vocals, lush afro guitar riffs, smooth brass stabs`);
-        if (!accentTag) accentTag = "authentic West African vocal accent";
       } else if (knowledge.name === "Piano Ballad Émotion") {
         parts.push(`Piano Ballad, 78 BPM, highly melodic grand piano chords, solo acoustic piano, cello, swelling string quartet, tear-jerking falsetto vocal climax`);
       } else if (knowledge.name === "Soul Vocale & Powerhouse") {
