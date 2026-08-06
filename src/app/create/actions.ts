@@ -8,6 +8,7 @@ import { ratelimit } from '@/lib/rate-limit'
 import { buildEnrichedStyle, buildEnrichedLyricsPrompt } from '@/lib/music-knowledge'
 import { getMusicApiConfig } from '@/lib/music-provider'
 import { AFRICAN_PROFILES } from '@/lib/african-profiles'
+import { generateLyricsWithGemini } from '@/lib/gemini'
 
 import { z } from 'zod'
 
@@ -295,3 +296,31 @@ export async function createTrack(formData: TrackFormData) {
   // Return the track ID and success status
   return { success: true, trackId: data[0].id }
 }
+
+const generateLyricsInputSchema = z.object({
+  title: z.string().max(100).optional().default(""),
+  topic: z.string().max(2000).optional().default(""),
+  style: z.string().max(100).optional().default("Afrobeats"),
+  mood: z.string().max(50).optional().default("Énergique"),
+  language: z.string().max(50).optional().default("Français")
+});
+
+export type GenerateLyricsParams = z.infer<typeof generateLyricsInputSchema>;
+
+export async function generateAiLyrics(input: GenerateLyricsParams) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Vous devez être connecté pour utiliser l'IA de paroles." };
+  }
+
+  const parseResult = generateLyricsInputSchema.safeParse(input);
+  if (!parseResult.success) {
+    return { success: false, error: parseResult.error.issues[0].message };
+  }
+
+  const result = await generateLyricsWithGemini(parseResult.data);
+  return result;
+}
+

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createTrack } from "./actions";
+import { createTrack, generateAiLyrics } from "./actions";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
@@ -465,15 +465,46 @@ export default function NewCreatePage() {
     return false;
   };
 
-  const handleAutoInspire = () => {
-    if (!formData.title) {
-      alert("Écris d'abord un titre de chanson pour que je puisse t'inspirer !");
+  const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
+
+  const handleAutoInspire = async () => {
+    const topic = formData.prompt.trim() || formData.title.trim() || formData.reason.trim();
+    if (!topic && !formData.title) {
+      toast.error("Indique un titre, une idée ou une histoire pour que l'IA puisse écrire les paroles !");
       return;
     }
-    setFormData(prev => ({
-      ...prev,
-      prompt: `Une chanson entraînante parlant de ${prev.title}. Le rythme est plein d'émotion et d'énergie.`
-    }));
+
+    const selectedStyleLabel = formData.styles.length > 0
+      ? formData.styles.map(s => STYLE_OPTIONS.find(o => o.id === s)?.label || s).join(', ')
+      : "Afrobeats / Urbain";
+
+    setIsGeneratingLyrics(true);
+    toast.info("L'IA Gemini rédige les paroles de ta chanson...");
+
+    try {
+      const res = await generateAiLyrics({
+        title: formData.title || "Ma Musique",
+        topic: topic || "Une chanson entraînante et inspirante",
+        style: selectedStyleLabel,
+        mood: "Énergique",
+        language: "Français"
+      });
+
+      if (res.success && res.lyrics) {
+        setFormData(prev => ({
+          ...prev,
+          prompt: res.lyrics!
+        }));
+        toast.success("Paroles générées avec succès par Gemini AI ! ✨");
+      } else {
+        toast.error(res.error || "Erreur lors de la génération des paroles avec Gemini.");
+      }
+    } catch (err) {
+      console.error("Gemini lyrics error:", err);
+      toast.error("Erreur de connexion à l'IA Gemini.");
+    } finally {
+      setIsGeneratingLyrics(false);
+    }
   };
 
   // Voice to Text State
@@ -693,9 +724,19 @@ export default function NewCreatePage() {
                     <button 
                       type="button" 
                       onClick={handleAutoInspire}
-                      className="text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 hover:bg-[#FF6B00]/20 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
+                      disabled={isGeneratingLyrics}
+                      className="text-xs font-semibold text-white bg-linear-to-r from-purple-600 to-[#FF6B00] hover:opacity-90 px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
                     >
-                      ✨ Inspirer
+                      {isGeneratingLyrics ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Gemini écrit...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>✨ Générer les paroles avec l&apos;IA</span>
+                        </>
+                      )}
                     </button>
                   </div>
                   <div className="relative">
