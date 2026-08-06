@@ -42,9 +42,10 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
    - STRICTEMENT INTERDIT : "Dans cette vie...", "Le soleil se lève...", "Chaque jour est un chapitre...", "Dans l'ombre et la lumière...", "La chenille devenant papillon...", "Depuis que tu es partie...".
    - Utilise une écriture vivante, cinématographique, avec de VRAIS DÉTAILS CONCRETS DU QUOTIDIEN (ex: "Ton message à 3h du matin", "La pluie qui frappe le carreau", "La photo dans mon portefeuille", "Le silence assourdissant de la maison", "La batterie de mon téléphone qui s'éteint").
 
-2. MÉTRIQUE MUSICALE ET FLOW PARFAIT :
-   - Rédige des phrases à la rythmique identique pour chaque vers (les vers doivent chanter naturellement sans bafouiller).
-   - Le [Refrain] doit obligatoirement avoir une **PUNCHLINE REFRAIN** : Une phrase centrale inoubliable, répétée, qui reste gravée dans la tête dès la première écoute.
+2. MÉTRIQUE MUSICALE, MÉLODIE ET ACCROCHE HYPNOTIQUE :
+   - Écris des vers d'une métrique rigoureuse et mélodique, très faciles à chanter, pour forcer l'IA musicale à produire des envolées mélodiques magnifiques.
+   - Le [Refrain] doit obligatoirement être un **CHEF-D'ŒUVRE DE MÉLODIE** avec un motif vocal obsédant et une PUNCHLINE REFRAIN inoubliable (qu'on peut tous fredonner dès la 1ère écoute).
+   - Intègre des parenthèses de vocalises mélodiques : (mélodie envolée), (voix mélodieuse), (harmonie chaude), (oh-oh-oh).
 
 3. DYNAMIQUE ET BALISES DE BALAYAGE VOCAL :
    - Intègre des parenthèses d'AD-LIBS et de CHŒURS pour donner du relief à l'interprétation de l'IA : (hmm-mm), (yeah), (oh oh-oh), (Dis-moi pourquoi...), (Yeah-yeah).

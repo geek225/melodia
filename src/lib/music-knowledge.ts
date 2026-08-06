@@ -709,7 +709,7 @@ export function getStyleKnowledge(styleName: string): MusicStyleKnowledge | unde
  * Le résultat est toujours tronqué à 120 caractères (limite Suno V3.5).
  */
 export function buildEnrichedStyle(styleNames: string[], voiceTag: string): string {
-  if (styleNames.length === 0) return voiceTag;
+  if (styleNames.length === 0) return `highly melodic, catchy earworm chorus hook, ${voiceTag}, organic natural human voice, no vocoder`;
 
   const parts: string[] = [];
   let accentTag = "";
@@ -718,40 +718,40 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "Coupé-Décalé") {
-        parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
+        parts.push(`Coupé-Décalé, Côte d'Ivoire, 128 BPM, highly melodic electric guitar sebene solo, catchy synth lead hook, bouncy bass`);
         if (!accentTag) accentTag = "authentic West African vocal accent";
       } else if (knowledge.name === "Rap Ivoire") {
-        parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark synth lead, nouchi rap flow`);
+        parts.push(`Rap Ivoire, Afro Drill, Côte d'Ivoire, 140 BPM, heavy sliding 808 sub bass, fast hi-hat glides, dark melodic synth lead, nouchi rap flow`);
         if (!accentTag) accentTag = "authentic Abidjan nouchi vocal accent";
       } else if (knowledge.name === "Zouglou") {
-        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, heavy acoustic West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
+        parts.push(`Zouglou, Côte d'Ivoire, 108 BPM, highly melodic acoustic guitar arpeggios, heavy West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
         if (!accentTag) accentTag = "authentic West African vocal accent, raw woyo choir";
       } else if (knowledge.name === "Musique Urbaine Ivoire") {
-        parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, powerful expressive vocals, afro guitar riffs, brass stabs`);
+        parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, expressive melodic vocals, lush afro guitar riffs, smooth brass stabs`);
         if (!accentTag) accentTag = "authentic West African vocal accent";
       } else if (knowledge.name === "Piano Ballad Émotion") {
-        parts.push(`Piano Ballad, 78 BPM, cinematic grand piano chords, solo acoustic piano, cello, swelling string quartet, tear-jerking falsetto vocal climax`);
+        parts.push(`Piano Ballad, 78 BPM, highly melodic grand piano chords, solo acoustic piano, cello, swelling string quartet, tear-jerking falsetto vocal climax`);
       } else if (knowledge.name === "Soul Vocale & Powerhouse") {
-        parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
+        parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, highly melodic Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
       } else if (knowledge.name === "Pop Acoustique & Piano") {
-        parts.push(`Acoustic Pop, 92 BPM, fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
+        parts.push(`Acoustic Pop, 92 BPM, highly melodic fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
       } else if (knowledge.name === "Afro Ambiance & Chœurs" || knowledge.name === "Afro Gospel Urbain") {
-        parts.push(`African Gospel Coupe Decale, Ndombolo Gospel Sebene, 126 BPM, heavy West African djembe percussions, electric guitar sebene solo, synth brass, woyo choir call and response`);
+        parts.push(`African Gospel Coupe Decale, Ndombolo Gospel Sebene, 126 BPM, highly melodic guitar sebene solo, heavy West African djembe percussions, synth brass, woyo choir call and response`);
         if (!accentTag) accentTag = "authentic West African vocal accent, raw choir call and response";
       } else if (knowledge.name === "R&B Français") {
-        parts.push(`Afro R&B, French Urban Pop, 92 BPM, acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
+        parts.push(`Afro R&B, French Urban Pop, 92 BPM, highly melodic acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
         if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing, organic human voice";
       } else if (knowledge.name === "Afro Pop & R&B Urbain") {
-        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive male lead vocals, catchy singalong chorus hook`);
+        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, highly melodic acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive male lead vocals, catchy singalong chorus hook`);
         if (!accentTag) accentTag = "authentic French urban vocal accent, natural organic human voice";
       } else if (knowledge.name === "Afro Zouk") {
-        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, lush synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
+        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, highly melodic Zouk synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
         if (!accentTag) accentTag = "authentic French and English sensual Zouk Love vocal phrasing, organic human voice";
       } else if (knowledge.name === "Reggae") {
-        parts.push(`Roots Reggae, Afro-Reggae, 76 BPM, off-beat electric guitar skank, deep warm bass guitar groove, Hammond organ bubble, roots brass section, one-drop reggae drum beat, organic conscious lead vocals`);
+        parts.push(`Roots Reggae, Afro-Reggae, 76 BPM, off-beat electric guitar skank, deep warm bass guitar groove, highly melodic Hammond organ bubble, roots brass section, one-drop reggae drum beat, organic conscious lead vocals`);
         if (!accentTag) accentTag = "authentic French and English conscious reggae vocal delivery, organic human voice";
       } else {
-        parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
+        parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM, highly melodic`);
       }
 
       // Détection automatique de l'accent vocal selon le pays / style
@@ -772,8 +772,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
     }
   }
 
+  const melodicPrefix = "highly melodic, catchy earworm refrain hook, beautiful harmonic progression";
   const finalAccent = accentTag ? `, ${accentTag}` : ", organic natural human voice";
-  let result = parts.join(", ") + `, ${voiceTag}` + finalAccent + ", no vocoder, no robotic autotune";
+  let result = `${melodicPrefix}, ` + parts.join(", ") + `, ${voiceTag}` + finalAccent + ", no vocoder, no robotic autotune";
 
   // Limite recommandée Suno V4 / KIE.AI : 180 caractères max
   if (result.length > 180) {
