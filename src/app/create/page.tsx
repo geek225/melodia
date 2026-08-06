@@ -11,7 +11,7 @@ import { createTrack, generateAiLyrics } from "./actions";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
-import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff } from "lucide-react";
+import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff, Sparkles, Flame, Smile, User, MessageSquare } from "lucide-react";
 import { AFRICAN_PROFILES } from "@/lib/african-profiles";
 import {
   AlertDialog,
@@ -23,6 +23,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const CREATE_REASONS = [
   { id: "cadeau", title: "Offrir un cadeau unique", desc: "Crée une chanson personnalisée pour un être cher.", icon: "🎁" },
@@ -466,11 +473,26 @@ export default function NewCreatePage() {
   };
 
   const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
+  const [showLyricsModal, setShowLyricsModal] = useState(false);
+  const [lyricsOptions, setLyricsOptions] = useState({
+    topic: "",
+    perspective: "",
+    mood: "Émouvant & Intime",
+    toneStyle: "Nouchi & Argot Ivoire Authentique",
+  });
 
-  const handleAutoInspire = async () => {
-    const topic = formData.prompt.trim() || formData.title.trim() || formData.reason.trim();
-    if (!topic && !formData.title) {
-      toast.error("Indique un titre, une idée ou une histoire pour que l'IA puisse écrire les paroles !");
+  const openLyricsModal = () => {
+    setLyricsOptions(prev => ({
+      ...prev,
+      topic: prev.topic || formData.prompt || formData.title || formData.reason || ""
+    }));
+    setShowLyricsModal(true);
+  };
+
+  const handleGenerateHumanLyrics = async () => {
+    const finalTopic = lyricsOptions.topic.trim() || formData.prompt.trim() || formData.title.trim() || formData.reason.trim();
+    if (!finalTopic && !formData.title) {
+      toast.error("Donne au moins une idée ou une histoire pour que l'auteur-compositeur puisse s'en inspirer !");
       return;
     }
 
@@ -479,15 +501,17 @@ export default function NewCreatePage() {
       : "Afrobeats / Urbain";
 
     setIsGeneratingLyrics(true);
-    toast.info("L'IA Gemini rédige les paroles de ta chanson...");
+    toast.info("L'Auteur-Compositeur IA rédige ta chanson...");
 
     try {
       const res = await generateAiLyrics({
         title: formData.title || "Ma Musique",
-        topic: topic || "Une chanson entraînante et inspirante",
+        topic: finalTopic || "Une chanson authentique et émouvante",
         style: selectedStyleLabel,
-        mood: "Énergique",
-        language: "Français"
+        mood: lyricsOptions.mood,
+        language: "Français",
+        perspective: lyricsOptions.perspective,
+        toneStyle: lyricsOptions.toneStyle,
       });
 
       if (res.success && res.lyrics) {
@@ -495,9 +519,10 @@ export default function NewCreatePage() {
           ...prev,
           prompt: res.lyrics!
         }));
-        toast.success("Paroles générées avec succès par Gemini AI ! ✨");
+        setShowLyricsModal(false);
+        toast.success("Paroles écrites avec succès par l'Auteur-Compositeur ! 🎵✨");
       } else {
-        toast.error(res.error || "Erreur lors de la génération des paroles avec Gemini.");
+        toast.error(res.error || "Erreur lors de la rédaction des paroles.");
       }
     } catch (err) {
       console.error("Gemini lyrics error:", err);
@@ -723,18 +748,18 @@ export default function NewCreatePage() {
                     <label className="text-sm font-bold flex items-center gap-2">Détails de ton histoire <span className="w-2 h-2 rounded-full bg-purple-500"></span></label>
                     <button 
                       type="button" 
-                      onClick={handleAutoInspire}
+                      onClick={openLyricsModal}
                       disabled={isGeneratingLyrics}
                       className="text-xs font-semibold text-white bg-linear-to-r from-purple-600 to-[#FF6B00] hover:opacity-90 px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
                     >
                       {isGeneratingLyrics ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Gemini écrit...</span>
+                          <span>L&apos;IA Auteur écrit...</span>
                         </>
                       ) : (
                         <>
-                          <span>✨ Générer les paroles avec l&apos;IA</span>
+                          <span>✨ Écrire avec l&apos;IA Auteur-Compositeur</span>
                         </>
                       )}
                     </button>
@@ -1319,6 +1344,141 @@ export default function NewCreatePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Modal Studio Auteur-Compositeur IA */}
+      <Dialog open={showLyricsModal} onOpenChange={setShowLyricsModal}>
+        <DialogContent className="sm:max-w-xl p-6 bg-white rounded-3xl border border-gray-100 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="mb-4">
+            <div className="flex items-center gap-2 text-purple-600 mb-1">
+              <Sparkles className="w-5 h-5 fill-purple-100" />
+              <span className="text-xs font-bold uppercase tracking-wider">Studio Auteur-Compositeur IA</span>
+            </div>
+            <DialogTitle className="text-2xl font-bold text-gray-900">Donne des indications à l&apos;Auteur ✍️</DialogTitle>
+            <DialogDescription className="text-gray-500 text-sm">
+              Dis-nous l&apos;histoire exacte ou l&apos;émotion que tu veux transmettre pour que l&apos;IA écrive des paroles ultra-humaines et poignantes.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-5 py-2">
+            {/* Inspiration / Histoire */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-purple-500" />
+                L&apos;histoire ou les éléments clés à intégrer
+              </label>
+              <Textarea
+                value={lyricsOptions.topic}
+                onChange={(e) => setLyricsOptions({ ...lyricsOptions, topic: e.target.value })}
+                placeholder="Ex: Mon départ du pays à 20 ans, la galère avec mes amis à Abidjan, et ma promesse de réussir pour offrir une maison à maman."
+                className="min-h-24 text-sm rounded-xl border-gray-200 focus:border-purple-500"
+              />
+            </div>
+
+            {/* Perspective / Qui chante */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-purple-500" />
+                Qui chante et à qui s&apos;adresse la chanson ? (Optionnel)
+              </label>
+              <Input
+                value={lyricsOptions.perspective}
+                onChange={(e) => setLyricsOptions({ ...lyricsOptions, perspective: e.target.value })}
+                placeholder="Ex: Un fils reconnaissant envers sa mère / Un homme déçu en amour"
+                className="h-11 text-sm rounded-xl border-gray-200 focus:border-purple-500"
+              />
+            </div>
+
+            {/* Émotion & Ambiance */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5 text-purple-500" />
+                L&apos;émotion & l&apos;ambiance de la chanson
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { id: "Émouvant & Intime", label: "❤️ Émouvant & Intime" },
+                  { id: "Puissant & Énergique", label: "🔥 Puissant & Énergique" },
+                  { id: "Nostalgique & Touchant", label: "😢 Nostalgique" },
+                  { id: "Festif & Ambiance Club", label: "🎉 Festif & Club" },
+                  { id: "Motivation & Réussite", label: "💪 Motivation" },
+                  { id: "Romantique & Doux", label: "🌹 Romantique" },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setLyricsOptions({ ...lyricsOptions, mood: m.id })}
+                    className={`p-2.5 rounded-xl text-xs font-semibold border transition-all text-left cursor-pointer ${
+                      lyricsOptions.mood === m.id
+                        ? 'border-purple-500 bg-purple-50 text-purple-700 font-bold shadow-xs'
+                        : 'border-gray-200 bg-gray-50/50 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tonalité & Style de langage */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-purple-500" />
+                Style de langage & Flow
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  { id: "Nouchi & Argot Ivoire Authentique", label: "🗣️ Argot Nouchi & Abidjan" },
+                  { id: "Pop Urbaine & Poétique", label: "🎶 Pop Urbaine & Poétique" },
+                  { id: "Conversational & Direct", label: "💬 Conversationnel & Direct" },
+                  { id: "Français & English / Pidgin", label: "🌍 Français & Pidgin / English" },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setLyricsOptions({ ...lyricsOptions, toneStyle: t.id })}
+                    className={`p-2.5 rounded-xl text-xs font-semibold border transition-all text-left cursor-pointer ${
+                      lyricsOptions.toneStyle === t.id
+                        ? 'border-purple-500 bg-purple-50 text-purple-700 font-bold shadow-xs'
+                        : 'border-gray-200 bg-gray-50/50 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowLyricsModal(false)}
+              className="rounded-xl h-12 flex-1 border-gray-200 text-gray-600 font-semibold"
+            >
+              Annuler
+            </Button>
+            <Button
+              type="button"
+              disabled={isGeneratingLyrics}
+              onClick={handleGenerateHumanLyrics}
+              className="rounded-xl h-12 flex-1 bg-linear-to-r from-purple-600 to-[#FF6B00] hover:opacity-90 text-white font-bold shadow-lg shadow-purple-500/20 cursor-pointer"
+            >
+              {isGeneratingLyrics ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>L&apos;Auteur rédige...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Rédiger ma chanson sur-mesure</span>
+                </div>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

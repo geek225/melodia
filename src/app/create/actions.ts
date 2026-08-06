@@ -301,8 +301,10 @@ const generateLyricsInputSchema = z.object({
   title: z.string().max(100).optional().default(""),
   topic: z.string().max(2000).optional().default(""),
   style: z.string().max(100).optional().default("Afrobeats"),
-  mood: z.string().max(50).optional().default("Énergique"),
-  language: z.string().max(50).optional().default("Français")
+  mood: z.string().max(100).optional().default("Émouvant & Intime"),
+  language: z.string().max(50).optional().default("Français"),
+  perspective: z.string().max(200).optional().default(""),
+  toneStyle: z.string().max(100).optional().default("Humain & Naturel")
 });
 
 export type GenerateLyricsParams = z.infer<typeof generateLyricsInputSchema>;

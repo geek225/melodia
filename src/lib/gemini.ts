@@ -8,6 +8,8 @@ export interface LyricsGenerationParams {
   style?: string;
   mood?: string;
   language?: string;
+  perspective?: string;
+  toneStyle?: string;
 }
 
 export async function generateLyricsWithGemini(params: LyricsGenerationParams): Promise<{ success: boolean; lyrics?: string; error?: string }> {
@@ -24,34 +26,47 @@ export async function generateLyricsWithGemini(params: LyricsGenerationParams): 
     title = "",
     topic = "",
     style = "Afrobeats",
-    mood = "Énergique",
-    language = "Français"
+    mood = "Émouvant & Intime",
+    language = "Français",
+    perspective = "",
+    toneStyle = "Humain & Naturel"
   } = params;
 
-  const systemInstruction = `Tu es l'assistant de composition musicale de Meliodia, un parolier d'élite spécialisé dans tous les genres musicaux (Afrobeats, Coupé-Décalé, Zouglou, Rumba Congolaise, Gospel, Rap Ivoire, Pop, R&B, Chanson Française).
-Ta mission est de rédiger des paroles de chanson hautement captivantes, poétiques, rythmées et adaptées au style musical demandé.
+  const systemInstruction = `Tu es un Auteur-Compositeur-Interprète de renommée internationale, doté d'une sensibilité artistique exceptionnelle et d'un sens aigu de l'émotion humaine.
+Ta mission est d'écrire des paroles de chanson VRAIES, TOUCHANTES, ORGANIQUES et HUMAINES, comme si un grand artiste (ex: Josey, Roseline Layo, Burna Boy, Stromae, Corneille, Didi B, Dadju, Singuila, Fally Ipupa) avait posé son cœur sur la feuille.
 
-Instructions strictes de structure :
-1. Organise les paroles avec des balises de structure musicales claires entre crochets :
-   [Intro]
-   [Couplet 1]
+RÈGLES D'OR ANTI-ROBOTIQUE :
+1. ABSOLUMENT PAS DE PHRASES ROBOTIQUES OU CLICHÉS :
+   - INTERDIT d'utiliser des clichés comme "Dans cette vie...", "Le soleil se lève sur...", "Chaque jour est un nouveau chapitre...", "Dans l'ombre et la lumière...", "La chenille qui devient papillon...".
+   - BANNOIR le ton scolaire, pompeux, académique ou générique.
+2. PARLE AVEC DE VRAIS DÉTAILS CONCRETS ET VÉCUS :
+   - Mentionne des petits détails du quotidien (ex: "Ton appel à 2h du matin", "La facture qu'on n'arrive pas à payer", "Les clés laissées sur la table", "Le sourire de maman au téléphone").
+   - Utilise de vraies métaphores naturelles, de la conversation sincère, du vocabulaire vivant et direct.
+3. ADAPTE LE FLOW AU STYLE MUSICAL :
+   - Zouglou / Coupé-Décalé / Rap Ivoire : Intègre de l'argot Nouchi et des expressions d'Abidjan naturelles et percutantes.
+   - Rumba / Afro Pop : Utilise une poésie romantique et mélancolique poignante.
+   - Gospel : Émotion spirituelle authentique, reconnaissance sincère sans lourdeur.
+4. STRUCTURE MUSICALE STRICTE (entre crochets) :
+   [Intro] (Phrase d'ambiance intime, monologue ou gimmick)
+   [Couplet 1] (Installation de l'histoire, contexte concret)
+   [Pre-Refrain] (Montée en tension émotionnelle)
+   [Refrain] (Le cœur du morceau, extrêmement émouvant et accrocheur)
+   [Couplet 2] (Développement de l'histoire, révélations)
    [Refrain]
-   [Couplet 2]
-   [Refrain]
-   [Pont]
-   [Outro]
-2. Inclus des rimes riches, une bonne métrique et une vraie musicalité.
-3. Si le style est africain (Zouglou, Coupé-Décalé, Rap Ivoire, Rumba), utilise les expressions culturelles adaptées (ex: Nouchi pour Rap Ivoire/Coupé-Décalé, sonorités Woyo pour Zouglou, Atalaku subtil, etc.) tout en restant compréhensible.
-4. Rends la chanson moderne, émouvante et mémorable.
-5. Retourne SEULEMENT les paroles avec leurs balises de structure (pas d'intro ni d'explications superflues).`;
+   [Pont] (Sommet émotionnel ou envolée vocale)
+   [Outro] (Conclusion mémorable)
+
+Retourne UNIQUEMENT les paroles structurées avec leurs balises, sans introduction ni conclusion de ta part.`;
 
   const userPrompt = `Rédige les paroles d'une chanson en ${language}.
 ${title ? `Titre de la chanson : "${title}"` : ''}
-${topic ? `Histoire / Idée / Sujet : "${topic}"` : ''}
+${topic ? `Histoire / Contexte / Idée : "${topic}"` : ''}
+${perspective ? `Qui chante et à qui : "${perspective}"` : ''}
 Style musical : ${style}
-Ambiance / Mood : ${mood}
+Ambiance / Émotion recherchée : ${mood}
+Tonalité / Langage : ${toneStyle}
 
-Rédige une chanson complète, moderne et entraînante.`;
+Écris une chanson authentique, vibrante d'émotion humaine et prête à être enregistrée en studio.`;
 
   // Standard valid working Gemini models
   const models = ['gemini-flash-latest', 'gemini-pro-latest', 'gemini-flash-lite-latest', 'gemini-2.0-flash'];
@@ -75,8 +90,8 @@ Rédige une chanson complète, moderne et entraînante.`;
             }
           ],
           generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
+            temperature: 0.8, // Slightly higher creativity for human songwriting
+            topP: 0.95,
             maxOutputTokens: 2048
           }
         })
