@@ -16,7 +16,7 @@ export async function generateLyricsWithGemini(params: LyricsGenerationParams): 
   if (!apiKey) {
     return {
       success: false,
-      error: "Clé API Gemini non configurée. Veuillez ajouter GEMINI_API_KEY dans votre fichier .env.local"
+      error: "Clé API Gemini non configurée sur Vercel. Veuillez ajouter GEMINI_API_KEY dans les variables d'environnement de Vercel."
     };
   }
 
@@ -53,8 +53,9 @@ Ambiance / Mood : ${mood}
 
 Rédige une chanson complète, moderne et entraînante.`;
 
-  // Models to try sequentially for maximum reliability
-  const models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+  // Standard valid Gemini models
+  const models = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+  let lastErrorMessage = "";
 
   for (const model of models) {
     try {
@@ -84,6 +85,7 @@ Rédige une chanson complète, moderne et entraînante.`;
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.warn("Gemini model failed:", model, response.status, errorData);
+        lastErrorMessage = errorData?.error?.message || `HTTP ${response.status}`;
         continue; // Try next model
       }
 
@@ -98,11 +100,14 @@ Rédige une chanson complète, moderne et entraînante.`;
       }
     } catch (err) {
       console.warn("Error calling Gemini model:", model, err);
+      lastErrorMessage = err instanceof Error ? err.message : "Erreur de connexion";
     }
   }
 
   return {
     success: false,
-    error: "Impossible de générer les paroles avec l'API Gemini. Veuillez réessayer."
+    error: lastErrorMessage
+      ? `Erreur Gemini API (${lastErrorMessage}). Vérifiez votre clé GEMINI_API_KEY sur Vercel.`
+      : "Impossible de générer les paroles avec l'API Gemini. Veuillez vérifier votre clé API sur Vercel."
   };
 }
