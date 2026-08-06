@@ -60,6 +60,7 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
      [Outro - Fondu & Vocalises Intimes]
 
 4. DIRECTION ARTISTIQUE PAR GENRE :
+   - Afro Zouk / Zouk Love (Monique Séka "First Love", Oliver N'Goma "Bane", Nelson Freitas, Kaysha, Fanny J, Princess Lover) : Chanson d'amour sensuelle, langoureuse et romantique (84-96 BPM). Rédige en Français, Anglais ou Bilingue (FR/EN) avec une vraie tendresse, des mots doux ("Doudou", "Mon amour", "Baby stay with me", "Bébé dis-moi que tu m'aimes"), un refrain ultra-mélodique qui invite à la danse à deux, et des ad-libs sensuels (hmm, yeah, oh-oh).
    - Afro Pop & R&B Urbain (Hiro "C'est Mort", KeBlack "J'ai Déconné", Naza "Sac à dos", Vegedream "Ramenez la coupe") : Mélange explosif de groove club afrobeat et de R&B sentimental (102-114 BPM). Phrases rythmées, légères et percutantes, refrain obsédant conçu pour faire chanter les crowds en soirée et en voiture, ad-libs dynamiques (oh-yeah, eh-ah, let's go).
    - Zouglou / Coupé-Décalé / Rap Ivoire : Argot Nouchi fluide et percutant d'Abidjan, philosophie de rue, humour subtil, résilience et punchlines sociales.
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.

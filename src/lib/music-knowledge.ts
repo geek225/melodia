@@ -84,6 +84,22 @@ Instrumentation & Rhythm:
     negativePrompt: "euro pop synth, electro pop, urban pop, autotune pop, hiro naza style, metal, hard rock, monotonous electronic beat, bad mix, off beat",
   },
   {
+    name: "Afro Zouk",
+    country: "Côte d'Ivoire / Gabon / Antilles / Diaspora",
+    bpm: "84-96",
+    languages: ["Français", "English", "Créole"],
+    systemPrompt: `Generate a sensual, romantic, highly melodic Afro-Zouk & Zouk Love hit in French or English inspired by Monique Séka ("First Love"), Oliver N'Goma ("Bane"), Nelson Freitas, Kaysha, Fanny J, and Princess Lover.
+Country: Côte d'Ivoire / Gabon / Antilles / Diaspora (Sensual Afro-Zouk & Zouk Love)
+Tempo: 84-96 BPM (intimate, smooth, danceable sensual pulse)
+Languages: Français, English, Bilingue (FR/EN)
+Sound & Production Guide:
+- Lush digital synthesizer pads, classic Zouk chime keyboard chords, warm Rhodes piano, clean Caribbean guitar arpeggios with West African guitar licks.
+- Smooth Zouk Love electronic drum pattern (bouncy 808 sub-bass, crisp snare/shaker) combined with soft African djembe percussions.
+- Vocals: Silky, sensual, highly romantic organic human lead vocals in French or English with rich 3-part backing harmonies and intimate vocal ad-libs ("Doudou", "Mon amour", "Stay with me").
+- Production: Crystalline radio-ready mix, spatial stereo warmth, ultra-sensual atmosphere.`,
+    negativePrompt: "metal, hard rock, monotonous trap, aggressive noise, robotic autotune, metallic vocoder, fast techno, bad mix, off beat",
+  },
+  {
     name: "Afrobeats",
     country: "Nigeria",
     bpm: "100-115",
@@ -707,6 +723,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
       } else if (knowledge.name === "Afro Pop & R&B Urbain") {
         parts.push(`Afro Pop Urbain, French R&B, 108 BPM, acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive male lead vocals, catchy singalong chorus hook`);
         if (!accentTag) accentTag = "authentic French urban vocal accent, natural organic human voice";
+      } else if (knowledge.name === "Afro Zouk") {
+        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, lush synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
+        if (!accentTag) accentTag = "authentic French and English sensual Zouk Love vocal phrasing, organic human voice";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }

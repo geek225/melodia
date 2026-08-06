@@ -44,6 +44,7 @@ const STYLE_CATEGORIES = [
     id: "afrique_ouest",
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
+      { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Monique Séka, Oliver N'Goma, Nelson Freitas (84-96 BPM)", icon: "🌴💖" },
       { id: "Afro Ambiance & Chœurs", label: "Afro Ambiance & Chœurs", desc: "Tim Storm (Suspendu), Joy Awu (Pour Toujours), Kano Choir", icon: "🔥" },
       { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Atalaku, boucan, Abidjan", icon: "👞" },
       { id: "Musique Urbaine Ivoire", label: "Musique Urbaine Ivoire", desc: "Roseline Layo, Josey, Abidjan", icon: "✨" },
@@ -74,6 +75,7 @@ const STYLE_CATEGORIES = [
     id: "maghreb_diaspora",
     title: "Maghreb & Diaspora 🌍",
     styles: [
+      { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Zouk sensuel, français / anglais", icon: "🌴💖" },
       { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Oran, darbuka, urbain", icon: "🇩🇿" },
       { id: "Kizomba", label: "Kizomba", desc: "Sensuel, Luanda, semba", icon: "🇦🇴" },
       { id: "Pop / R&B", label: "Pop R&B", desc: "Radio, mélodies émotives", icon: "🎧" },
@@ -94,6 +96,7 @@ const STYLE_CATEGORIES = [
     id: "europe_diaspora",
     title: "Europe & Pop Française 🇫🇷 🎶",
     styles: [
+      { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Sensuel, Monique Séka, Oliver N'Goma", icon: "🌴💖" },
       { id: "Afro Pop & R&B Urbain", label: "Afro Pop & R&B Urbain", desc: "Hiro, KeBlack, Naza, Vegedream (102-114 BPM)", icon: "🔥🎶" },
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
       { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
