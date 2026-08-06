@@ -100,6 +100,16 @@ const STYLE_CATEGORIES = [
     ]
   },
   {
+    id: "pop_soul_ballads",
+    title: "Piano Ballades, Pop & Soul Vocale 🎹🎤✨",
+    styles: [
+      { id: "Piano Ballad Émotion", label: "Piano Ballade Émotion", desc: "Lewis Capaldi, John Legend, Christina Aguilera, Kodaline", icon: "🎹" },
+      { id: "Soul Vocale & Powerhouse", label: "Soul Vocale & Powerhouse", desc: "Teddy Swims, Sam Smith, Whitney Houston, Cynthia Erivo", icon: "✨" },
+      { id: "Pop Acoustique & Piano", label: "Pop Acoustique & Piano", desc: "Ed Sheeran, Justin Bieber, Charlie Puth", icon: "🎸" },
+      { id: "Dark Pop Ambient", label: "Dark Pop Ambient", desc: "Billie Eilish, Khalid - Lovely", icon: "🌙" },
+    ]
+  },
+  {
     id: "rap_us",
     title: "Rap International 🇺🇸 🌐",
     styles: [
@@ -478,7 +488,8 @@ export default function NewCreatePage() {
     topic: "",
     perspective: "",
     mood: "Émouvant & Intime",
-    toneStyle: "Nouchi & Argot Ivoire Authentique",
+    toneStyle: "Pop Urbaine & Poétique",
+    language: "Français",
   });
 
   const openLyricsModal = () => {
@@ -509,7 +520,7 @@ export default function NewCreatePage() {
         topic: finalTopic || "Une chanson authentique et émouvante",
         style: selectedStyleLabel,
         mood: lyricsOptions.mood,
-        language: "Français",
+        language: lyricsOptions.language,
         perspective: lyricsOptions.perspective,
         toneStyle: lyricsOptions.toneStyle,
       });
@@ -1443,6 +1454,34 @@ export default function NewCreatePage() {
                     }`}
                   >
                     {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Langue des paroles */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                <Music2 className="w-3.5 h-3.5 text-purple-500" />
+                Langue de la chanson
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: "Français", label: "🇫🇷 Français" },
+                  { id: "English", label: "🇬🇧 English" },
+                  { id: "Bilingue Français & English", label: "🌍 Bilingue FR/EN" },
+                ].map((l) => (
+                  <button
+                    key={l.id}
+                    type="button"
+                    onClick={() => setLyricsOptions({ ...lyricsOptions, language: l.id })}
+                    className={`p-2.5 rounded-xl text-xs font-semibold border transition-all text-center cursor-pointer ${
+                      lyricsOptions.language === l.id
+                        ? 'border-purple-500 bg-purple-50 text-purple-700 font-bold shadow-xs'
+                        : 'border-gray-200 bg-gray-50/50 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {l.label}
                   </button>
                 ))}
               </div>

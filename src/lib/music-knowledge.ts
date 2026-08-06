@@ -510,6 +510,71 @@ Style guide:
   },
 ];
 
+// ─── Piano Ballads, Pop & Soul Vocale ────────────────────────────────
+const popSoulBallads: MusicStyleKnowledge[] = [
+  {
+    name: "Piano Ballad Émotion",
+    country: "International",
+    bpm: "72-85",
+    languages: ["French", "English"],
+    systemPrompt: `Generate a soul-stirring, emotional piano ballad hit inspired by Lewis Capaldi ("Someone You Loved"), John Legend ("All of Me"), Christina Aguilera & A Great Big World ("Say Something"), Kodaline ("All I Want"), and Lukas Graham ("7 Years").
+Country: International
+Tempo: 72-85 BPM
+Languages: French, English
+Style guide:
+- Cinematic grand piano, expressive solo acoustic piano chords, swelling string quartet (cellos, violins).
+- Raw, emotional lead vocal performance with rich vocal range, falsetto climax, and deep tear-jerking delivery.
+- Intimate piano intro, swelling emotional building, massive chorus hook, orchestral string climax bridge.
+- Commercial radio mastering, crystal-clear vocal acoustic mix.`,
+    negativePrompt: "metal, hard rock, monotonous trap, robotic autotune, aggressive synth, loud electronic beat, bad mix, distorted audio",
+  },
+  {
+    name: "Soul Vocale & Powerhouse",
+    country: "International",
+    bpm: "75-92",
+    languages: ["French", "English"],
+    systemPrompt: `Generate a powerful, explosive Soul & Vocal Powerhouse anthem inspired by Teddy Swims ("Lose Control"), Sam Smith ft. Mary J. Blige ("Stay With Me"), Whitney Houston ("I Will Always Love You"), Cynthia Erivo, Andra Day ("Rise Up"), and Jessie J.
+Country: International
+Tempo: 75-92 BPM
+Languages: French, English
+Style guide:
+- Heavy gospel Hammond B3 organ, grand piano chords, warm vintage brass section, deep sub-bass, acoustic drums.
+- Incredible powerhouse soul singer with massive vocal range, gritty emotional raspy belts, falsetto runs, 4-part gospel choir harmonies.
+- Legendary studio soul mix, wide stereo image, epic emotional resonance.`,
+    negativePrompt: "metal, hard rock, aggressive EDM, harsh noise, robotic autotune, flat monotone vocal, bad mix",
+  },
+  {
+    name: "Pop Acoustique & Piano",
+    country: "International",
+    bpm: "85-102",
+    languages: ["French", "English"],
+    systemPrompt: `Generate a warm, catchy acoustic Pop & Piano hit inspired by Ed Sheeran ("Perfect", "Thinking Out Loud"), Justin Bieber ("Love Yourself", "Intentions"), and Wiz Khalifa ft. Charlie Puth ("See You Again").
+Country: International
+Tempo: 85-102 BPM
+Languages: French, English
+Style guide:
+- Fingerpicked acoustic guitar, clean piano chords, warm sub-bass, light bouncy percussions (snap, shaker, soft kick).
+- Smooth, intimate, conversational lead singer with catchy pop-R&B phrasing, silky vocal harmonies.
+- Radio-hit structure, infectious singalong hook chorus.`,
+    negativePrompt: "metal, hard rock, heavy synth noise, distorted autotune, bad mix",
+  },
+  {
+    name: "Dark Pop Ambient",
+    country: "International",
+    bpm: "65-80",
+    languages: ["French", "English"],
+    systemPrompt: `Generate a haunting, beautiful Dark Pop & Cinematic Ambient hit inspired by Billie Eilish & Khalid ("Lovely").
+Country: International
+Tempo: 65-80 BPM
+Languages: French, English
+Style guide:
+- Minimalist melancholic piano motifs, dark cinematic cello & string quartet, deep atmospheric sub-bass drone.
+- Intimate, whispery yet powerful vocal duet with breathy harmonies, soaring falsetto notes.
+- Spatial cinematic audio, crystalline vocals, deep sub-bass warmth.`,
+    negativePrompt: "metal, hard rock, upbeat disco, loud drums, party pop, bad mix",
+  },
+];
+
 // ─── Registre complet ────────────────────────────────────────────────
 export const ALL_MUSIC_KNOWLEDGE: MusicStyleKnowledge[] = [
   ...afriqueOuest,
@@ -518,6 +583,7 @@ export const ALL_MUSIC_KNOWLEDGE: MusicStyleKnowledge[] = [
   ...maghrebDiaspora,
   ...gospel,
   ...europe,
+  ...popSoulBallads,
   ...rapInternational,
 ];
 
@@ -592,9 +658,14 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
       } else if (knowledge.name === "Musique Urbaine Ivoire") {
         parts.push(`Musique Urbaine Ivoire, Côte d'Ivoire, 100 BPM, powerful expressive vocals, afro guitar riffs, brass stabs`);
         if (!accentTag) accentTag = "authentic West African vocal accent";
-      } else if (knowledge.name === "Gospel Adoration") {
-        parts.push(`Gospel Adoration, RDC, Côte d'Ivoire, 72 BPM, slow congolese worship, grand piano, acoustic guitar, clean rumba guitar solo, anointed african choir, french worship`);
-        if (!accentTag) accentTag = "authentic African worship vocal accent";
+      } else if (knowledge.name === "Piano Ballad Émotion") {
+        parts.push(`Piano Ballad, 78 BPM, cinematic grand piano chords, solo acoustic piano, cello, swelling string quartet, tear-jerking falsetto vocal climax`);
+      } else if (knowledge.name === "Soul Vocale & Powerhouse") {
+        parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
+      } else if (knowledge.name === "Pop Acoustique & Piano") {
+        parts.push(`Acoustic Pop, 92 BPM, fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
+      } else if (knowledge.name === "Dark Pop Ambient") {
+        parts.push(`Dark Pop Ambient, 72 BPM, minimalist piano motif, cinematic cello, atmospheric sub bass, breathy whisper falsetto vocal duet`);
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
