@@ -432,22 +432,20 @@ Style guide:
   },
   {
     name: "R&B Français",
-    country: "France",
-    bpm: "80-100",
-    languages: ["French"],
-    systemPrompt: `Generate an authentic R&B Français track.
-Country: France
-Tempo: 80-100 BPM
-Languages: French
-Style guide:
-- R&B moderne.
-- Commercial quality
-- Rich arrangement
-- Emotional authenticity
-- Modern mix & mastering
-- Strong hook
-- Respect the cultural identity of the genre.`,
-    negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
+    country: "France / Afrique",
+    bpm: "88-102",
+    languages: ["Français"],
+    systemPrompt: `Generate a deeply emotional, highly melodic, commercial Afro-R&B & Pop Urbaine hit in French inspired by Hiro ("C'est Mort"), KeBlack ("J'ai Déconné"), Locko ("Let Go"), Tayc, Dadju, and Singuila.
+Country: France / Afrique (Afro R&B & Urban Pop)
+Tempo: 88-102 BPM
+Languages: Français (with modern urban vocal phrasing)
+Melody & Production Guide:
+- Smooth acoustic & electric guitar arpeggios, warm Rhodes piano chords, emotional synth pads, deep bouncy 808 sub-bass.
+- Expressive, sensual lead vocal performance with smooth vocal runs, falsetto accents, and rich multi-layered backing choir harmonies.
+- Groovy afro-r&b drums (crisp rimshots, soft shakers, percussive bongo/conga touches).
+- Extremely catchy, emotional singalong chorus hook, romantic & apologetic storytelling attitude.
+- Polished, radio-ready studio mix with high emotional resonance.`,
+    negativePrompt: "metal, hard rock, monotonous trap, robotic vocoder, aggressive noise, bad mix, off beat, low quality",
   },
   {
     name: "Rap Français",

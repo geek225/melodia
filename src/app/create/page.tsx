@@ -95,7 +95,7 @@ const STYLE_CATEGORIES = [
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
       { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
       { id: "Soul / Jazz France", label: "Soul Jazz", desc: "Club intime, soul, sax", icon: "🎷" },
-      { id: "R&B Français", label: "R&B Français", desc: "Pop R&B contemporaine", icon: "🎵" },
+      { id: "R&B Français", label: "Afro R&B Français", desc: "Hiro, KeBlack, Locko, Tayc, Dadju", icon: "🌹" },
       { id: "Rap Français", label: "Rap Français", desc: "Flow FR, Boom Bap / Trap", icon: "🇫🇷" },
     ]
   },
