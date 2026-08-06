@@ -101,12 +101,12 @@ export async function createTrack(formData: TrackFormData) {
   try {
     const isDuo = validData.voice === "Duo";
     const voiceTag = validData.voice === "Homme"
-      ? "male vocals"
+      ? "organic warm expressive male vocals, natural human voice, live studio vocal performance, clear vocal tone"
       : validData.voice === "Femme"
-      ? "female vocals"
+      ? "organic warm expressive female vocals, natural human voice, live studio vocal performance, clear vocal tone"
       : isDuo
-      ? "male and female duo vocals, duet, call and response"
-      : "human vocal";
+      ? "organic male and female duo vocals, natural human voice duet, warm expressive call and response"
+      : "organic warm natural human vocals, expressive studio vocal performance";
 
     const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
 

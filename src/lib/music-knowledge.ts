@@ -466,6 +466,20 @@ Melody & Production Guide:
     negativePrompt: "metal, hard rock, monotonous trap, robotic vocoder, aggressive noise, bad mix, off beat, low quality",
   },
   {
+    name: "Afro Pop & R&B Urbain",
+    country: "France / Afrique",
+    bpm: "102-114",
+    languages: ["Français"],
+    systemPrompt: `Generate a platinum-certified, radio-ready Afro-Pop & R&B Urbain club & love anthem inspired by Hiro ("C'est Mort"), KeBlack ("J'ai Déconné", "Bazardée"), Naza ("Sac à dos", "MMM"), and Vegedream ("Ramenez la coupe à la maison", "Elle est bonne sa mère").
+Genre: Modern French Afro-Pop & R&B Urbain
+Tempo: 102-114 BPM (infectious afrobeat club bounce & sensual R&B groove)
+Vocals: Organic warm expressive male lead singer with smooth natural vocal phrasing, infectious singalong refrain hook, and lush backing vocal harmonies.
+Instrumentation: Acoustic guitar arpeggios, bouncy 808 sub-bass, bright afrobeat brass stabs, clean Rhodes piano chords, crisp rimshot percussion pattern.
+Arrangement: Radio hit structure, catchy chorus hook, dynamic verse, swelling pre-chorus, energetic guitar solo bridge, fading chorus outro.
+Production Quality: Pristine commercial studio mix, radio-ready mastering, warm natural vocal presence.`,
+    negativePrompt: "metal, hard rock, monotonous trap, robotic autotune, metallic vocoder, distorted audio, off beat, low quality",
+  },
+  {
     name: "Rap Français",
     country: "France",
     bpm: "85-150",
@@ -689,7 +703,10 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         if (!accentTag) accentTag = "authentic West African vocal accent, raw choir call and response";
       } else if (knowledge.name === "R&B Français") {
         parts.push(`Afro R&B, French Urban Pop, 92 BPM, acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
-        if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing";
+        if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing, organic human voice";
+      } else if (knowledge.name === "Afro Pop & R&B Urbain") {
+        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive male lead vocals, catchy singalong chorus hook`);
+        if (!accentTag) accentTag = "authentic French urban vocal accent, natural organic human voice";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
@@ -698,13 +715,13 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
       if (!accentTag) {
         const countryLower = knowledge.country.toLowerCase();
         if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
-          accentTag = "authentic African vocal accent";
+          accentTag = "authentic African vocal accent, organic natural human voice";
         } else if (knowledge.name === "Afro Trap France") {
-          accentTag = "French urban vocal accent with African rhythmic inflections";
+          accentTag = "French urban vocal accent with African rhythmic inflections, organic human voice";
         } else if (["france", "europe"].includes(countryLower)) {
-          accentTag = "authentic French vocal accent";
+          accentTag = "authentic French vocal accent, organic natural human voice";
         } else if (["usa", "international"].includes(countryLower)) {
-          accentTag = "authentic American vocal accent";
+          accentTag = "authentic American vocal accent, organic natural human voice";
         }
       }
     } else {
@@ -712,8 +729,8 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
     }
   }
 
-  const finalAccent = accentTag ? `, ${accentTag}` : "";
-  let result = parts.join(", ") + `, ${voiceTag}` + finalAccent;
+  const finalAccent = accentTag ? `, ${accentTag}` : ", organic natural human voice";
+  let result = parts.join(", ") + `, ${voiceTag}` + finalAccent + ", no vocoder, no robotic autotune";
 
   // Limite recommandée Suno V4 / KIE.AI : 180 caractères max
   if (result.length > 180) {

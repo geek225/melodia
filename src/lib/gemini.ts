@@ -60,7 +60,7 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
      [Outro - Fondu & Vocalises Intimes]
 
 4. DIRECTION ARTISTIQUE PAR GENRE :
-   - Afro R&B / Pop Urbaine (Hiro "C'est Mort", KeBlack "J'ai Déconné", Locko "Let Go", Tayc, Dadju) : Vulnérabilité amoureuse poignante, remords sincères, refus de laisser filer l'être cher, refrain ultra-mélodique avec hooks addictifs.
+   - Afro Pop & R&B Urbain (Hiro "C'est Mort", KeBlack "J'ai Déconné", Naza "Sac à dos", Vegedream "Ramenez la coupe") : Mélange explosif de groove club afrobeat et de R&B sentimental (102-114 BPM). Phrases rythmées, légères et percutantes, refrain obsédant conçu pour faire chanter les crowds en soirée et en voiture, ad-libs dynamiques (oh-yeah, eh-ah, let's go).
    - Zouglou / Coupé-Décalé / Rap Ivoire : Argot Nouchi fluide et percutant d'Abidjan, philosophie de rue, humour subtil, résilience et punchlines sociales.
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.
    - Gospel Adoration & Classique : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.

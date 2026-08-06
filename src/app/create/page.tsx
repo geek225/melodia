@@ -94,6 +94,7 @@ const STYLE_CATEGORIES = [
     id: "europe_diaspora",
     title: "Europe & Pop Française 🇫🇷 🎶",
     styles: [
+      { id: "Afro Pop & R&B Urbain", label: "Afro Pop & R&B Urbain", desc: "Hiro, KeBlack, Naza, Vegedream (102-114 BPM)", icon: "🔥🎶" },
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },
       { id: "Afro Trap France", label: "Afro Trap France", desc: "Banlieue, afro, urban", icon: "🏙️" },
       { id: "Soul / Jazz France", label: "Soul Jazz", desc: "Club intime, soul, sax", icon: "🎷" },
