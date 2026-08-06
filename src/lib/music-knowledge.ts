@@ -353,19 +353,20 @@ Sound guide:
   {
     name: "Afro Gospel Urbain",
     country: "Côte d'Ivoire / RDC / Nigeria",
-    bpm: "118-128",
+    bpm: "124-128",
     languages: ["Français", "Nouchi", "Lingala"],
-    systemPrompt: `Generate a high-energy, explosive, joyful Afro-Gospel Ambiance & Gospel Afrobeats dance hit inspired by Tim Storm ("Suspendu"), Joy Awu ("Pour Toujours"), Kano Choir ("Tout donner x Rebanav Gospel Remix"), KS Bloom, Morijah, and Limoblaze.
-Country: Côte d'Ivoire / RDC / Nigeria (Afro-Gospel Urbain & Louange Festive)
-Tempo: 118-128 BPM (explosive, highly danceable, joyful praise)
-Languages: Français, Nouchi, Lingala (with joyful local praise interjections)
+    systemPrompt: `Generate a high-energy, explosive, highly danceable Afro-Gospel Coupé-Décalé & Ndombolo Sebene praise hit inspired by Tim Storm ("Suspendu"), Joy Awu ("Pour Toujours"), Kano Choir ("Tout donner x Rebanav 126 BPM Gospel Remix"), KS Bloom, and Limoblaze.
+Genre: African Gospel Coupé-Décalé / Ndombolo Gospel Sebene / Afrobeat Praise
+Tempo: 124-128 BPM (fast, explosive, ultra-danceable praise)
+Languages: Français, Nouchi (authentic Abidjan & Kinshasa street praise flow)
 Sound & Instrumentation:
-- Bright West African electric guitar sebene licks, catchy synth brass hooks, bouncy 808 sub-bass.
-- Heavy West African tam-tam percussions, woyo djembe drums, roukaskas, and crisp 4/4 afrobeat percussion groove.
-- Powerful lead vocal performance in French with authentic West African accent and street praise energy.
-- Massive polyphonic choir singing energetic call-and-response ("Alléluia !", "Hosanna !", "Jésus est au contrôle !").
-- Production: Pristine commercial studio mix, explosive energy, radio-ready afro-gospel hit arrangement.`,
-    negativePrompt: "metal, hard rock, dark ambient, sad depression, slow ballad, bad mix, off beat, low quality, distorted audio",
+- Fast highlife & Congolese Rumba electric guitar sebene solo, bright synth brass hooks, bouncy bassline.
+- Heavy West African tam-tam percussions, authentic woyo djembe drums, metallic cowbell claps, roukaskas drums.
+- Shouting energetic lead singer with authentic African vocal accent and street praise attitude.
+- Massive polyphonic choir singing energetic call-and-response on every line ("Alléluia !", "Hosanna !", "C'est Jésus, oh !").
+- Explosive Atalaku gospel dance animation breakdown with whistles, clapping, and celebration energy.
+- Production: Pristine commercial studio mix, maximum energy, radio-ready hit mastering.`,
+    negativePrompt: "metal, hard rock, dark ambient, sad depression, slow ballad, bad mix, off beat, low quality, distorted audio, robotic autotune",
   },
   {
     name: "Gospel Européen",
@@ -682,8 +683,8 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
       } else if (knowledge.name === "Pop Acoustique & Piano") {
         parts.push(`Acoustic Pop, 92 BPM, fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
       } else if (knowledge.name === "Afro Gospel Urbain") {
-        parts.push(`Afro-Gospel Ambiance, Gospel Afrobeats, Côte d'Ivoire, RDC, 124 BPM, bright electric guitar sebene solo, synth brass hooks, tam-tam percussions, joyful praise choir`);
-        if (!accentTag) accentTag = "authentic African gospel praise vocal accent";
+        parts.push(`African Gospel Coupe Decale, Ndombolo Gospel Sebene, 126 BPM, heavy West African djembe percussions, electric guitar sebene solo, synth brass, woyo choir call and response`);
+        if (!accentTag) accentTag = "authentic West African gospel praise vocal accent, raw choir call and response";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }

@@ -64,7 +64,15 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
    - Zouglou / Coupé-Décalé / Rap Ivoire : Argot Nouchi fluide et percutant d'Abidjan, philosophie de rue, humour subtil, résilience et punchlines sociales.
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.
    - Gospel Adoration & Classique : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.
-   - Afro Gospel Urbain / Ambiance (Tim Storm "Suspendu", Joy Awu "Pour Toujours", Kano Choir "Naza x Chily Gospel Remix", KS Bloom) : Louange festive, explosive et ultra-dansante (120-128 BPM). Célébration de la grâce, de la victoire et des bénédictions avec de puissants chœurs polyphoniques en parenthèses (Alléluia !), (Hosanna !), (Jésus est au contrôle !), (On saute pour le Roi !).
+   - Afro Gospel Urbain / Ambiance & Nouchi (style Tim Storm "Suspendu", Joy Awu "Pour Toujours", Kano Choir "Naza x Chily Gospel Remix", KS Bloom) :
+     * Louange festive, explosive et hyper-dansante (124-128 BPM, style Gospel Coupé-Décalé & Sebene Ndombolo).
+     * Dans l'[Intro], mets une phrase d'ambiance intime ou un monologue parlé ("Ahiii ! DJ, faut caler la guitare propre là... Jésus est trop bon...").
+     * Dans les couplets et refrains, intègre systématiquement des RÉPONSES DU CHOEUR entre parenthèses sur CHAQUE vers :
+       Lead : Il m'a tiré de la galère !
+       Choeur : (C'est Jésus, oh !)
+       Lead : Aujourd'hui je suis suspendu dans Sa grâce !
+       Choeur : (Alléluia, Amen !)
+     * Ajoute obligatoirement avant l'Outro la section : [Atalaku Gospel / Animation Festive & Dance] avec des sifflets, des cris de joie et des consignes de danse ("Parez ! Dansez pour le Roi !", "On saute pour Jésus !").
 
 5. COMPLÉTITUDE TOTALE DU MORCEAU :
    - Rédige la chanson COMPLÈTE de l'Intro jusqu'à l'Outro sans t'arrêter en cours de route.
