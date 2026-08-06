@@ -44,6 +44,7 @@ const STYLE_CATEGORIES = [
     id: "afrique_ouest",
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
+      { id: "Afro Ambiance & Chœurs", label: "Afro Ambiance & Chœurs", desc: "Tim Storm (Suspendu), Joy Awu (Pour Toujours), Kano Choir", icon: "🔥" },
       { id: "Coupé-Décalé", label: "Coupé-Décalé", desc: "Atalaku, boucan, Abidjan", icon: "👞" },
       { id: "Musique Urbaine Ivoire", label: "Musique Urbaine Ivoire", desc: "Roseline Layo, Josey, Abidjan", icon: "✨" },
       { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Nouchi flow authentique", icon: "🎤" },
@@ -63,10 +64,10 @@ const STYLE_CATEGORIES = [
   },
   {
     id: "afrique_sud_est",
-    title: "Afrique Sud & Est 🇿🇦 🇹🇿",
+    title: "Afrique Sud & Est 🇿🇦 🇹ℤ",
     styles: [
       { id: "Amapiano", label: "Amapiano", desc: "Log drum, deep house, Joburg", icon: "🎹" },
-      { id: "Bongo Flava", label: "Bongo Flava", desc: "Swahili pop, Dar es Salaam", icon: "🇹🇿" },
+      { id: "Bongo Flava", label: "Bongo Flava", desc: "Swahili pop, Dar es Salaam", icon: "🇹ℤ" },
     ]
   },
   {
@@ -82,7 +83,7 @@ const STYLE_CATEGORIES = [
     id: "gospel",
     title: "Gospel & Louange 🙏",
     styles: [
-      { id: "Afro Gospel Urbain", label: "Afro Gospel Ambiance", desc: "Tim Storm (Suspendu), Joy Awu, Kano Choir (124 BPM)", icon: "🔥" },
+      { id: "Afro Ambiance & Chœurs", label: "Afro Ambiance & Chœurs", desc: "Tim Storm (Suspendu), Joy Awu, Kano Choir (126 BPM)", icon: "🔥" },
       { id: "Gospel Adoration", label: "Gospel Adoration", desc: "Posé, Dena Mwana, piano-voix", icon: "🕊️" },
       { id: "Gospel Louange Africain", label: "Gospel Louange", desc: "Rythmé, percussions, danse", icon: "🌍" },
       { id: "Gospel Américain", label: "Gospel Américain", desc: "Chœur, soul, église US", icon: "🇺🇸" },

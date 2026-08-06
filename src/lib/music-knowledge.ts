@@ -351,20 +351,20 @@ Sound guide:
     negativePrompt: "metal, hard rock, bad mix, off beat, low quality, distorted vocals",
   },
   {
-    name: "Afro Gospel Urbain",
+    name: "Afro Ambiance & Chœurs",
     country: "Côte d'Ivoire / RDC / Nigeria",
     bpm: "124-128",
     languages: ["Français", "Nouchi", "Lingala"],
-    systemPrompt: `Generate a high-energy, explosive, highly danceable Afro-Gospel Coupé-Décalé & Ndombolo Sebene praise hit inspired by Tim Storm ("Suspendu"), Joy Awu ("Pour Toujours"), Kano Choir ("Tout donner x Rebanav 126 BPM Gospel Remix"), KS Bloom, and Limoblaze.
-Genre: African Gospel Coupé-Décalé / Ndombolo Gospel Sebene / Afrobeat Praise
-Tempo: 124-128 BPM (fast, explosive, ultra-danceable praise)
-Languages: Français, Nouchi (authentic Abidjan & Kinshasa street praise flow)
+    systemPrompt: `Generate a high-energy, explosive, highly danceable Afro-Pop Ambiance & Ndombolo Sebene hit inspired by Tim Storm ("Suspendu"), Joy Awu ("Pour Toujours"), and Kano Choir ("Tout donner x Rebanav 126 BPM Remix").
+Genre: African Afro-Pop Ambiance / Ndombolo Sebene / Choir-backed Afrobeat Dance (124-128 BPM)
+Tempo: 124-128 BPM (explosive, highly danceable, joyful party & love bounce)
+Languages: Français, Nouchi (authentic West African vocal accent)
 Sound & Instrumentation:
 - Fast highlife & Congolese Rumba electric guitar sebene solo, bright synth brass hooks, bouncy bassline.
 - Heavy West African tam-tam percussions, authentic woyo djembe drums, metallic cowbell claps, roukaskas drums.
-- Shouting energetic lead singer with authentic African vocal accent and street praise attitude.
-- Massive polyphonic choir singing energetic call-and-response on every line ("Alléluia !", "Hosanna !", "C'est Jésus, oh !").
-- Explosive Atalaku gospel dance animation breakdown with whistles, clapping, and celebration energy.
+- Energetic lead singer with authentic African vocal accent and modern urban energy.
+- Massive polyphonic choir singing energetic call-and-response on every line.
+- Explosive Atalaku dance animation breakdown with whistles, clapping, and celebration energy.
 - Production: Pristine commercial studio mix, maximum energy, radio-ready hit mastering.`,
     negativePrompt: "metal, hard rock, dark ambient, sad depression, slow ballad, bad mix, off beat, low quality, distorted audio, robotic autotune",
   },
@@ -622,6 +622,8 @@ const ALIASES: Record<string, string> = {
   "Pop / R&B": "Pop R&B",
   "Soul / Jazz France": "Soul Jazz",
   "Rap Ivoire / Drill": "Rap Ivoire",
+  "Afro Gospel Urbain": "Afro Ambiance & Chœurs",
+  "Afrobeat Ambiance": "Afro Ambiance & Chœurs",
   // Anciens noms pouvant apparaître dans la BDD
   "Ndombolo": "Afro-Congo",
   "Afropop": "Afrobeats",

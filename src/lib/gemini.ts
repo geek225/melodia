@@ -64,15 +64,12 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
    - Zouglou / Coupé-Décalé / Rap Ivoire : Argot Nouchi fluide et percutant d'Abidjan, philosophie de rue, humour subtil, résilience et punchlines sociales.
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.
    - Gospel Adoration & Classique : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.
-   - Afro Gospel Urbain / Ambiance & Nouchi (style Tim Storm "Suspendu", Joy Awu "Pour Toujours", Kano Choir "Naza x Chily Gospel Remix", KS Bloom) :
-     * Louange festive, explosive et hyper-dansante (124-128 BPM, style Gospel Coupé-Décalé & Sebene Ndombolo).
-     * Dans l'[Intro], mets une phrase d'ambiance intime ou un monologue parlé ("Ahiii ! DJ, faut caler la guitare propre là... Jésus est trop bon...").
-     * Dans les couplets et refrains, intègre systématiquement des RÉPONSES DU CHOEUR entre parenthèses sur CHAQUE vers :
-       Lead : Il m'a tiré de la galère !
-       Choeur : (C'est Jésus, oh !)
-       Lead : Aujourd'hui je suis suspendu dans Sa grâce !
-       Choeur : (Alléluia, Amen !)
-     * Ajoute obligatoirement avant l'Outro la section : [Atalaku Gospel / Animation Festive & Dance] avec des sifflets, des cris de joie et des consignes de danse ("Parez ! Dansez pour le Roi !", "On saute pour Jésus !").
+   - Afro Ambiance & Chœurs / Sebene (style Tim Storm "Suspendu", Joy Awu "Pour Toujours", Kano Choir "Naza x Chily Remix") :
+     * Style musical explosif, joyeux et festif (124-128 BPM, Afrobeat Ambiance, Guitare Sebene & Chœurs Polyphoniques).
+     * ADAPTE 100% LES PAROLES AU SUJET CHOISI PAR L'UTILISATEUR (Amour, Anniversaire, Fête, Réussite, Amitié, Histoire personnelle ou Spirituel s'il le demande). Ne force PAS la religion si le sujet est l'amour ou la fête.
+     * En [Intro], insère un monologue ou gimmick parlé intime/festif ("Ahiii ! DJ, faut caler la guitare là propre... On est ensemble !").
+     * Dans les couplets et refrains, intègre systématiquement des RÉPONSES DU CHOEUR entre parenthèses sur CHAQUE vers en rapport avec le sujet (ex: pour l'amour -> "(Pour toujours, oh !)", "(Oui, pour la vie !)").
+     * Ajoute obligatoirement avant l'Outro la section : [Atalaku / Animation Festive & Dance] avec des sifflets, des cris de joie et des consignes de danse ("Parez ! Libérez le plancher !", "On bouge !").
 
 5. COMPLÉTITUDE TOTALE DU MORCEAU :
    - Rédige la chanson COMPLÈTE de l'Intro jusqu'à l'Outro sans t'arrêter en cours de route.
