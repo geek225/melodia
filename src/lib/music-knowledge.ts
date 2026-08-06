@@ -684,9 +684,12 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
       } else if (knowledge.name === "Pop Acoustique & Piano") {
         parts.push(`Acoustic Pop, 92 BPM, fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
-      } else if (knowledge.name === "Afro Gospel Urbain") {
+      } else if (knowledge.name === "Afro Ambiance & Chœurs" || knowledge.name === "Afro Gospel Urbain") {
         parts.push(`African Gospel Coupe Decale, Ndombolo Gospel Sebene, 126 BPM, heavy West African djembe percussions, electric guitar sebene solo, synth brass, woyo choir call and response`);
-        if (!accentTag) accentTag = "authentic West African gospel praise vocal accent, raw choir call and response";
+        if (!accentTag) accentTag = "authentic West African vocal accent, raw choir call and response";
+      } else if (knowledge.name === "R&B Français") {
+        parts.push(`Afro R&B, French Urban Pop, 92 BPM, acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
+        if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }

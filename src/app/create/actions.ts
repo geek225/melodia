@@ -123,32 +123,47 @@ export async function createTrack(formData: TrackFormData) {
         lyricsText = validData.prompt;
       } else {
         const lyricsSubject = validData.prompt || validData.title || "une belle chanson entraînante";
-        const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject, isDuo);
         
-        const lyricsRes = await fetch(`${baseUrl}/api/v1/lyrics`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+        // 1. Priorité 1 : Utiliser Google Gemini pour des paroles humaines de studio auteur-compositeur
+        const geminiRes = await generateLyricsWithGemini({
+          title: validData.title,
+          topic: lyricsSubject,
+          style: selectedStyles.join(', '),
+          mood: validData.mood || "Émouvant & Intime",
+          language: validData.language || "Français",
+          perspective: isDuo ? "Duo homme et femme" : "",
+          toneStyle: "Pop Urbaine & Poétique"
         });
 
-        if (lyricsRes && lyricsRes.ok) {
-          const result = await lyricsRes.json();
-          if (result.code === 200 && result.data?.taskId) {
-            const lyricsTaskId = result.data.taskId;
-            // Polling pour récupérer les paroles (max 10 secondes = 5 essais de 2s)
-            for (let i = 0; i < 5; i++) {
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              const checkRes = await fetch(`${baseUrl}/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
-                headers: { "Authorization": `Bearer ${apiKey}` },
-                cache: "no-store"
-              });
-              if (checkRes.ok) {
-                const checkData = await checkRes.json();
-                if (checkData.data?.status === "SUCCESS" && checkData.data?.response?.data?.[0]?.text) {
-                  lyricsText = checkData.data.response.data[0].text;
-                  break;
-                } else if (checkData.data?.status?.includes("FAILED") || checkData.data?.status === "SENSITIVE_WORD_ERROR") {
-                  break;
+        if (geminiRes.success && geminiRes.lyrics) {
+          lyricsText = geminiRes.lyrics;
+        } else {
+          // 2. Fallback KIE/Suno si Gemini rencontre un problème
+          const lyricsPrompt = buildEnrichedLyricsPrompt(selectedStyles[0], lyricsSubject, isDuo);
+          const lyricsRes = await fetch(`${baseUrl}/api/v1/lyrics`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+          });
+
+          if (lyricsRes && lyricsRes.ok) {
+            const result = await lyricsRes.json();
+            if (result.code === 200 && result.data?.taskId) {
+              const lyricsTaskId = result.data.taskId;
+              for (let i = 0; i < 5; i++) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                const checkRes = await fetch(`${baseUrl}/api/v1/lyrics/record-info?taskId=${lyricsTaskId}`, {
+                  headers: { "Authorization": `Bearer ${apiKey}` },
+                  cache: "no-store"
+                });
+                if (checkRes.ok) {
+                  const checkData = await checkRes.json();
+                  if (checkData.data?.status === "SUCCESS" && checkData.data?.response?.data?.[0]?.text) {
+                    lyricsText = checkData.data.response.data[0].text;
+                    break;
+                  } else if (checkData.data?.status?.includes("FAILED") || checkData.data?.status === "SENSITIVE_WORD_ERROR") {
+                    break;
+                  }
                 }
               }
             }
