@@ -322,29 +322,7 @@ export default function NewCreatePage() {
   };
 
   const handlePromptChange = (val: string) => {
-    let cleaned = val;
-    let found = false;
-    const artists = ["magic system", "espoir 2000", "dj arafat", "burna boy", "wizkid", "davido", "fally ipupa", "roseline layo", "josey", "didi b", "asake", "rema", "aya nakamura", "tayc", "yodé", "siro", "vda"];
-    
-    for (const artist of artists) {
-      const regex = new RegExp(`\\b${artist}\\b`, 'gi');
-      if (regex.test(cleaned)) {
-        found = true;
-        cleaned = cleaned.replace(regex, '');
-      }
-    }
-    
-    const styleRegex = /dans le style de|à la façon de|type beat|like/gi;
-    if (styleRegex.test(cleaned)) {
-      found = true;
-      cleaned = cleaned.replace(styleRegex, '');
-    }
-
-    if (found) {
-      toast.error("Veuillez décrire l'énergie ou les instruments plutôt que de citer un artiste.");
-    }
-    
-    updateForm("prompt", cleaned);
+    updateForm("prompt", val);
   };
 
   const handleGenerate = async () => {
