@@ -53,8 +53,8 @@ Ambiance / Mood : ${mood}
 
 Rédige une chanson complète, moderne et entraînante.`;
 
-  // Standard valid Gemini models
-  const models = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+  // Standard valid working Gemini models
+  const models = ['gemini-flash-latest', 'gemini-pro-latest', 'gemini-flash-lite-latest', 'gemini-2.0-flash'];
   let lastErrorMessage = "";
 
   for (const model of models) {
