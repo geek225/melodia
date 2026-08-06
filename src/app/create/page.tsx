@@ -73,8 +73,9 @@ const STYLE_CATEGORIES = [
   },
   {
     id: "maghreb_diaspora",
-    title: "Maghreb & Diaspora 🌍",
+    title: "Maghreb, Diaspora & Reggae 🌍 🇯🇲",
     styles: [
+      { id: "Reggae", label: "Reggae & Afro-Reggae", desc: "Bob Marley, Alpha Blondy, Tiken Jah Fakoly", icon: "🇯🇲🌍" },
       { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Zouk sensuel, français / anglais", icon: "🌴💖" },
       { id: "Raï / Pop Urbaine", label: "Raï Moderne", desc: "Oran, darbuka, urbain", icon: "🇩🇿" },
       { id: "Kizomba", label: "Kizomba", desc: "Sensuel, Luanda, semba", icon: "🇦🇴" },
@@ -96,6 +97,7 @@ const STYLE_CATEGORIES = [
     id: "europe_diaspora",
     title: "Europe & Pop Française 🇫🇷 🎶",
     styles: [
+      { id: "Reggae", label: "Reggae & Afro-Reggae", desc: "Bob Marley, Alpha Blondy, Tiken Jah Fakoly", icon: "🇯🇲" },
       { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Sensuel, Monique Séka, Oliver N'Goma", icon: "🌴💖" },
       { id: "Afro Pop & R&B Urbain", label: "Afro Pop & R&B Urbain", desc: "Hiro, KeBlack, Naza, Vegedream (102-114 BPM)", icon: "🔥🎶" },
       { id: "Chanson Française", label: "Chanson Française", desc: "Cabaret, Paris, poétique", icon: "🥂" },

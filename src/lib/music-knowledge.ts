@@ -516,6 +516,26 @@ Style guide:
   },
 ];
 
+// ─── Reggae & Afro-Reggae 🇯🇲🌍 ──────────────────────────────────────
+const reggae: MusicStyleKnowledge[] = [
+  {
+    name: "Reggae",
+    country: "Jamaïque / Afrique (International)",
+    bpm: "72-84",
+    languages: ["Français", "English", "Patois"],
+    systemPrompt: `Generate an authentic, soul-stirring Reggae & Afro-Reggae roots hit in French or English inspired by Bob Marley ("One Love", "Redemption Song"), Alpha Blondy ("Sweet Fanta Diallo", "Brigadier Sabari"), Tiken Jah Fakoly ("Le Balayeur", "Plus rien ne m'étonne"), and Lucky Dube ("Remember Me").
+Country: Jamaïque / Afrique (Sensual Roots Reggae & Afro-Reggae)
+Tempo: 72-84 BPM (one-drop rhythm, laid-back roots reggae pulse)
+Languages: Français, English, Bilingue (FR/EN)
+Sound & Production Guide:
+- Clean off-beat electric guitar skank, deep warm bass guitar line, Hammond organ bubble groove, roots brass section (tenor sax, trumpet, trombone).
+- Heavy one-drop reggae drum beat (deep kick on beat 3, crisp rimshot, hi-hat syncopation), traditional Nyabinghi percussion (kete drum, shaker, guiro).
+- Vocals: Soulful, conscious, warm organic human lead singer with passionate delivery, supported by rich 3-part backing vocal harmonies and conscious chant refrains.
+- Production: Warm analog studio mix, deep low-end bass resonance, spatial dub reverb, radio-ready mastering.`,
+    negativePrompt: "metal, hard rock, aggressive EDM, electronic techno, trap 808 glides, robotic autotune, metallic vocoder, bad mix, off beat",
+  },
+];
+
 // ─── Rap International ───────────────────────────────────────────────
 const rapInternational: MusicStyleKnowledge[] = [
   {
@@ -631,6 +651,7 @@ export const ALL_MUSIC_KNOWLEDGE: MusicStyleKnowledge[] = [
   ...maghrebDiaspora,
   ...gospel,
   ...europe,
+  ...reggae,
   ...popSoulBallads,
   ...rapInternational,
 ];
@@ -726,6 +747,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
       } else if (knowledge.name === "Afro Zouk") {
         parts.push(`Afro-Zouk, Zouk Love, 90 BPM, lush synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
         if (!accentTag) accentTag = "authentic French and English sensual Zouk Love vocal phrasing, organic human voice";
+      } else if (knowledge.name === "Reggae") {
+        parts.push(`Roots Reggae, Afro-Reggae, 76 BPM, off-beat electric guitar skank, deep warm bass guitar groove, Hammond organ bubble, roots brass section, one-drop reggae drum beat, organic conscious lead vocals`);
+        if (!accentTag) accentTag = "authentic French and English conscious reggae vocal delivery, organic human voice";
       } else {
         parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM`);
       }
