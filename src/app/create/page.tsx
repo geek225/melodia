@@ -501,7 +501,7 @@ export default function NewCreatePage() {
       : "Afrobeats / Urbain";
 
     setIsGeneratingLyrics(true);
-    toast.info("L'Auteur-Compositeur IA rédige ta chanson...");
+    toast.info("Meliodia rédige les paroles de ta chanson...");
 
     try {
       const res = await generateAiLyrics({
@@ -520,13 +520,13 @@ export default function NewCreatePage() {
           prompt: res.lyrics!
         }));
         setShowLyricsModal(false);
-        toast.success("Paroles écrites avec succès par l'Auteur-Compositeur ! 🎵✨");
+        toast.success("Paroles écrites avec succès par Meliodia ! 🎵✨");
       } else {
         toast.error(res.error || "Erreur lors de la rédaction des paroles.");
       }
     } catch (err) {
-      console.error("Gemini lyrics error:", err);
-      toast.error("Erreur de connexion à l'IA Gemini.");
+      console.error("Lyrics generation error:", err);
+      toast.error("Erreur de connexion au service de rédaction Meliodia.");
     } finally {
       setIsGeneratingLyrics(false);
     }
@@ -755,7 +755,7 @@ export default function NewCreatePage() {
                       {isGeneratingLyrics ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>L&apos;IA Auteur écrit...</span>
+                          <span>Meliodia écrit...</span>
                         </>
                       ) : (
                         <>

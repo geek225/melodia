@@ -18,7 +18,7 @@ export async function generateLyricsWithGemini(params: LyricsGenerationParams): 
   if (!apiKey) {
     return {
       success: false,
-      error: "Clé API Gemini non configurée sur Vercel. Veuillez ajouter GEMINI_API_KEY dans les variables d'environnement de Vercel."
+      error: "Clé d'API Meliodia non configurée sur Vercel. Veuillez ajouter GEMINI_API_KEY dans les variables d'environnement de Vercel."
     };
   }
 
@@ -46,16 +46,19 @@ RÈGLES D'OR ANTI-ROBOTIQUE :
    - Zouglou / Coupé-Décalé / Rap Ivoire : Intègre de l'argot Nouchi et des expressions d'Abidjan naturelles et percutantes.
    - Rumba / Afro Pop : Utilise une poésie romantique et mélancolique poignante.
    - Gospel : Émotion spirituelle authentique, reconnaissance sincère sans lourdeur.
-4. STRUCTURE MUSICALE STRICTE (entre crochets) :
-   [Intro] (Phrase d'ambiance intime, monologue ou gimmick)
-   [Couplet 1] (Installation de l'histoire, contexte concret)
-   [Pre-Refrain] (Montée en tension émotionnelle)
-   [Refrain] (Le cœur du morceau, extrêmement émouvant et accrocheur)
-   [Couplet 2] (Développement de l'histoire, révélations)
-   [Refrain]
-   [Pont] (Sommet émotionnel ou envolée vocale)
-   [Outro] (Conclusion mémorable)
+4. STRUCTURE MUSICALE ET COMPLÉTITUDE STRICTE :
+   - Tu DOIS IMPÉRATIVEMENT rédiger la chanson COMPLÈTE du début à la fin sans la couper au milieu !
+   - Écris TOUTES les sections :
+     [Intro] (Phrase d'ambiance intime, monologue ou gimmick)
+     [Couplet 1] (Installation de l'histoire, contexte concret)
+     [Pre-Refrain] (Montée en tension émotionnelle)
+     [Refrain] (Le cœur du morceau, extrêmement émouvant et accrocheur)
+     [Couplet 2] (Développement de l'histoire, révélations)
+     [Refrain]
+     [Pont] (Sommet émotionnel ou envolée vocale)
+     [Outro] (Conclusion mémorable)
 
+Ne t'arrête JAMAIS au milieu d'un couplet ou d'un refrain ! Termine obligatoirement les paroles jusqu'à la section [Outro].
 Retourne UNIQUEMENT les paroles structurées avec leurs balises, sans introduction ni conclusion de ta part.`;
 
   const userPrompt = `Rédige les paroles d'une chanson en ${language}.
@@ -66,7 +69,7 @@ Style musical : ${style}
 Ambiance / Émotion recherchée : ${mood}
 Tonalité / Langage : ${toneStyle}
 
-Écris une chanson authentique, vibrante d'émotion humaine et prête à être enregistrée en studio.`;
+Rédige une chanson complète de l'Intro jusqu'à l'Outro, authentique et émouvante.`;
 
   // Standard valid working Gemini models
   const models = ['gemini-flash-latest', 'gemini-pro-latest', 'gemini-flash-lite-latest', 'gemini-2.0-flash'];
@@ -90,9 +93,9 @@ Tonalité / Langage : ${toneStyle}
             }
           ],
           generationConfig: {
-            temperature: 0.8, // Slightly higher creativity for human songwriting
+            temperature: 0.8,
             topP: 0.95,
-            maxOutputTokens: 2048
+            maxOutputTokens: 8192 // Ensure output is never truncated
           }
         })
       });
@@ -122,7 +125,7 @@ Tonalité / Langage : ${toneStyle}
   return {
     success: false,
     error: lastErrorMessage
-      ? `Erreur Gemini API (${lastErrorMessage}). Vérifiez votre clé GEMINI_API_KEY sur Vercel.`
-      : "Impossible de générer les paroles avec l'API Gemini. Veuillez vérifier votre clé API sur Vercel."
+      ? `Erreur Meliodia API (${lastErrorMessage}). Vérifiez votre clé GEMINI_API_KEY sur Vercel.`
+      : "Impossible de générer les paroles avec Meliodia. Veuillez vérifier la clé API sur Vercel."
   };
 }
