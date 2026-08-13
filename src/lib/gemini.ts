@@ -109,12 +109,12 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
 ${structureGuide}
 
 6. DIRECTION ARTISTIQUE PAR GENRE :
-    - DRILL IVOIRE Gang (Gangsta Rap & Drill Ivoire sombre, inspiré de Himra, Didi B, Gazo, Pop Smoke, Central Cee - 130 BPM) :
-      * VOIX & ACCENT : Voix de rappeur africain charismatique avec un ACCENT IVOIRIEN NOUCHI authentique (Abidjan, Yopougon, Treichville).
-      * FLOW POSÉ & ESPACÉ : Le flow doit être LOURD, POSÉ et cadencé (vers courts de 4 à 7 mots avec des respirations) — NE PAS ÉCRIRE DE TEXTE ENCOMBRÉ NI TROP RAPIDE, l'artiste prend son temps pour faire résonner chaque mot !
-      * BACKS VOCAUX OBLIGATOIRES SUR CHAQUE LIGNE : Place systématiquement des BACKS en MAJUSCULES entre parenthèses à la fin de chaque vers : (GANG !), (POW POW !), (HAN !), (GÂTÉ !), (DANS LA ZONE !), (ABIDJAN !), (JAMAIS !).
-      * Thématique : Puissance, loyauté, respect du quartier, nouchi street slang ("On règne sur la zone", "Respect et puissance", "Pas de faux frères").
-      * Refrain obsédant et percutant scandé avec les backs en chœur.
+    - DRILL IVOIRE Gang (Drill Ivoire & Rap Gang Abidjan, style direct Himra "ICE" / "Grr Pa", Didi B, Gazo - 138 BPM half-time) :
+      * VOIX & ACCENT : Voix de rappeur africain brute, rauque et charismatique avec un ACCENT IVOIRIEN NOUCHI authentique (Abidjan, Yopougon, Cocody).
+      * RYTHME & FLOW POSÉ : Flow lourd, saccadé, cadencé et espacé. Écris des vers courts (4 à 7 mots max) avec des respirations — NE PAS ÉCRIRE DE TEXTE TROP RAPIDE NI ENCOMBRÉ pour que l'artiste découpe le beat avec puissance sans se presser !
+      * BACKS PUISSANTS SUR CHAQUE LIGNE (Signature Himra) : Place obligatoirement des BACKS et AD-LIBS en MAJUSCULES entre parenthèses à la fin de CHAQUE vers : (GRRR !), (POW POW !), (ICE !), (HAN !), (GÂTÉ !), (GANG !), (TCHÔKÔ !), (SUR LE CORPS !), (DANS LE BLOC !).
+      * Thématique & Vocabulaire : Le djai, le gnan, les diamants/ice, kroumen, briller, la zone, respect, brolik, carrés VIP, gâté.
+      * Refrain explosif et hypnotique avec réponses en chœur.
     - Reggae & Afro-Reggae (Bob Marley "One Love", Alpha Blondy "Sweet Fanta Diallo", Tiken Jah Fakoly, Lucky Dube) : Chanson poignante, consciente, engagée ou d'amour sincère (72-84 BPM). Rédige en Français, Anglais ou Bilingue avec une poésie spirituelle, de la résilience, de la dignité et de la fraternité ("One love", "Paix et unité", "Rise up", "Reste debout"), un refrain hymne chanté en chœur et des vocalises roots (yeah man, woah-oh, jah bless).
     - Afro Zouk / Zouk Love (Monique Séka "First Love", Oliver N'Goma "Bane", Nelson Freitas, Kaysha, Fanny J, Princess Lover) : Chanson d'amour sensuelle, langoureuse et romantique (84-96 BPM). Rédige en Français, Anglais ou Bilingue (FR/EN) avec une vraie tendresse, des mots doux ("Doudou", "Mon amour", "Baby stay with me", "Bébé dis-moi que tu m'aimes"), un refrain ultra-mélodique qui invite à la danse à deux, et des ad-libs sensuels (hmm, yeah, oh-oh).
     - Musique Rap Décalé Urban (Coupé-Décalé + Rap Ivoire + Urban Abidjan) : Flow Nouchi rythmé et percutant, punchlines de rue, ambiance club décalée, refrain obsédant et giga-ambiance (128-135 BPM).

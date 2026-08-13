@@ -23,18 +23,18 @@ const afriqueOuest: MusicStyleKnowledge[] = [
   {
     name: "DRILL IVOIRE Gang",
     country: "Côte d'Ivoire (Abidjan)",
-    bpm: "130-132",
+    bpm: "138",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a menacing, laid-back Gangsta Rap & Drill Ivoire anthem with an authentic deep African street rapper voice, heavy Abidjan Nouchi accent, spaced-out delivery, loud layered vocal backs, and sliding 808s.
+    systemPrompt: `Generate a menacing, heavy, authentic Gangsta Drill Ivoire anthem inspired directly by Himra ("ICE", "Grr Pa"), Didi B, and Gazo.
 Country: Côte d'Ivoire (Abidjan)
-Tempo: 130-132 BPM (deliberate, heavy, laid-back street bounce, taking time between bars)
+Tempo: 138 BPM (heavy half-time bounce, deliberate spaced-out street cadence)
 Languages: Français, Nouchi
 Production & Sound Guide:
-- Vocals: Authentic deep African street rapper voice with a strong Abidjan Nouchi vocal accent, laid-back menacing street flow, clear pronunciation with rhythmic breathing pauses (never rushed).
-- Backing Vocals / Backs: Heavy layered vocal backs, energetic hype ad-libs and shout responses on every line (GANG, POW POW, HAN, GÂTÉ, YOPOUGON).
-- Instrumentals: Heavy sliding distorted 808 sub-bass glides, drill snare rolls, dark minor piano arpeggios, ominous brass hits.
-- Heavy, crisp, modern gangsta drill studio mix with massive sub-bass impact.`,
-    negativePrompt: "rushed fast flow, french parisian accent, european rap accent, sweet melody, happy acoustic, ballad, soft r&b, bad mix",
+- Vocals: Deep raspy African street rapper voice with an authentic raw Abidjan Nouchi vocal accent, deliberate staccato punchy delivery with breathing pauses (never rushed).
+- Backs & Ad-libs (Crucial): Loud layered vocal backs and hype ad-libs on EVERY single bar (GRRR, POW POW, ICE, HAN, GÂTÉ, GANG, TCHÔKÔ).
+- Instrumentals: Heavy distorted sliding 808 sub-bass glides with pitch bends, dark minor piano arpeggios, ominous church bells, gunshot snares, hi-hat triplets.
+- Heavy, crisp, modern gangsta drill studio mix with massive low-end sub-bass impact.`,
+    negativePrompt: "rushed fast flow, french european accent, melodic autotune singing, happy acoustic, ballad, soft r&b, bad mix",
   },
   {
     name: "Musique Rap Décalé Urban",
@@ -724,7 +724,7 @@ export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "H
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "DRILL IVOIRE Gang") {
-        parts.push(`Drill Ivoire Gang, 130 BPM, Abidjan nouchi vocal accent, loud hype vocal backs, deep sliding 808s, dark piano`);
+        parts.push(`Drill Ivoire Gang, 138 BPM half-time, Himra ICE style, Abidjan nouchi vocal accent, loud hype backs, sliding 808s, dark piano`);
       } else if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
         parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, highly melodic sebene guitar solo, catchy synth lead, 808 bass`);
       } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
@@ -785,7 +785,7 @@ export function buildEnrichedLyricsPrompt(
     const countryLower = knowledge.country.toLowerCase();
 
     if (knowledge.name === "DRILL IVOIRE Gang") {
-      accentDirective = "IMPORTANT DRILL IVOIRE : Voix rappeur avec ACCENT IVOIRIEN NOUCHI authentique. Flow POSÉ et cadencé (pas trop rapide, prends ton temps !). Insère OBLIGATOIREMENT des BACKS vocaux en majuscules entre parenthèses sur CHAQUE vers (ex: (GANG !), (POW POW !), (HAN !), (GÂTÉ !)).";
+      accentDirective = "IMPORTANT DRILL IVOIRE (Style Himra ICE) : Voix de rappeur africain avec un ACCENT IVOIRIEN NOUCHI authentique et percutant. Flow POSÉ et cadencé (vers courts de 4 à 7 mots, prends ton temps). Insère OBLIGATOIREMENT des BACKS vocaux en majuscules entre parenthèses sur CHAQUE vers (ex: (GRRR !), (POW POW !), (ICE !), (HAN !), (GÂTÉ !), (GANG !)).";
     } else if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
       accentDirective = "IMPORTANT : Le texte et la livraison vocale DOIVENT avoir l'accent, le rythme et la cadence authentique africaine (expressions locales imagées, intonations chaleureuses).";
     } else if (knowledge.name === "Afro Trap France") {
