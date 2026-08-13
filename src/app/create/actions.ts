@@ -210,6 +210,9 @@ export async function createTrack(formData: TrackFormData) {
 
     const negativeTags = "robotic autotune, metallic vocal, bad mixing, distorted vocals, noisy audio, off key, low quality, vocoder, endless loop";
 
+    const safeTitle = (validData.title || "Nouvelle Musique").slice(0, 80);
+    const safeStyle = (enrichedStyle || "Afrobeats, 108 BPM").slice(0, 190);
+
     if (audioInputUrl) {
       // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
       const selectedModel = "V5";
@@ -226,8 +229,8 @@ export async function createTrack(formData: TrackFormData) {
           customMode: true,
           instrumental: false,
           prompt: finalPrompt,
-          style: enrichedStyle,
-          title: validData.title || "Nouvelle Musique",
+          style: safeStyle,
+          title: safeTitle,
           model: selectedModel,
           audioWeight: 0.95,
           ...(vocalGender ? { vocalGender } : {}),
@@ -245,8 +248,8 @@ export async function createTrack(formData: TrackFormData) {
         },
         body: JSON.stringify({
           prompt: lyricsText || "",
-          style: enrichedStyle,
-          title: validData.title || "Nouvelle Musique",
+          style: safeStyle,
+          title: safeTitle,
           instrumental: false,
           customMode: true,
           model: "V4",

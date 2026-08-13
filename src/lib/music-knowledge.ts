@@ -682,20 +682,20 @@ export function getStyleKnowledge(styleName: string): MusicStyleKnowledge | unde
  * Le résultat est toujours tronqué à 120 caractères (limite Suno V3.5).
  */
 export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "Homme"): string {
-  // 1. Déterminer le tag vocal avec priorité absolue en tête de prompt
+  // 1. Déterminer le tag vocal compact avec priorité absolue en tête de prompt
   let leadVoiceTag = "";
   if (voiceOrTag === "Duo") {
-    leadVoiceTag = "duet, male and female vocals, alternating male and female vocal duet, call and response lead vocals, harmonized male and female duet chorus";
+    leadVoiceTag = "duet, male & female vocals, alternating lead";
   } else if (voiceOrTag === "Femme") {
-    leadVoiceTag = "solo female vocals, natural warm expressive female voice, clear live human vocal performance";
+    leadVoiceTag = "solo female vocals, warm expressive human voice";
   } else if (voiceOrTag === "Homme") {
-    leadVoiceTag = "solo male vocals, natural deep warm expressive male voice, clear live human vocal performance";
+    leadVoiceTag = "solo male vocals, warm expressive human voice";
   } else {
-    leadVoiceTag = voiceOrTag;
+    leadVoiceTag = voiceOrTag.length > 50 ? voiceOrTag.substring(0, 50) : voiceOrTag;
   }
 
   if (styleNames.length === 0) {
-    return `${leadVoiceTag}, highly melodic, catchy earworm chorus hook, organic natural human voice, live studio recording, no vocoder, no robotic autotune`;
+    return `${leadVoiceTag}, Afrobeats, 108 BPM, melodic hook, organic human voice, no vocoder`.substring(0, 190);
   }
 
   const parts: string[] = [];
@@ -705,47 +705,44 @@ export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "H
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
-        parts.push(`Musique Rap Decale Urban, Coupe Decale, Rap Ivoire, Cote d'Ivoire, 130 BPM, heavy sliding 808 sub bass, highly melodic electric guitar sebene solo, catchy synth lead hook, nouchi rap flow`);
-        if (!accentTag) accentTag = "authentic Abidjan nouchi vocal accent";
+        parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, 808 bass, sebene guitar, nouchi flow`);
+        if (!accentTag) accentTag = "Abidjan nouchi accent";
       } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
-        parts.push(`Musique Urbaine Ivoire, Zouglou, Cote d'Ivoire, 108 BPM, highly melodic acoustic guitar arpeggios, heavy West African tam-tam percussions, woyo djembe, guitar sebene solo, polyphonic woyo choir`);
-        if (!accentTag) accentTag = "authentic West African vocal accent, raw woyo choir";
+        parts.push(`Zouglou Ivoire, 108 BPM, acoustic guitar, woyo djembe, sebene`);
+        if (!accentTag) accentTag = "West African accent, woyo choir";
       } else if (knowledge.name === "Piano Ballad Émotion") {
-        parts.push(`Piano Ballad, 78 BPM, highly melodic grand piano chords, solo acoustic piano, cello, swelling string quartet, tear-jerking falsetto vocal climax`);
+        parts.push(`Piano Ballad, 78 BPM, grand piano, cello, strings`);
       } else if (knowledge.name === "Soul Vocale & Powerhouse") {
-        parts.push(`Soul Powerhouse, Gospel R&B, 85 BPM, highly melodic Hammond B3 organ, grand piano, powerhouse raspy soul lead vocals, 4-part gospel choir harmonies, vintage brass`);
+        parts.push(`Soul Gospel R&B, 85 BPM, organ, grand piano, soul voice`);
       } else if (knowledge.name === "Pop Acoustique & Piano") {
-        parts.push(`Acoustic Pop, 92 BPM, highly melodic fingerpicked acoustic guitar, clean acoustic piano, smooth pop R&B vocal phrasing, catchy singalong chorus hook`);
+        parts.push(`Acoustic Pop, 92 BPM, acoustic guitar, clean piano`);
       } else if (knowledge.name === "Afro Ambiance & Chœurs" || knowledge.name === "Afro Gospel Urbain") {
-        parts.push(`African Gospel Coupe Decale, Ndombolo Gospel Sebene, 126 BPM, highly melodic guitar sebene solo, heavy West African djembe percussions, synth brass, woyo choir call and response`);
-        if (!accentTag) accentTag = "authentic West African vocal accent, raw choir call and response";
+        parts.push(`African Sebene, Coupe Decale, 126 BPM, guitar solo, djembe, choir`);
+        if (!accentTag) accentTag = "African choir response";
       } else if (knowledge.name === "R&B Français") {
-        parts.push(`Afro R&B, French Urban Pop, 92 BPM, highly melodic acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
-        if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing, organic human voice";
+        parts.push(`Afro R&B, French Urban, 92 BPM, Rhodes piano, smooth 808 bass`);
+        if (!accentTag) accentTag = "French urban phrasing";
       } else if (knowledge.name === "Afro Pop & R&B Urbain") {
-        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, highly melodic acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive lead vocals, catchy singalong chorus hook`);
-        if (!accentTag) accentTag = "authentic French urban vocal accent, natural organic human voice";
+        parts.push(`Afro Pop, French R&B, 108 BPM, guitar arpeggios, bouncy 808`);
+        if (!accentTag) accentTag = "French urban accent";
       } else if (knowledge.name === "Afro Zouk") {
-        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, highly melodic Zouk synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
-        if (!accentTag) accentTag = "authentic French and English sensual Zouk Love vocal phrasing, organic human voice";
+        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, digital keys, zouk bass, harmonies`);
+        if (!accentTag) accentTag = "sensual Zouk phrasing";
       } else if (knowledge.name === "Reggae") {
-        parts.push(`Roots Reggae, Afro-Reggae, 76 BPM, off-beat electric guitar skank, deep warm bass guitar groove, highly melodic Hammond organ bubble, roots brass section, one-drop reggae drum beat, organic conscious lead vocals`);
-        if (!accentTag) accentTag = "authentic French and English conscious reggae vocal delivery, organic human voice";
+        parts.push(`Roots Reggae, 76 BPM, guitar skank, bass groove, organ bubble`);
+        if (!accentTag) accentTag = "reggae delivery";
       } else {
-        parts.push(`${knowledge.name}, ${knowledge.country}, ${knowledge.bpm} BPM, highly melodic`);
+        parts.push(`${knowledge.name}${knowledge.bpm ? `, ${knowledge.bpm} BPM` : ''}`);
       }
 
-      // Détection automatique de l'accent vocal selon le pays / style
       if (!accentTag) {
         const countryLower = knowledge.country.toLowerCase();
         if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
-          accentTag = "authentic African vocal accent, organic natural human voice";
+          accentTag = "African accent";
         } else if (knowledge.name === "Afro Trap France") {
-          accentTag = "French urban vocal accent with African rhythmic inflections, organic human voice";
+          accentTag = "French urban afro accent";
         } else if (["france", "europe"].includes(countryLower)) {
-          accentTag = "authentic French vocal accent, organic natural human voice";
-        } else if (["usa", "international"].includes(countryLower)) {
-          accentTag = "authentic American vocal accent, organic natural human voice";
+          accentTag = "French accent";
         }
       }
     } else {
@@ -753,15 +750,15 @@ export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "H
     }
   }
 
-  const melodicTraits = "highly melodic, catchy earworm refrain hook, dynamic live performance";
-  const finalAccent = accentTag ? `, ${accentTag}` : ", organic natural human voice";
-  let result = `${leadVoiceTag}, ` + parts.join(", ") + `, ${melodicTraits}` + finalAccent + ", radio edit, no vocoder, no robotic autotune";
+  const melodicTraits = "catchy melodic hook";
+  const finalAccent = accentTag ? `, ${accentTag}` : "";
+  let result = `${leadVoiceTag}, ` + parts.join(", ") + `, ${melodicTraits}` + finalAccent + ", radio edit, no vocoder";
 
-  // Limite propre Suno V4 / V5 / KIE.AI (280 caractères max sans coupure de mot)
-  if (result.length > 280) {
-    const cut = result.substring(0, 280);
+  // Limite ABSOLUE Suno V4 : Strictement <= 190 caractères (marge de sécurité sous la limite de 200)
+  if (result.length > 190) {
+    const cut = result.substring(0, 190);
     const lastComma = cut.lastIndexOf(",");
-    result = lastComma > 180 ? cut.substring(0, lastComma) : cut;
+    result = lastComma > 60 ? cut.substring(0, lastComma) : cut;
   }
 
   return result;
