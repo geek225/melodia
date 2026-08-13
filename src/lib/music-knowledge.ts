@@ -23,18 +23,18 @@ const afriqueOuest: MusicStyleKnowledge[] = [
   {
     name: "DRILL IVOIRE Gang",
     country: "Côte d'Ivoire (Abidjan)",
-    bpm: "140-144",
+    bpm: "130-132",
     languages: ["Français", "Nouchi"],
-    systemPrompt: `Generate a hard-hitting, dark, menacing Gangsta Rap & Drill Ivoire track inspired by Himra, Didi B, Gazo, Pop Smoke, Central Cee, and Chicago/UK Drill.
+    systemPrompt: `Generate a menacing, laid-back Gangsta Rap & Drill Ivoire anthem with an authentic deep African street rapper voice, heavy Abidjan Nouchi accent, spaced-out delivery, loud layered vocal backs, and sliding 808s.
 Country: Côte d'Ivoire (Abidjan)
-Tempo: 140-144 BPM
+Tempo: 130-132 BPM (deliberate, heavy, laid-back street bounce, taking time between bars)
 Languages: Français, Nouchi
 Production & Sound Guide:
-- Brutal sliding 808 sub bass glides with distortion, aggressive dark UK/US drill hi-hat rolls, syncopated snare rolls, gunshot impacts and punchy kicks.
-- Ominous minor-key dark piano arpeggios, cold eerie church bells, menacing brass stabs, dark ambient strings and vocal chops.
-- Aggressive, confident street flow with authentic Abidjan Nouchi gang cadence, street slang and raw gang ad-libs (grrr, pow pow, han, gang).
-- Heavy, crisp, modern gangsta drill studio mix with massive low-end sub-bass impact.`,
-    negativePrompt: "acoustic guitar, sweet ballad, cheerful pop, happy melody, slow tempo, smooth r&b, soft jazz, bad mix",
+- Vocals: Authentic deep African street rapper voice with a strong Abidjan Nouchi vocal accent, laid-back menacing street flow, clear pronunciation with rhythmic breathing pauses (never rushed).
+- Backing Vocals / Backs: Heavy layered vocal backs, energetic hype ad-libs and shout responses on every line (GANG, POW POW, HAN, GÂTÉ, YOPOUGON).
+- Instrumentals: Heavy sliding distorted 808 sub-bass glides, drill snare rolls, dark minor piano arpeggios, ominous brass hits.
+- Heavy, crisp, modern gangsta drill studio mix with massive sub-bass impact.`,
+    negativePrompt: "rushed fast flow, french parisian accent, european rap accent, sweet melody, happy acoustic, ballad, soft r&b, bad mix",
   },
   {
     name: "Musique Rap Décalé Urban",
@@ -724,7 +724,7 @@ export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "H
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "DRILL IVOIRE Gang") {
-        parts.push(`Drill Ivoire Gang, 142 BPM, sliding 808 sub bass, dark drill piano, gunshot snare, menacing gang flow`);
+        parts.push(`Drill Ivoire Gang, 130 BPM, Abidjan nouchi vocal accent, loud hype vocal backs, deep sliding 808s, dark piano`);
       } else if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
         parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, highly melodic sebene guitar solo, catchy synth lead, 808 bass`);
       } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
@@ -784,7 +784,9 @@ export function buildEnrichedLyricsPrompt(
     let accentDirective = "Accent et phrasé authentiques de l'artiste.";
     const countryLower = knowledge.country.toLowerCase();
 
-    if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
+    if (knowledge.name === "DRILL IVOIRE Gang") {
+      accentDirective = "IMPORTANT DRILL IVOIRE : Voix rappeur avec ACCENT IVOIRIEN NOUCHI authentique. Flow POSÉ et cadencé (pas trop rapide, prends ton temps !). Insère OBLIGATOIREMENT des BACKS vocaux en majuscules entre parenthèses sur CHAQUE vers (ex: (GANG !), (POW POW !), (HAN !), (GÂTÉ !)).";
+    } else if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
       accentDirective = "IMPORTANT : Le texte et la livraison vocale DOIVENT avoir l'accent, le rythme et la cadence authentique africaine (expressions locales imagées, intonations chaleureuses).";
     } else if (knowledge.name === "Afro Trap France") {
       accentDirective = "IMPORTANT : Le texte combine le phrasé urbain français avec des expressions et intonations afro-urbaines.";

@@ -44,7 +44,7 @@ const STYLE_CATEGORIES = [
     id: "afrique_ouest",
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
-      { id: "DRILL IVOIRE Gang", label: "DRILL IVOIRE Gang", desc: "Drill ivoirienne sombre & gang, sliding 808s, street US/FR (142 BPM)", icon: "🥷🔥" },
+      { id: "DRILL IVOIRE Gang", label: "DRILL IVOIRE Gang", desc: "Drill ivoirienne sombre, voix nouchi posée, backs lourds & 808s (130 BPM)", icon: "🥷🔥" },
       { id: "Musique Rap Décalé Urban", label: "Rap Décalé Urban", desc: "Coupé-Décalé + Rap Ivoire + Musique Urbaine Abidjan", icon: "⚡🎤" },
       { id: "Musique Urbaine & Zouglou", label: "Musique Urbaine & Zouglou", desc: "Zouglou + Roseline Layo, Josey, VDA (102-114 BPM)", icon: "🥁✨" },
       { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Monique Séka, Oliver N'Goma, Nelson Freitas (84-96 BPM)", icon: "🌴💖" },
