@@ -3,6 +3,20 @@
 import { createClient } from '@/utils/supabase/server'
 import { headers } from 'next/headers'
 
+export const VALID_MELODIA_PACKS = [
+  { name: "Pack Découverte", melodies: 10, price: 500 },
+  { name: "Pack Starter", melodies: 30, price: 1000 },
+  { name: "Pack Créateur", melodies: 60, price: 1800 },
+  { name: "Pack Studio", melodies: 120, price: 3000 },
+  { name: "Pack Producteur", melodies: 250, price: 5500 },
+  // Compatibilité rétroactive packs antérieurs
+  { name: "Pack Découverte", melodies: 10, price: 1500 },
+  { name: "Pack Starter", melodies: 30, price: 3500 },
+  { name: "Pack Créateur", melodies: 60, price: 6500 },
+  { name: "Pack Studio", melodies: 120, price: 12000 },
+  { name: "Pack Producteur", melodies: 250, price: 22000 },
+];
+
 export async function buyMelodies(melodies: number, price: number, packName: string) {
   try {
     const supabase = await createClient()
@@ -10,7 +24,19 @@ export async function buyMelodies(melodies: number, price: number, packName: str
 
     if (authError || !user) {
       console.error('Auth error:', authError)
-      return { success: false, error: 'User not authenticated' }
+      return { success: false, error: 'Utilisateur non authentifié' }
+    }
+
+    // Validation stricte anti-falsification du prix et du nombre de mélodies
+    const matchingPack = VALID_MELODIA_PACKS.find(p => 
+      p.name.toLowerCase() === (packName || '').trim().toLowerCase() && 
+      p.melodies === Number(melodies) && 
+      p.price === Number(price)
+    );
+
+    if (!matchingPack) {
+      console.warn(`Tentative d'achat avec montant ou pack invalide : user=${user.id}, pack=${packName}, melodies=${melodies}, price=${price}`);
+      return { success: false, error: 'Pack ou montant invalide. Veuillez recharger la boutique.' };
     }
 
     const winipayerApply = process.env.WINIPAYER_MERCHANT_APPLY
@@ -19,25 +45,26 @@ export async function buyMelodies(melodies: number, price: number, packName: str
 
     if (!winipayerApply || !winipayerToken) {
       console.error('Missing Winipayer credentials')
-      return { success: false, error: 'Server configuration error' }
+      return { success: false, error: 'Configuration du serveur de paiement manquante.' }
     }
 
     // Getting the base URL for callbacks
     const headersList = await headers()
-    const origin = headersList.get('origin') || 'https://melodia-delta.vercel.app' // Fallback to your Vercel domain
+    const origin = process.env.NEXT_PUBLIC_APP_URL || headersList.get('origin') || 'https://melodia-delta.vercel.app'
     
     // Custom data to pass to IPN webhook
     const custom_data = JSON.stringify({
       userId: user.id,
-      melodies,
-      packName
+      melodies: matchingPack.melodies,
+      packName: matchingPack.name,
+      expectedPrice: matchingPack.price
     })
 
     // Construct FormData for Winipayer
     const formData = new URLSearchParams()
     formData.append('env', winipayerEnv)
-    formData.append('amount', price.toString())
-    formData.append('description', `Achat de ${packName}`)
+    formData.append('amount', matchingPack.price.toString())
+    formData.append('description', `Achat de ${matchingPack.name} (${matchingPack.melodies} Mélodies)`)
     formData.append('custom_data', custom_data)
     formData.append('cancel_url', `${origin}/credits?payment=cancelled`)
     formData.append('return_url', `${origin}/credits?payment=success`)

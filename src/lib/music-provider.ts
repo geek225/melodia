@@ -19,7 +19,7 @@ export function getMusicApiConfig(): MusicApiConfig {
     return {
       provider: 'sunoapi',
       baseUrl: (process.env.SUNO_API_BASE_URL || 'https://api.sunoapi.org').replace(/\/+$/, ''),
-      apiKey: process.env.SUNO_API_KEY || 'd2bc9f7d7213c3adff53851705b3e6ac'
+      apiKey: (process.env.SUNO_API_KEY || '').trim()
     };
   }
 
@@ -27,6 +27,6 @@ export function getMusicApiConfig(): MusicApiConfig {
   return {
     provider: 'kie',
     baseUrl: (process.env.KIE_API_BASE_URL || 'https://api.kie.ai').replace(/\/+$/, ''),
-    apiKey: process.env.KIE_API_KEY || 'feaa5c1517f0105bb7f8af9bfb27dfb18f93821928bc7181b5a264a897e8d245'
+    apiKey: (process.env.KIE_API_KEY || '').trim()
   };
 }

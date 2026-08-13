@@ -681,8 +681,22 @@ export function getStyleKnowledge(styleName: string): MusicStyleKnowledge | unde
  *
  * Le résultat est toujours tronqué à 120 caractères (limite Suno V3.5).
  */
-export function buildEnrichedStyle(styleNames: string[], voiceTag: string): string {
-  if (styleNames.length === 0) return `highly melodic, catchy earworm chorus hook, ${voiceTag}, organic natural human voice, no vocoder`;
+export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "Homme"): string {
+  // 1. Déterminer le tag vocal avec priorité absolue en tête de prompt
+  let leadVoiceTag = "";
+  if (voiceOrTag === "Duo") {
+    leadVoiceTag = "duet, male and female vocals, alternating male and female vocal duet, call and response lead vocals, harmonized male and female duet chorus";
+  } else if (voiceOrTag === "Femme") {
+    leadVoiceTag = "solo female vocals, natural warm expressive female voice, clear live human vocal performance";
+  } else if (voiceOrTag === "Homme") {
+    leadVoiceTag = "solo male vocals, natural deep warm expressive male voice, clear live human vocal performance";
+  } else {
+    leadVoiceTag = voiceOrTag;
+  }
+
+  if (styleNames.length === 0) {
+    return `${leadVoiceTag}, highly melodic, catchy earworm chorus hook, organic natural human voice, live studio recording, no vocoder, no robotic autotune`;
+  }
 
   const parts: string[] = [];
   let accentTag = "";
@@ -709,7 +723,7 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
         parts.push(`Afro R&B, French Urban Pop, 92 BPM, highly melodic acoustic guitar solo arpeggios, Fender Rhodes chords, deep 808 sub bass, silky smooth R&B vocal runs, lush backing harmonies`);
         if (!accentTag) accentTag = "authentic French urban R&B vocal phrasing, organic human voice";
       } else if (knowledge.name === "Afro Pop & R&B Urbain") {
-        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, highly melodic acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive male lead vocals, catchy singalong chorus hook`);
+        parts.push(`Afro Pop Urbain, French R&B, 108 BPM, highly melodic acoustic guitar arpeggios, bouncy 808 sub bass, bright synth brass, organic warm expressive lead vocals, catchy singalong chorus hook`);
         if (!accentTag) accentTag = "authentic French urban vocal accent, natural organic human voice";
       } else if (knowledge.name === "Afro Zouk") {
         parts.push(`Afro-Zouk, Zouk Love, 90 BPM, highly melodic Zouk synth pads, digital chime keys, clean guitar arpeggios, bouncy zouk love drum pattern, smooth organic human lead vocals, 3-part vocal harmonies`);
@@ -739,13 +753,15 @@ export function buildEnrichedStyle(styleNames: string[], voiceTag: string): stri
     }
   }
 
-  const melodicPrefix = "highly melodic, catchy earworm refrain hook, beautiful harmonic progression";
+  const melodicTraits = "highly melodic, catchy earworm refrain hook, dynamic live performance";
   const finalAccent = accentTag ? `, ${accentTag}` : ", organic natural human voice";
-  let result = `${melodicPrefix}, ` + parts.join(", ") + `, ${voiceTag}` + finalAccent + ", no vocoder, no robotic autotune";
+  let result = `${leadVoiceTag}, ` + parts.join(", ") + `, ${melodicTraits}` + finalAccent + ", radio edit, no vocoder, no robotic autotune";
 
-  // Limite recommandée Suno V4 / KIE.AI : 180 caractères max
-  if (result.length > 180) {
-    result = result.substring(0, 177) + "...";
+  // Limite propre Suno V4 / V5 / KIE.AI (280 caractères max sans coupure de mot)
+  if (result.length > 280) {
+    const cut = result.substring(0, 280);
+    const lastComma = cut.lastIndexOf(",");
+    result = lastComma > 180 ? cut.substring(0, lastComma) : cut;
   }
 
   return result;
@@ -762,7 +778,7 @@ export function buildEnrichedLyricsPrompt(
 ): string {
   const knowledge = getStyleKnowledge(styleName);
   const duoDirective = isDuo 
-    ? " C'est un DUO HOMME ET FEMME. Tu DOIS structurer impérativement les paroles avec des balises de rôles alternés : [Homme], [Femme], et [Ensemble] (ou [Refrain - Ensemble]) pour créer un vrai dialogue vivant entre les deux voix." 
+    ? " C'est un DUO HOMME ET FEMME. Tu DOIS structurer impérativement les paroles avec des balises de rôles alternés : [Couplet 1 - Voix Homme], [Couplet 2 - Voix Femme], [Pre-Refrain - Duo Alterné], [Refrain - Duo Harmonisé (Homme & Femme Ensemble)], [Homme]:, [Femme]:, et [Outro - Fondu Duo / Fade Out] [End]." 
     : "";
 
   if (knowledge) {
@@ -780,9 +796,9 @@ export function buildEnrichedLyricsPrompt(
       accentDirective = "IMPORTANT : Accent et flow américain authentique.";
     }
 
-    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM.${duoDirective} ${accentDirective} Format court avec intro, couplets alternés, refrain et fin nette.`;
+    return `Chanson de style ${knowledge.name} (${knowledge.country}). Langues possibles : ${langs}. Sujet : ${subject}. Tempo : ${knowledge.bpm} BPM.${duoDirective} ${accentDirective} Format standard radio court (3min à 3min30s max) avec intro, couplets alternés, refrain explosif et fin nette avec [Outro - Fade Out] [End].`;
   }
 
   // Fallback sans knowledge
-  return `Chanson en français. Sujet : ${subject}.${duoDirective} Format court avec intro, couplets, refrain et fin nette.`;
+  return `Chanson en français. Sujet : ${subject}.${duoDirective} Format standard radio court (3min à 3min30s max) avec intro, couplets, refrain explosif et fin nette avec [Outro - Fade Out] [End].`;
 }

@@ -86,8 +86,17 @@ async function processIPN(request: Request) {
 
     const userId = customData.userId;
     const melodiesToAdd = parseInt(customData.melodies, 10);
+    const invoiceAmount = Number(invoice.amount);
 
-    if (state === 'success' || state === 'test') {
+    if (isNaN(melodiesToAdd) || melodiesToAdd <= 0 || isNaN(invoiceAmount) || invoiceAmount <= 0) {
+      console.error('Invalid melodies or amount in invoice:', { melodiesToAdd, invoiceAmount });
+      return NextResponse.json({ success: false, message: 'Invalid melodies or amount' }, { status: 400 });
+    }
+
+    const isTestAllowed = winipayerEnv === 'test' && state === 'test';
+    const isSuccess = state === 'success' || isTestAllowed;
+
+    if (isSuccess) {
       // 1. Log transaction to prevent double counting
       const { data: existingTx } = await supabaseAdmin
         .from('transactions')

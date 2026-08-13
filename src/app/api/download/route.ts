@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidMediaUrl } from '@/lib/url-validator';
 
 export const runtime = 'edge';
 
@@ -8,6 +9,10 @@ export async function GET(request: NextRequest) {
 
   if (!url) {
     return new NextResponse('Paramètre URL manquant', { status: 400 });
+  }
+
+  if (!isValidMediaUrl(url)) {
+    return new NextResponse('URL de téléchargement invalide ou non autorisée', { status: 403 });
   }
 
   try {

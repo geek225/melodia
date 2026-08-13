@@ -2,6 +2,7 @@
 
 import { unstable_noStore as noStore } from 'next/cache'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/auth-admin'
 
 const adminAuthClient = createSupabaseClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,6 +12,7 @@ const adminAuthClient = createSupabaseClient(
 export async function getUsers() {
   noStore()
   try {
+    await requireAdmin();
     const { data, error } = await adminAuthClient
       .from('profiles')
       .select('*')
@@ -38,6 +40,7 @@ export async function getUsers() {
 
 export async function assignCredits(userIds: string[], amount: number) {
   try {
+    await requireAdmin();
     if (!userIds || userIds.length === 0) {
       return { success: false, error: 'Aucun utilisateur sélectionné' }
     }
@@ -67,6 +70,7 @@ export async function assignCredits(userIds: string[], amount: number) {
 
 export async function deleteUsers(userIds: string[]) {
   try {
+    await requireAdmin();
     if (!userIds || userIds.length === 0) {
       return { success: false, error: 'Aucun utilisateur sélectionné' }
     }

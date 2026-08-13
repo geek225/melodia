@@ -2,6 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+import { requireAdmin } from '@/lib/auth-admin'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -10,6 +11,7 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey)
 
 export async function getAdminNotifications() {
   try {
+    await requireAdmin();
     const { data, error } = await supabaseAdmin
       .from('notifications')
       .select('*, profiles(email)')
@@ -26,6 +28,7 @@ export async function getAdminNotifications() {
 
 export async function sendNotification(data: { title: string, message: string, user_id?: string | null }) {
   try {
+    await requireAdmin();
     const { error } = await supabaseAdmin
       .from('notifications')
       .insert([{
@@ -46,6 +49,7 @@ export async function sendNotification(data: { title: string, message: string, u
 
 export async function findUserByEmail(email: string) {
   try {
+    await requireAdmin();
     const { data, error } = await supabaseAdmin
       .from('profiles')
       .select('id, email')

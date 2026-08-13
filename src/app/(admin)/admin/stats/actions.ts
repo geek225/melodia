@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/auth-admin";
 
 const adminAuthClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,6 +12,7 @@ const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août",
 
 export async function getAdminStats() {
   try {
+    await requireAdmin();
     // 1. Fetch Users
     const { data: users, error: usersError } = await adminAuthClient
       .from('profiles')

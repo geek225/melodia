@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { getMusicApiConfig } from '@/lib/music-provider';
+import { isValidMediaUrl } from '@/lib/url-validator';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -78,6 +79,10 @@ export async function GET(request: Request) {
             // Sauvegarde de l'audio sur Supabase Storage
             try {
               console.log(`⏳ Téléchargement de l'audio depuis: ${finalAudioUrl}`);
+              if (!isValidMediaUrl(finalAudioUrl)) {
+                console.error("❌ URL audio non autorisée (SSRF bloqué):", finalAudioUrl);
+                throw new Error("URL audio non autorisée");
+              }
               const audioRes = await fetch(finalAudioUrl);
               if (audioRes.ok) {
                 const arrayBuffer = await audioRes.arrayBuffer();

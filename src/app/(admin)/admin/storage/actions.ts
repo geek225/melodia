@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/auth-admin";
 
 const adminAuthClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,6 +10,7 @@ const adminAuthClient = createClient(
 
 export async function getAdminStorageStats() {
   try {
+    await requireAdmin();
     const buckets = ['tracks', 'covers', 'avatars', 'logs', 'voices', 'music_covers'];
     const storageStats = [];
 
@@ -46,6 +48,7 @@ export async function getAdminStorageStats() {
 
 export async function cleanupOldStorage(daysToKeep = 7) {
   try {
+    await requireAdmin();
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
 

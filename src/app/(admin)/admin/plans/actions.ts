@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/auth-admin";
 
 const adminAuthClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,6 +10,7 @@ const adminAuthClient = createClient(
 
 export async function getAdminPlans() {
   try {
+    await requireAdmin();
     const { data, error } = await adminAuthClient
       .from('plans')
       .select('*')

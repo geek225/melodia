@@ -2,14 +2,17 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import MusicPlayerClient from "@/app/(dashboard)/music/[id]/MusicPlayerClient";
-
+import { createClient } from "@/utils/supabase/server";
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export default async function PublicSharePage({ params }: { params: Promise<{ id: string }> }) {
   const { id: slug } = await params;
   const uuid = slug.slice(0, 36);
   
-  // Use admin client to bypass RLS for public sharing
+  const userSupabase = await createClient();
+  const { data: { user } } = await userSupabase.auth.getUser();
+
+  // Use admin client to query track info
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -22,6 +25,11 @@ export default async function PublicSharePage({ params }: { params: Promise<{ id
     .single();
 
   if (!track) {
+    notFound();
+  }
+
+  // Si la piste n'est pas publique et que le visiteur n'en est pas le propriétaire, afficher 404
+  if (!track.is_public && (!user || user.id !== track.user_id)) {
     notFound();
   }
 
@@ -38,7 +46,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ id
             <Link href="/login">
               <Button variant="ghost" className="rounded-full">Se connecter</Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/register">
               <Button className="rounded-full bg-primary hover:bg-primary/90 text-white">
                 Créer ma musique
               </Button>
@@ -64,7 +72,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ id
           </div>
           
           <div className="text-center pt-8">
-            <Link href="/signup">
+            <Link href="/register">
                <Button size="lg" className="rounded-full h-16 px-10 text-xl font-bold bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white shadow-xl">
                  ✨ Créer ta propre musique gratuitement
                </Button>

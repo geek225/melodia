@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/auth-admin";
 
 function getAdminAuthClient() {
   return createSupabaseClient(
@@ -15,6 +16,7 @@ function getSupabaseStorageHost() {
 
 export async function getArchivedTracks() {
   try {
+    await requireAdmin();
     const adminAuthClient = getAdminAuthClient();
     const { data, error } = await adminAuthClient
       .from('tracks')
@@ -26,7 +28,7 @@ export async function getArchivedTracks() {
     const host = getSupabaseStorageHost();
     const archived = data.filter(t => t.audio_url && host && t.audio_url.includes(host));
     return { success: true, data: archived };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }

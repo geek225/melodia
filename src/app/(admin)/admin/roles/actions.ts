@@ -2,6 +2,7 @@
 
 import { unstable_noStore as noStore } from 'next/cache'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { requireAdmin, requireSuperAdmin } from '@/lib/auth-admin'
 
 const adminAuthClient = createSupabaseClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,6 +12,7 @@ const adminAuthClient = createSupabaseClient(
 export async function getStaffUsers() {
   noStore()
   try {
+    await requireAdmin();
     const { data, error } = await adminAuthClient
       .from('profiles')
       .select('*')
@@ -27,6 +29,7 @@ export async function getStaffUsers() {
 
 export async function searchAllUsers(query: string) {
   try {
+    await requireAdmin();
     if (!query || query.length < 3) return { success: true, data: [] }
     
     const { data, error } = await adminAuthClient
@@ -45,6 +48,7 @@ export async function searchAllUsers(query: string) {
 
 export async function updateUserRole(userId: string, role: string | null) {
   try {
+    await requireSuperAdmin();
     if (!userId) throw new Error('ID utilisateur manquant')
     
     // We update the profile role
@@ -63,6 +67,7 @@ export async function updateUserRole(userId: string, role: string | null) {
 
 export async function inviteUserAndSetRole(email: string, role: string, password?: string) {
   try {
+    await requireSuperAdmin();
     if (!email) throw new Error('Email manquant')
     
     let userId = ''

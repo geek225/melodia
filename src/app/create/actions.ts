@@ -99,23 +99,20 @@ export async function createTrack(formData: TrackFormData) {
   let lyricsText = "";
   
   try {
-    const isDuo = validData.voice === "Duo";
-    const voiceTag = validData.voice === "Homme"
-      ? "organic warm expressive male vocals, natural human voice, live studio vocal performance, clear vocal tone"
-      : validData.voice === "Femme"
-      ? "organic warm expressive female vocals, natural human voice, live studio vocal performance, clear vocal tone"
-      : isDuo
-      ? "organic male and female duo vocals, natural human voice duet, warm expressive call and response"
-      : "organic warm natural human vocals, expressive studio vocal performance";
+    const voice = validData.voice || "Homme";
+    const isDuo = voice === "Duo";
+    const vocalGender = voice === "Homme" ? "m" : voice === "Femme" ? "f" : undefined;
 
     const selectedStyles = validData.styles && validData.styles.length > 0 ? validData.styles : [validData.style];
 
-    // Utiliser la knowledge base pour construire un style enrichi et précis
-    const enrichedStyle = buildEnrichedStyle(selectedStyles, voiceTag);
+    // Utiliser la knowledge base pour construire un style enrichi et précis avec tag vocal en tête
+    const enrichedStyle = buildEnrichedStyle(selectedStyles, voice);
 
     // --- ETAPE 1 : GENERER LES PAROLES ---
     lyricsText = "";
     const audioInputUrl = validData.promptAudioUrl || validData.voiceUrl;
+
+    const appOrigin = (process.env.NEXT_PUBLIC_APP_URL || 'https://melodia.vercel.app').replace(/\/+$/, '');
 
     if (!audioInputUrl) {
       // Si le texte dépasse 200 caractères ou contient des balises de structure, on considère que ce sont les paroles finales
@@ -132,7 +129,8 @@ export async function createTrack(formData: TrackFormData) {
           mood: validData.mood || "Émouvant & Intime",
           language: validData.language || "Français",
           perspective: isDuo ? "Duo homme et femme" : "",
-          toneStyle: "Pop Urbaine & Poétique"
+          toneStyle: "Pop Urbaine & Poétique",
+          voice
         });
 
         if (geminiRes.success && geminiRes.lyrics) {
@@ -143,7 +141,7 @@ export async function createTrack(formData: TrackFormData) {
           const lyricsRes = await fetch(`${baseUrl}/api/v1/lyrics`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: "https://melodia.vercel.app/api/webhook/lyrics" })
+            body: JSON.stringify({ prompt: lyricsPrompt, callBackUrl: `${appOrigin}/api/webhook/lyrics` })
           });
 
           if (lyricsRes && lyricsRes.ok) {
@@ -176,7 +174,13 @@ export async function createTrack(formData: TrackFormData) {
 
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
     if (!lyricsText && !audioInputUrl) {
-      lyricsText = `[Intro]\n[Verse 1]\n${validData.prompt || "Chant en français"}\n[Chorus]\nOn y va !\n[Outro]`;
+      if (isDuo) {
+        lyricsText = `[Intro - Duo (Homme & Femme)]\n[Couplet 1 - Voix Homme]\n${validData.prompt || "Je te donne mon cœur et ma vérité"}\n[Couplet 2 - Voix Femme]\nJe reçois ton amour avec sincérité\n[Refrain - Duo Harmonisé (Homme & Femme Ensemble)]\nOn avancera ensemble tous les deux !\n[Outro - Fondu Duo / Fade Out]\n[End]`;
+      } else if (voice === "Femme") {
+        lyricsText = `[Intro - Voix Femme]\n[Couplet 1 - Voix Femme]\n${validData.prompt || "Chant en français"}\n[Refrain - Voix Femme]\nOn y va tous ensemble !\n[Outro - Voix Femme / Fade Out]\n[End]`;
+      } else {
+        lyricsText = `[Intro - Voix Homme]\n[Couplet 1 - Voix Homme]\n${validData.prompt || "Chant en français"}\n[Refrain - Voix Homme]\nOn y va tous ensemble !\n[Outro - Voix Homme / Fade Out]\n[End]`;
+      }
     }
 
     // Injection du profil sonore africain si sélectionné
@@ -196,8 +200,15 @@ export async function createTrack(formData: TrackFormData) {
       }
     }
 
+    // Clôture explicite pour garantir un format radio de 3min - 3min30 max
+    if (lyricsText && !lyricsText.includes("[End]")) {
+      lyricsText += "\n\n[Outro - Fade Out]\n[End]\n[Silence]";
+    }
+
     // --- ETAPE 2 : GENERER LA MUSIQUE ---
     let apiRes: Response;
+
+    const negativeTags = "robotic autotune, metallic vocal, bad mixing, distorted vocals, noisy audio, off key, low quality, vocoder, endless loop";
 
     if (audioInputUrl) {
       // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
@@ -219,11 +230,13 @@ export async function createTrack(formData: TrackFormData) {
           title: validData.title || "Nouvelle Musique",
           model: selectedModel,
           audioWeight: 0.95,
-          callBackUrl: "https://melodia.vercel.app/api/webhook"
+          ...(vocalGender ? { vocalGender } : {}),
+          negativeTags,
+          callBackUrl: `${appOrigin}/api/webhook`
         })
       });
     } else {
-      // Génération normale sans audio de référence
+      // Génération normale sans audio de référence : Utilise V4 pour une structure radio maîtrisée de 3 à 4 minutes max
       apiRes = await fetch(`${baseUrl}/api/v1/generate`, {
         method: "POST",
         headers: {
@@ -236,8 +249,10 @@ export async function createTrack(formData: TrackFormData) {
           title: validData.title || "Nouvelle Musique",
           instrumental: false,
           customMode: true,
-          model: "V4_5",
-          callBackUrl: "https://melodia.vercel.app/api/webhook"
+          model: "V4",
+          ...(vocalGender ? { vocalGender } : {}),
+          negativeTags,
+          callBackUrl: `${appOrigin}/api/webhook`
         })
       });
     }
@@ -319,7 +334,8 @@ const generateLyricsInputSchema = z.object({
   mood: z.string().max(100).optional().default("Émouvant & Intime"),
   language: z.string().max(50).optional().default("Français"),
   perspective: z.string().max(200).optional().default(""),
-  toneStyle: z.string().max(100).optional().default("Humain & Naturel")
+  toneStyle: z.string().max(100).optional().default("Humain & Naturel"),
+  voice: z.string().max(50).optional().default("Homme")
 });
 
 export type GenerateLyricsParams = z.infer<typeof generateLyricsInputSchema>;
@@ -330,6 +346,12 @@ export async function generateAiLyrics(input: GenerateLyricsParams) {
 
   if (!user) {
     return { success: false, error: "Vous devez être connecté pour utiliser l'IA de paroles." };
+  }
+
+  // Vérifier le Rate Limiting (Anti-Abus IA)
+  const { success: rateLimitSuccess } = await ratelimit.limit(`lyrics_${user.id}`);
+  if (!rateLimitSuccess) {
+    return { success: false, error: "Vous faites trop de demandes de paroles. Veuillez patienter une minute." };
   }
 
   const parseResult = generateLyricsInputSchema.safeParse(input);

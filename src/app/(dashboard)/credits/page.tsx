@@ -40,7 +40,7 @@ function CreditsContent() {
         } else {
           throw new Error("Invalid URL protocol or domain");
         }
-      } catch (err) {
+      } catch {
         setLoadingPack(null);
         setErrorMsg("URL de redirection invalide.");
       }

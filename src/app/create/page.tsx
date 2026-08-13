@@ -11,7 +11,7 @@ import { createTrack, generateAiLyrics } from "./actions";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
-import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff, Sparkles, Flame, Smile, User, MessageSquare } from "lucide-react";
+import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff, Sparkles, Flame, User, MessageSquare } from "lucide-react";
 import { AFRICAN_PROFILES } from "@/lib/african-profiles";
 import {
   AlertDialog,
@@ -508,6 +508,7 @@ export default function NewCreatePage() {
         language: lyricsOptions.language,
         perspective: lyricsOptions.perspective,
         toneStyle: lyricsOptions.toneStyle,
+        voice: formData.voice || "Homme",
       });
 
       if (res.success && res.lyrics) {

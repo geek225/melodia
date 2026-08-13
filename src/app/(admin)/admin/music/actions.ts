@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/auth-admin";
+import { isValidMediaUrl } from "@/lib/url-validator";
 
 function getSupabaseStorageHost() {
   try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost').hostname; } catch { return ''; }
@@ -22,6 +24,7 @@ function getAdminAuthClient() {
 
 export async function getAdminTracks() {
   try {
+    await requireAdmin();
     const adminAuthClient = getAdminAuthClient();
     const { data, error } = await adminAuthClient
       .from('tracks')
@@ -39,6 +42,7 @@ export async function getAdminTracks() {
 
 export async function toggleFeaturedTrack(trackId: string, currentStatus: boolean) {
   try {
+    await requireAdmin();
     const adminAuthClient = getAdminAuthClient();
     if (!currentStatus) {
       // Trying to feature it. Check how many are currently featured.
@@ -72,6 +76,7 @@ export async function toggleFeaturedTrack(trackId: string, currentStatus: boolea
  */
 export async function getUnarchivedTracksCount() {
   try {
+    await requireAdmin();
     const adminAuthClient = getAdminAuthClient();
     const { data, error } = await adminAuthClient
       .from('tracks')
@@ -93,6 +98,7 @@ export async function getUnarchivedTracksCount() {
  */
 export async function archiveSingleTrack(trackId: string) {
   try {
+    await requireAdmin();
     const adminAuthClient = getAdminAuthClient();
     const { data: track, error } = await adminAuthClient
       .from('tracks')
@@ -103,6 +109,10 @@ export async function archiveSingleTrack(trackId: string) {
     if (error || !track) throw new Error('Track not found');
     if (!isExternalAudioUrl(track.audio_url)) {
       return { success: true, alreadyArchived: true };
+    }
+
+    if (!isValidMediaUrl(track.audio_url)) {
+      throw new Error('URL audio non autorisée (SSRF bloqué)');
     }
 
     const parsed = new URL(track.audio_url);
@@ -149,6 +159,7 @@ export async function archiveSingleTrack(trackId: string) {
  */
 export async function deleteOldUnarchivedTracks(daysOld = 7) {
   try {
+    await requireAdmin();
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 

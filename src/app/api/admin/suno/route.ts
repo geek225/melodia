@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { getMusicApiConfig } from '@/lib/music-provider';
 
 export async function GET() {
   try {
@@ -28,7 +29,6 @@ export async function GET() {
     }
 
     // 1. Fetch Music API Limit
-    const { getMusicApiConfig } = require('@/lib/music-provider');
     const { provider, baseUrl, apiKey } = getMusicApiConfig();
     let sunoLimitData = null;
     

@@ -73,23 +73,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const fetchProfile = async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        if (profile) {
-          setUserProfile({
-            full_name: profile.full_name,
-            email: profile.email || user.email || '',
-            role: profile.role
-          });
-        }
+      if (!user) {
+        router.push("/login");
+        return;
       }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        
+      if (!profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
+        router.push("/dashboard");
+        return;
+      }
+
+      setUserProfile({
+        full_name: profile.full_name,
+        email: profile.email || user.email || '',
+        role: profile.role
+      });
     };
     fetchProfile();
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -97,8 +103,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push("/login");
   };
 
-  if (!mounted) {
-    return <div className="min-h-screen bg-background flex"></div>;
+  if (!mounted || !userProfile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground text-sm flex items-center gap-2">
+          <Activity className="w-4 h-4 animate-spin" />
+          Vérification des accès administrateur...
+        </div>
+      </div>
+    );
   }
 
   return (
