@@ -41,42 +41,43 @@ export async function generateLyricsWithGemini(params: LyricsGenerationParams): 
   let structureGuide = "";
   if (isDuo) {
     structureGuide = `
-      [Intro - Duo (Homme & Femme)]
-      [Couplet 1 - Voix Homme] (L'homme pose son histoire avec émotion et sincérité, 4 à 6 vers max)
-      [Couplet 2 - Voix Femme] (La femme répond avec sa voix et sa sensibilité, 4 à 6 vers max)
-      [Pre-Refrain - Duo Alterné] (Montée en émotion avec échange rapide de phrases)
-      [Refrain - Duo Harmonisé (Homme & Femme Ensemble)] (Refrain explosif et mémorable chanté à deux)
-      [Pont - Dialogue Homme & Femme]
-      [Homme]: (Phrase poignante de l'homme)
-      [Femme]: (Réponse vibrante de la femme)
-      [Refrain - Duo Harmonisé (Homme & Femme Ensemble)]
-      [Outro - Fondu Duo / Fade Out]
+      [Intro - Duet]
+      [Couplet 1 - Male Vocals] (L'homme pose son histoire avec émotion et sincérité, 4 à 6 vers max)
+      [Couplet 2 - Female Vocals] (La femme répond avec sa voix et sa sensibilité, 4 à 6 vers max)
+      [Pre-Refrain - Duet] (Montée en émotion avec échange rapide de phrases)
+      [Refrain - Male & Female Duet] (Refrain explosif et mémorable chanté à deux avec harmonies)
+      [Pont - Call and Response]
+      [Male]: (Phrase poignante de l'homme)
+      [Female]: (Réponse vibrante de la femme)
+      [Both]: (Phrase finale chantée ensemble)
+      [Refrain - Male & Female Duet]
+      [Outro - Duet]
       [End]`;
   } else if (isFemme) {
     structureGuide = `
-      [Intro - Voix Femme]
-      [Couplet 1 - Voix Femme] (4 à 6 vers max)
-      [Pre-Refrain - Voix Femme] (2 à 4 vers max)
-      [Refrain - Voix Femme] (Refrain explosif et mémorable, 4 vers)
-      [Couplet 2 - Voix Femme] (4 à 6 vers max)
-      [Pre-Refrain - Voix Femme]
-      [Refrain - Voix Femme]
-      [Pont - Voix Femme & Vocalises]
-      [Refrain - Voix Femme]
-      [Outro - Voix Femme / Fade Out]
+      [Intro - Female Vocals]
+      [Couplet 1 - Female Vocals] (4 à 6 vers max)
+      [Pre-Refrain - Female Vocals] (2 à 4 vers max)
+      [Refrain - Female Vocals] (Refrain explosif et mémorable, 4 vers)
+      [Couplet 2 - Female Vocals] (4 à 6 vers max)
+      [Pre-Refrain - Female Vocals]
+      [Refrain - Female Vocals]
+      [Pont - Female Vocals]
+      [Refrain - Female Vocals]
+      [Outro - Female Vocals]
       [End]`;
   } else {
     structureGuide = `
-      [Intro - Voix Homme]
-      [Couplet 1 - Voix Homme] (4 à 6 vers max)
-      [Pre-Refrain - Voix Homme] (2 à 4 vers max)
-      [Refrain - Voix Homme] (Refrain explosif et mémorable, 4 vers)
-      [Couplet 2 - Voix Homme] (4 à 6 vers max)
-      [Pre-Refrain - Voix Homme]
-      [Refrain - Voix Homme]
-      [Pont - Voix Homme & Vocalises]
-      [Refrain - Voix Homme]
-      [Outro - Voix Homme / Fade Out]
+      [Intro - Male Vocals]
+      [Couplet 1 - Male Vocals] (4 à 6 vers max)
+      [Pre-Refrain - Male Vocals] (2 à 4 vers max)
+      [Refrain - Male Vocals] (Refrain explosif et mémorable, 4 vers)
+      [Couplet 2 - Male Vocals] (4 à 6 vers max)
+      [Pre-Refrain - Male Vocals]
+      [Refrain - Male Vocals]
+      [Pont - Male Vocals]
+      [Refrain - Male Vocals]
+      [Outro - Male Vocals]
       [End]`;
   }
 
@@ -91,7 +92,7 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
    - Termine TOUJOURS impérativement la chanson par les balises [Outro - Fade Out] et [End] pour que l'IA musicale boucle et arrête le morceau entre 3:00 et 3:45 max.
 
 2. GESTION STRICTE DU TYPE DE VOIX :
-   ${isDuo ? "- ATTENTION FORMAT DUO : C'est un DUO VIBRANT HOMME ET FEMME. Tu DOIS obligatoirement alterner les rôles avec les balises [Couplet 1 - Voix Homme], [Couplet 2 - Voix Femme], [Homme]:, [Femme]:, et [Refrain - Duo Harmonisé (Homme & Femme Ensemble)]." : isFemme ? "- VOIX FEMME : Écris la chanson à la première personne pour une voix de femme puissante et émouvante, avec balises [Voix Femme]." : "- VOIX HOMME : Écris la chanson pour une voix d'homme chaleureuse et expressive, avec balises [Voix Homme]."}
+   ${isDuo ? "- ATTENTION FORMAT DUO : C'est un DUO VIBRANT HOMME ET FEMME. Tu DOIS obligatoirement alterner les rôles avec les balises [Couplet 1 - Male Vocals], [Couplet 2 - Female Vocals], [Pre-Refrain - Duet], [Male]:, [Female]:, [Both]:, et [Refrain - Male & Female Duet]." : isFemme ? "- VOIX FEMME : Écris la chanson à la première personne pour une voix de femme puissante et émouvante, avec balises [Female Vocals]." : "- VOIX HOMME : Écris la chanson pour une voix d'homme chaleureuse et expressive, avec balises [Male Vocals]."}
 
 3. ZÉRO ROBOTIQUE, ZÉRO CLICHÉ SCOLAIRE :
    - STRICTEMENT INTERDIT : "Dans cette vie...", "Le soleil se lève...", "Chaque jour est un chapitre...", "Dans l'ombre et la lumière...", "La chenille devenant papillon...", "Depuis que tu es partie...".

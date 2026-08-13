@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { createTrack, generateAiLyrics } from "./actions";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
-import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff, Sparkles, Flame, User, MessageSquare } from "lucide-react";
+import { Music2, Play, Pause, FastForward, Rewind, Heart, Shuffle, Repeat, Check, ArrowLeft, Loader2, Mic, MicOff, Sparkles, Flame, User, MessageSquare, Coins } from "lucide-react";
 import { AFRICAN_PROFILES } from "@/lib/african-profiles";
 import {
   AlertDialog,
@@ -134,6 +134,7 @@ export default function NewCreatePage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showFundsModal, setShowFundsModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [userCredits, setUserCredits] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     reason: "",
     title: "",
@@ -142,6 +143,28 @@ export default function NewCreatePage() {
     africanProfiles: [] as string[], // profils de sonorités africaines
     voice: "",
   });
+
+  useEffect(() => {
+    async function loadUserCredits() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('credits')
+            .eq('id', user.id)
+            .single();
+          if (profile && typeof profile.credits === 'number') {
+            setUserCredits(profile.credits);
+          }
+        }
+      } catch (err) {
+        console.error("Erreur chargement crédits utilisateur:", err);
+      }
+    }
+    loadUserCredits();
+  }, []);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [openCategory, setOpenCategory] = useState("afrique_ouest");
@@ -636,18 +659,56 @@ export default function NewCreatePage() {
       <div className="flex-1 flex flex-col relative">
         
         {/* Mobile topbar */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-4 bg-white border-b border-gray-100 sticky top-0 z-20">
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-20">
           <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard')} className="rounded-full">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="flex items-center">
-            <Image src="/images/logo.png" alt="Melodia Logo" width={140} height={48} className="h-12 w-auto object-contain" />
+            <Image src="/images/logo.png" alt="Melodia Logo" width={120} height={40} className="h-9 w-auto object-contain" />
           </div>
-          <div className="w-10" />{/* Spacer */}
+          <Link
+            href="/credits"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold shadow-xs transition-all ${
+              userCredits === 0
+                ? "bg-red-50 text-red-600 border-red-200 animate-pulse"
+                : userCredits !== null && userCredits < 10
+                ? "bg-amber-50 text-amber-700 border-amber-200"
+                : "bg-purple-50 text-purple-700 border-purple-200"
+            }`}
+          >
+            <Coins className="w-3.5 h-3.5" />
+            <span>{userCredits !== null ? `${userCredits} Mélodie${userCredits > 1 ? 's' : ''}` : "0"}</span>
+          </Link>
         </div>
 
-        {/* Stepper Header */}
-        <div className="w-full max-w-3xl mx-auto pt-6 md:pt-10 pb-4 md:pb-6 px-4 md:px-6">
+        {/* Stepper Header & Credit Bubble */}
+        <div className="w-full max-w-3xl mx-auto pt-4 md:pt-8 pb-4 md:pb-6 px-4 md:px-6">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs text-gray-400 font-medium">
+              Étape {step} sur 4
+            </span>
+            <Link
+              href="/credits"
+              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all hover:scale-105 shadow-xs ${
+                userCredits === 0
+                  ? "bg-red-50 text-red-600 border-red-200 animate-pulse"
+                  : userCredits !== null && userCredits < 10
+                  ? "bg-amber-50 text-amber-700 border-amber-200"
+                  : "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100"
+              }`}
+            >
+              <Coins className="w-3.5 h-3.5" />
+              <span>
+                {userCredits !== null
+                  ? `${userCredits} Mélodie${userCredits > 1 ? "s" : ""}`
+                  : "Chargement..."}
+              </span>
+              <span className="bg-white/90 px-1.5 py-0.5 rounded-full text-[10px] text-gray-800 border border-black/5 font-semibold">
+                + Recharger
+              </span>
+            </Link>
+          </div>
+
           <div className="flex items-center justify-between relative">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full z-0"></div>
             <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-linear-to-r from-purple-500 to-[#FF6B00] rounded-full z-0 transition-all duration-500" style={{ width: `${((step - 1) / 4) * 100}%` }}></div>
@@ -765,14 +826,14 @@ export default function NewCreatePage() {
                     <Textarea 
                       value={formData.prompt}
                       onChange={(e) => handlePromptChange(e.target.value)}
-                      maxLength={5000}
+                      maxLength={3000}
                       placeholder={isListening ? "Écoute en cours..." : "Raconte ton histoire, colle tes paroles ou donne quelques mots clés..."} 
                       className={`min-h-32 md:min-h-37.5 text-base md:text-lg rounded-[16px] p-4 md:p-6 pb-14 border-gray-200 focus:border-purple-500 resize-y transition-colors ${
                         isListening ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-50/50' : ''
                       }`}
                     />
                     <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5 max-w-[60%]">
-                      {['[Intro]', '[Couplet]', '[Refrain]', '[Pont]', '[Solo]'].map((tag) => (
+                      {['[Intro]', '[Couplet 1]', '[Refrain]', '[Couplet 2]', '[Pont]', '[Outro]'].map((tag) => (
                         <button
                           key={tag}
                           type="button"
@@ -783,8 +844,8 @@ export default function NewCreatePage() {
                         </button>
                       ))}
                     </div>
-                    <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 5000 ? 'text-red-500' : formData.prompt?.length > 4900 ? 'text-orange-400' : 'text-gray-400'}`}>
-                      {formData.prompt?.length || 0} / 5000
+                    <div className={`absolute bottom-5 right-16 text-xs font-medium ${formData.prompt?.length >= 3000 ? 'text-red-500 font-bold' : formData.prompt?.length > 2700 ? 'text-orange-500 font-semibold' : 'text-gray-400'}`}>
+                      {formData.prompt?.length || 0} / 3000
                     </div>
                     <button
                       type="button"
@@ -1220,9 +1281,36 @@ export default function NewCreatePage() {
                       Voix : {formData.voice}
                     </div>
                   </div>
-                  <p className="text-gray-500 text-sm italic border-t pt-4">&quot;{formData.prompt}&quot;</p>
+                  {userCredits !== null && userCredits < ((formData.voice === "Clonage" || step2InputType === "audio") ? 15 : 10) && (
+                    <div className="mt-4 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 text-amber-900 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-left shadow-xs">
+                      <div>
+                        <p className="font-bold text-sm flex items-center gap-1.5 text-orange-900">
+                          <Coins className="w-4 h-4 text-[#FF6B00]" /> Solde insuffisant ({userCredits} Mélodie{userCredits > 1 ? 's' : ''} disponible{userCredits > 1 ? 's' : ''})
+                        </p>
+                        <p className="text-xs text-amber-700 mt-0.5">
+                          Il vous faut {(formData.voice === "Clonage" || step2InputType === "audio") ? "15" : "10"} Mélodies pour créer ce titre.
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => router.push('/credits')}
+                        className="w-full sm:w-auto bg-linear-to-r from-purple-600 to-[#FF6B00] hover:opacity-90 text-white rounded-full text-xs font-bold h-9 px-4 shrink-0 shadow-sm"
+                      >
+                        Acheter des Mélodies ⚡
+                      </Button>
+                    </div>
+                  )}
+
+                  {formData.prompt && (
+                    <div className="border-t pt-4 mt-4 text-left max-h-48 overflow-y-auto">
+                      <p className="text-gray-600 text-xs whitespace-pre-wrap font-sans leading-relaxed italic bg-gray-50/70 p-3.5 rounded-xl border border-gray-100">
+                        {formData.prompt}
+                      </p>
+                    </div>
+                  )}
+
                   {errorMsg && (
-                    <div className="mt-4 bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-200">
+                    <div className="mt-4 bg-red-50 text-red-600 p-3.5 rounded-xl text-sm border border-red-200 text-left">
                       {errorMsg}
                     </div>
                   )}
@@ -1249,12 +1337,24 @@ export default function NewCreatePage() {
         {step < 5 && (
           <div className="sticky bottom-0 left-0 right-0 bg-linear-to-t from-[#F9FAFB] via-[#F9FAFB]/90 to-transparent pt-6 pb-6 md:pb-8 flex flex-col items-center justify-center z-10">
             <Button 
-              onClick={step === 4 ? handleGenerate : nextStep} 
+              onClick={() => {
+                const cost = (formData.voice === "Clonage" || step2InputType === "audio") ? 15 : 10;
+                if (step === 4 && userCredits !== null && userCredits < cost) {
+                  setShowFundsModal(true);
+                  return;
+                }
+                if (step === 4) handleGenerate();
+                else nextStep();
+              }} 
               disabled={isNextDisabled() || isGenerating}
-              className="h-12 md:h-14 rounded-full px-8 md:px-12 text-base md:text-lg font-bold bg-linear-to-r from-purple-500 to-[#FF6B00] hover:scale-105 transition-transform text-white shadow-xl shadow-[#FF6B00]/20 flex items-center gap-2"
+              className="h-12 md:h-14 rounded-full px-8 md:px-12 text-base md:text-lg font-bold bg-linear-to-r from-purple-500 to-[#FF6B00] hover:scale-105 transition-transform text-white shadow-xl shadow-[#FF6B00]/20 flex items-center gap-2 cursor-pointer"
             >
               {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-              {step === 4 ? ((formData.voice === "Clonage" || step2InputType === "audio") ? "Générer (15 Mélodies)" : "Générer (10 Mélodies)") : "Continuer"} 
+              {step === 4 ? (
+                userCredits !== null && userCredits < ((formData.voice === "Clonage" || step2InputType === "audio") ? 15 : 10)
+                  ? `Recharger mes Mélodies (${userCredits} dispo) ⚡`
+                  : (formData.voice === "Clonage" || step2InputType === "audio") ? "Générer (15 Mélodies)" : "Générer (10 Mélodies)"
+              ) : "Continuer"} 
               {!isGenerating && <ArrowLeft className="w-5 h-5 rotate-180" />}
             </Button>
             {step === 2 && (

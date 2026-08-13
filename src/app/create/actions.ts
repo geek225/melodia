@@ -175,11 +175,11 @@ export async function createTrack(formData: TrackFormData) {
     // Fallback de sécurité si les paroles échouent (pour ne pas bloquer l'utilisateur)
     if (!lyricsText && !audioInputUrl) {
       if (isDuo) {
-        lyricsText = `[Intro - Duo (Homme & Femme)]\n[Couplet 1 - Voix Homme]\n${validData.prompt || "Je te donne mon cœur et ma vérité"}\n[Couplet 2 - Voix Femme]\nJe reçois ton amour avec sincérité\n[Refrain - Duo Harmonisé (Homme & Femme Ensemble)]\nOn avancera ensemble tous les deux !\n[Outro - Fondu Duo / Fade Out]\n[End]`;
+        lyricsText = `[Intro - Duet]\n[Couplet 1 - Male Vocals]\n${validData.prompt || "Je te donne mon cœur et ma vérité"}\n[Couplet 2 - Female Vocals]\nJe reçois ton amour avec sincérité\n[Refrain - Male & Female Duet]\nOn avancera ensemble tous les deux !\n[Outro - Duet]\n[End]`;
       } else if (voice === "Femme") {
-        lyricsText = `[Intro - Voix Femme]\n[Couplet 1 - Voix Femme]\n${validData.prompt || "Chant en français"}\n[Refrain - Voix Femme]\nOn y va tous ensemble !\n[Outro - Voix Femme / Fade Out]\n[End]`;
+        lyricsText = `[Intro - Female Vocals]\n[Couplet 1 - Female Vocals]\n${validData.prompt || "Chant en français"}\n[Refrain - Female Vocals]\nOn y va tous ensemble !\n[Outro - Female Vocals]\n[End]`;
       } else {
-        lyricsText = `[Intro - Voix Homme]\n[Couplet 1 - Voix Homme]\n${validData.prompt || "Chant en français"}\n[Refrain - Voix Homme]\nOn y va tous ensemble !\n[Outro - Voix Homme / Fade Out]\n[End]`;
+        lyricsText = `[Intro - Male Vocals]\n[Couplet 1 - Male Vocals]\n${validData.prompt || "Chant en français"}\n[Refrain - Male Vocals]\nOn y va tous ensemble !\n[Outro - Male Vocals]\n[End]`;
       }
     }
 
@@ -205,6 +205,14 @@ export async function createTrack(formData: TrackFormData) {
       lyricsText += "\n\n[Outro - Fade Out]\n[End]\n[Silence]";
     }
 
+    // Sécurité stricte sur la taille des paroles (Max 2950 caractères pour respecter la limite absolue de 3000 de Suno)
+    let safeLyrics = lyricsText || "";
+    if (safeLyrics.length > 2950) {
+      const cutLyrics = safeLyrics.substring(0, 2950);
+      const lastLineBreak = cutLyrics.lastIndexOf("\n");
+      safeLyrics = (lastLineBreak > 1500 ? cutLyrics.substring(0, lastLineBreak) : cutLyrics) + "\n\n[Outro - Fade Out]\n[End]";
+    }
+
     // --- ETAPE 2 : GENERER LA MUSIQUE ---
     let apiRes: Response;
 
@@ -216,7 +224,7 @@ export async function createTrack(formData: TrackFormData) {
     if (audioInputUrl) {
       // ✅ RETOUR AU COMPORTEMENT "COVER" MAGIQUE (Create from Audio)
       const selectedModel = "V5";
-      const finalPrompt = (lyricsText || " ") + "\n\n[Outro]\n[Fade Out]\n[End]";
+      const finalPrompt = (safeLyrics || " ") + "\n\n[Outro]\n[Fade Out]\n[End]";
 
       apiRes = await fetch(`${baseUrl}/api/v1/generate/upload-cover`, {
         method: "POST",
@@ -247,7 +255,7 @@ export async function createTrack(formData: TrackFormData) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          prompt: lyricsText || "",
+          prompt: safeLyrics || "",
           style: safeStyle,
           title: safeTitle,
           instrumental: false,
@@ -259,32 +267,49 @@ export async function createTrack(formData: TrackFormData) {
         })
       });
     }
+
+    const formatFriendlyError = (rawMsg: string) => {
+      const msg = (rawMsg || "").toLowerCase();
+      if (msg.includes("3000") || msg.includes("lyrics") || msg.includes("prompt")) {
+        return "Vos paroles dépassent la limite de 3000 caractères. Veuillez raccourcir légèrement votre texte pour lancer la création.";
+      }
+      if (msg.includes("200") || msg.includes("style")) {
+        return "La combinaison de styles est trop longue. Veuillez sélectionner 1 ou 2 styles principaux.";
+      }
+      if (msg.includes("sensitive") || msg.includes("moderation") || msg.includes("word_error")) {
+        return "Certains termes de vos paroles contiennent des mots sensibles ou protégés. Veuillez modifier votre texte.";
+      }
+      if (msg.includes("credit") || msg.includes("insufficient")) {
+        return "Le service de composition est temporairement surchargé. Veuillez réessayer dans un instant.";
+      }
+      return "Une erreur est survenue lors de la création de la musique. Veuillez réessayer.";
+    };
     
     if (apiRes.ok) {
       const result = await apiRes.json();
       if (result.code === 200 && result.data?.taskId) {
         apiTaskId = result.data.taskId;
       } else {
-        console.error("Erreur Format API Suno:", result);
+        console.error("Erreur API Musique:", result);
         // On rembourse l'utilisateur
         await adminAuthClient.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
-        return { success: false, error: `Erreur API Suno: ${result.msg || 'Format invalide'}` };
+        return { success: false, error: formatFriendlyError(result.msg || "") };
       }
     } else {
       const errorText = await apiRes.text();
-      console.error("Erreur HTTP API Suno:", apiRes.status, errorText);
+      console.error("Erreur HTTP API Musique:", apiRes.status, errorText);
       // On rembourse l'utilisateur
       await adminAuthClient.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
-      return { success: false, error: "Erreur de connexion à l'API Suno." };
+      return { success: false, error: "Le service de composition musicale est momentanément indisponible. Veuillez réessayer dans quelques instants." };
     }
   } catch (err) {
-    console.error("Erreur réseau API MusicAPI:", err);
+    console.error("Erreur réseau API Musique:", err);
     // Si l'API échoue, on rembourse et on arrête
     await adminAuthClient
       .from('profiles')
       .update({ credits: profile.credits })
       .eq('id', user.id);
-    return { success: false, error: "L'API de génération musicale a rencontré une erreur." };
+    return { success: false, error: "Le service de composition musicale est momentanément indisponible. Veuillez réessayer." };
   }
 
   if (!apiTaskId) {

@@ -682,83 +682,62 @@ export function getStyleKnowledge(styleName: string): MusicStyleKnowledge | unde
  * Le résultat est toujours tronqué à 120 caractères (limite Suno V3.5).
  */
 export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "Homme"): string {
-  // 1. Déterminer le tag vocal compact avec priorité absolue en tête de prompt
+  // 1. Tag vocal avec priorité absolue en tête de prompt
   let leadVoiceTag = "";
   if (voiceOrTag === "Duo") {
-    leadVoiceTag = "duet, male & female vocals, alternating lead";
+    leadVoiceTag = "duet, male and female vocals, alternating lead duet";
   } else if (voiceOrTag === "Femme") {
-    leadVoiceTag = "solo female vocals, warm expressive human voice";
+    leadVoiceTag = "solo female vocals, warm expressive melodic voice";
   } else if (voiceOrTag === "Homme") {
-    leadVoiceTag = "solo male vocals, warm expressive human voice";
+    leadVoiceTag = "solo male vocals, warm expressive melodic voice";
   } else {
     leadVoiceTag = voiceOrTag.length > 50 ? voiceOrTag.substring(0, 50) : voiceOrTag;
   }
 
   if (styleNames.length === 0) {
-    return `${leadVoiceTag}, Afrobeats, 108 BPM, melodic hook, organic human voice, no vocoder`.substring(0, 190);
+    return `${leadVoiceTag}, Afrobeats, 108 BPM, highly melodic guitar riffs, catchy earworm chorus, rich harmonies, no vocoder`.substring(0, 190);
   }
 
   const parts: string[] = [];
-  let accentTag = "";
 
   for (const name of styleNames) {
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
       if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
-        parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, 808 bass, sebene guitar, nouchi flow`);
-        if (!accentTag) accentTag = "Abidjan nouchi accent";
+        parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, highly melodic sebene guitar solo, catchy synth lead, 808 bass`);
       } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
-        parts.push(`Zouglou Ivoire, 108 BPM, acoustic guitar, woyo djembe, sebene`);
-        if (!accentTag) accentTag = "West African accent, woyo choir";
+        parts.push(`Zouglou Ivoire, 108 BPM, highly melodic acoustic guitar, woyo choir, tam-tam, sebene`);
       } else if (knowledge.name === "Piano Ballad Émotion") {
-        parts.push(`Piano Ballad, 78 BPM, grand piano, cello, strings`);
+        parts.push(`Piano Ballad, 78 BPM, highly melodic grand piano, swelling strings, cello`);
       } else if (knowledge.name === "Soul Vocale & Powerhouse") {
-        parts.push(`Soul Gospel R&B, 85 BPM, organ, grand piano, soul voice`);
+        parts.push(`Soul Gospel R&B, 85 BPM, highly melodic organ, grand piano, powerhouse soul voice`);
       } else if (knowledge.name === "Pop Acoustique & Piano") {
-        parts.push(`Acoustic Pop, 92 BPM, acoustic guitar, clean piano`);
+        parts.push(`Acoustic Pop, 92 BPM, highly melodic acoustic guitar, piano, catchy singalong hook`);
       } else if (knowledge.name === "Afro Ambiance & Chœurs" || knowledge.name === "Afro Gospel Urbain") {
-        parts.push(`African Sebene, Coupe Decale, 126 BPM, guitar solo, djembe, choir`);
-        if (!accentTag) accentTag = "African choir response";
+        parts.push(`African Sebene, Coupe Decale, 126 BPM, highly melodic electric guitar solo, choir response`);
       } else if (knowledge.name === "R&B Français") {
-        parts.push(`Afro R&B, French Urban, 92 BPM, Rhodes piano, smooth 808 bass`);
-        if (!accentTag) accentTag = "French urban phrasing";
+        parts.push(`Afro R&B, French Urban, 92 BPM, highly melodic Rhodes chords, silky harmonies, deep 808`);
       } else if (knowledge.name === "Afro Pop & R&B Urbain") {
-        parts.push(`Afro Pop, French R&B, 108 BPM, guitar arpeggios, bouncy 808`);
-        if (!accentTag) accentTag = "French urban accent";
+        parts.push(`Afro Pop, French R&B, 108 BPM, highly melodic guitar arpeggios, bouncy 808`);
       } else if (knowledge.name === "Afro Zouk") {
-        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, digital keys, zouk bass, harmonies`);
-        if (!accentTag) accentTag = "sensual Zouk phrasing";
+        parts.push(`Afro-Zouk, Zouk Love, 90 BPM, highly melodic digital chime keys, sensual synth pads, smooth bass`);
       } else if (knowledge.name === "Reggae") {
-        parts.push(`Roots Reggae, 76 BPM, guitar skank, bass groove, organ bubble`);
-        if (!accentTag) accentTag = "reggae delivery";
+        parts.push(`Roots Reggae, 76 BPM, highly melodic organ bubble, roots brass, guitar skank, bass groove`);
       } else {
-        parts.push(`${knowledge.name}${knowledge.bpm ? `, ${knowledge.bpm} BPM` : ''}`);
-      }
-
-      if (!accentTag) {
-        const countryLower = knowledge.country.toLowerCase();
-        if (["côte d'ivoire", "rdc", "nigeria", "sénégal", "afrique", "tanzanie", "angola"].includes(countryLower)) {
-          accentTag = "African accent";
-        } else if (knowledge.name === "Afro Trap France") {
-          accentTag = "French urban afro accent";
-        } else if (["france", "europe"].includes(countryLower)) {
-          accentTag = "French accent";
-        }
+        parts.push(`${knowledge.name}, highly melodic${knowledge.bpm ? `, ${knowledge.bpm} BPM` : ''}`);
       }
     } else {
       parts.push(name);
     }
   }
 
-  const melodicTraits = "catchy melodic hook";
-  const finalAccent = accentTag ? `, ${accentTag}` : "";
-  let result = `${leadVoiceTag}, ` + parts.join(", ") + `, ${melodicTraits}` + finalAccent + ", radio edit, no vocoder";
+  let result = `${leadVoiceTag}, ` + parts.join(", ") + `, catchy earworm melody, rich harmonies, radio edit, no vocoder`;
 
-  // Limite ABSOLUE Suno V4 : Strictement <= 190 caractères (marge de sécurité sous la limite de 200)
+  // Limite ABSOLUE Suno V4 : Strictement <= 190 caractères (marge de sécurité sous 200)
   if (result.length > 190) {
     const cut = result.substring(0, 190);
     const lastComma = cut.lastIndexOf(",");
-    result = lastComma > 60 ? cut.substring(0, lastComma) : cut;
+    result = lastComma > 70 ? cut.substring(0, lastComma) : cut;
   }
 
   return result;
@@ -775,7 +754,7 @@ export function buildEnrichedLyricsPrompt(
 ): string {
   const knowledge = getStyleKnowledge(styleName);
   const duoDirective = isDuo 
-    ? " C'est un DUO HOMME ET FEMME. Tu DOIS structurer impérativement les paroles avec des balises de rôles alternés : [Couplet 1 - Voix Homme], [Couplet 2 - Voix Femme], [Pre-Refrain - Duo Alterné], [Refrain - Duo Harmonisé (Homme & Femme Ensemble)], [Homme]:, [Femme]:, et [Outro - Fondu Duo / Fade Out] [End]." 
+    ? " C'est un DUO HOMME ET FEMME. Tu DOIS structurer impérativement les paroles avec des balises de rôles alternés : [Couplet 1 - Male Vocals], [Couplet 2 - Female Vocals], [Pre-Refrain - Duet], [Refrain - Male & Female Duet], [Male]:, [Female]:, [Both]:, et [Outro - Duet] [End]." 
     : "";
 
   if (knowledge) {
