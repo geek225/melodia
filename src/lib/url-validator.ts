@@ -45,7 +45,7 @@ export function isValidMediaUrl(urlString: string | null | undefined): boolean {
       // ignore
     }
 
-    // 4. Liste blanche des domaines autorisés pour les médias (Suno, KIE, Supabase Storage, Google)
+    // 4. Liste blanche des domaines autorisés pour les médias (Suno, KIE, Supabase Storage, AWS S3, Google, Cloudflare)
     const isAllowedDomain =
       (supabaseHost && (hostname === supabaseHost || hostname.endsWith(`.${supabaseHost}`))) ||
       hostname === 'suno.com' ||
@@ -54,10 +54,25 @@ export function isValidMediaUrl(urlString: string | null | undefined): boolean {
       hostname.endsWith('.suno.ai') ||
       hostname === 'kie.ai' ||
       hostname.endsWith('.kie.ai') ||
+      hostname === 'aiquickimg.com' ||
+      hostname.endsWith('.aiquickimg.com') ||
       hostname === 'supabase.co' ||
       hostname.endsWith('.supabase.co') ||
+      hostname === 'supabase.in' ||
       hostname.endsWith('.supabase.in') ||
-      hostname === 'lh3.googleusercontent.com';
+      hostname === 'amazonaws.com' ||
+      hostname.endsWith('.amazonaws.com') ||
+      hostname === 'cloudfront.net' ||
+      hostname.endsWith('.cloudfront.net') ||
+      hostname === 'r2.cloudflarestorage.com' ||
+      hostname.endsWith('.r2.cloudflarestorage.com') ||
+      hostname === 'storage.googleapis.com' ||
+      hostname.endsWith('.storage.googleapis.com') ||
+      hostname === 'googleusercontent.com' ||
+      hostname.endsWith('.googleusercontent.com') ||
+      hostname === 'cloudinary.com' ||
+      hostname.endsWith('.cloudinary.com') ||
+      hostname.endsWith('.blob.core.windows.net');
 
     return isAllowedDomain;
   } catch {

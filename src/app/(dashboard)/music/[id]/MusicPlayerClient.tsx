@@ -18,6 +18,7 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 type Track = {
   id: string;
@@ -42,19 +43,19 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
 
   const [currentTrack, setCurrentTrack] = useState<Track>(formatTrack(track));
   const [isPlaying, setIsPlaying] = useState(false);
-  const [coverUrl, setCoverUrl] = useState(track.cover_url);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [coverUrl, setCoverUrl] = useState(currentTrack.cover_url);
   const [isUploading, setIsUploading] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [copiedLyrics, setCopiedLyrics] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
-  const [shareUrl, setShareUrl] = useState("");
 
-  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lyricsRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,48 +74,82 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
   };
 
   const handleDownload = async () => {
-    if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) return;
+    if (!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')) {
+      toast.error("Le fichier audio n'est pas encore prêt.");
+      return;
+    }
     try {
-      // Fetch Audio via proxy to bypass CORS and get the actual buffer
-      const proxyUrl = `/api/download?url=${encodeURIComponent(currentTrack.audio_url)}`;
+      setIsDownloading(true);
+      const safeTitle = (currentTrack.title || 'Meliodia_Music').replace(/[/\\?%*:|"<>]/g, '_').trim();
+      const fileName = `${safeTitle}.mp3`;
+      const proxyUrl = `/api/download?url=${encodeURIComponent(currentTrack.audio_url)}&filename=${encodeURIComponent(fileName)}`;
+      
       const res = await fetch(proxyUrl);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const audioBuffer = await res.arrayBuffer();
       
-      const writer = new ID3Writer(audioBuffer);
-      writer.setFrame('TIT2', currentTrack.title || 'Meliodia Music')
-            .setFrame('TPE1', ['Meliodia AI'])
-            .setFrame('TALB', currentTrack.style || 'Généré par IA');
+      let taggedBlob: Blob;
+      try {
+        const writer = new ID3Writer(audioBuffer);
+        writer.setFrame('TIT2', currentTrack.title || 'Meliodia Music')
+              .setFrame('TPE1', ['Meliodia AI'])
+              .setFrame('TALB', currentTrack.style || 'Meliodia');
 
-      // Fetch Cover Image if exists
-      if (coverUrl) {
-        try {
-          const coverRes = await fetch(coverUrl);
-          const coverBuffer = await coverRes.arrayBuffer();
-          writer.setFrame('APIC', {
-            type: 3,
-            data: coverBuffer,
-            description: 'Cover',
-            useUnicodeEncoding: false
-          });
-        } catch (e) {
-          // Ignorer silencieusement
+        if (coverUrl) {
+          try {
+            const coverRes = await fetch(coverUrl);
+            if (coverRes.ok) {
+              const coverBuffer = await coverRes.arrayBuffer();
+              writer.setFrame('APIC', {
+                type: 3,
+                data: coverBuffer,
+                description: 'Cover',
+                useUnicodeEncoding: false
+              });
+            }
+          } catch {
+            // Ignorer silencieusement
+          }
         }
+
+        writer.addTag();
+        taggedBlob = writer.getBlob();
+      } catch {
+        // Fallback directement sur le blob audio brut si ID3Writer échoue
+        taggedBlob = new Blob([audioBuffer], { type: 'audio/mpeg' });
       }
 
-      writer.addTag();
-      const taggedBlob = writer.getBlob();
       const url = window.URL.createObjectURL(taggedBlob);
-      
       const a = document.createElement("a");
       a.style.display = "none";
-      a.setAttribute("href", url);
-      a.setAttribute("download", `${currentTrack.title || 'Meliodia_Music'}.mp3`);
+      a.href = url;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+      setTimeout(() => window.URL.revokeObjectURL(url), 15000);
+      toast.success("Téléchargement démarré !");
     } catch (e) {
-      alert("Erreur lors du téléchargement.");
+      console.error("Erreur téléchargement proxy, tentative directe:", e);
+      // Fallback direct sur l'URL source
+      try {
+        const directA = document.createElement("a");
+        directA.style.display = "none";
+        directA.href = currentTrack.audio_url;
+        directA.target = "_blank";
+        directA.rel = "noopener noreferrer";
+        directA.download = `${(currentTrack.title || 'Meliodia_Music').replace(/[/\\?%*:|"<>]/g, '_')}.mp3`;
+        document.body.appendChild(directA);
+        directA.click();
+        document.body.removeChild(directA);
+        toast.success("Téléchargement lancé !");
+      } catch {
+        toast.error("Erreur lors du téléchargement de la musique.");
+      }
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -464,8 +499,8 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
               <Button size="icon" variant="ghost" className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors">
                 <Heart className="w-6 h-6" />
               </Button>
-              <Button size="icon" variant="ghost" disabled={!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:')} onClick={handleDownload} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
-                <Download className="w-6 h-6" />
+              <Button size="icon" variant="ghost" disabled={!currentTrack.audio_url || currentTrack.audio_url.startsWith('task:') || isDownloading} onClick={handleDownload} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors" title="Télécharger la musique">
+                {isDownloading ? <Loader2 className="w-6 h-6 animate-spin text-[#FF6B00]" /> : <Download className="w-6 h-6" />}
               </Button>
               <Button size="icon" variant="ghost" onClick={() => setShowShareModal(true)} className="w-12 h-12 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
                 <Share2 className="w-6 h-6" />

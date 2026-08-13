@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { isValidMediaUrl } from '@/lib/url-validator';
 
 // Route de callback pour les notifications Suno (génération terminée)
 export async function POST(request: Request) {
@@ -67,37 +68,13 @@ export async function POST(request: Request) {
         try {
           console.log(`⏳ Téléchargement de l'audio depuis: ${audioUrl}`);
 
-          // Validation stricte de l'URL pour empêcher le SSRF
-          let safeUrlObj: URL | null = null;
-          try {
-            const parsedUrl = new URL(audioUrl);
-            // S'assurer que le protocole est HTTP/HTTPS et que l'hôte n'est pas une adresse IP locale
-            if (['http:', 'https:'].includes(parsedUrl.protocol)) {
-               const hostname = parsedUrl.hostname.toLowerCase();
-               const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./) || hostname === '::1';
-               
-               // Valider strictement les domaines autorisés (Suno & KIE.AI)
-               const isAllowedDomain = 
-                 hostname === 'suno.com' || hostname.endsWith('.suno.com') || 
-                 hostname === 'suno.ai' || hostname.endsWith('.suno.ai') ||
-                 hostname === 'kie.ai' || hostname.endsWith('.kie.ai');
-
-               if (!isLocalhost && isAllowedDomain) {
-                   safeUrlObj = parsedUrl;
-               }
-            }
-          } catch (e) {
-            console.error("URL audio invalide:", audioUrl);
-          }
-
-          if (!safeUrlObj) {
+          if (!isValidMediaUrl(audioUrl)) {
             console.error("❌ Tentative de SSRF bloquée pour l'URL:", audioUrl); 
             return NextResponse.json({ ok: true });
           }
 
-          const safeUrlStr = safeUrlObj.protocol + '//' + safeUrlObj.host + safeUrlObj.pathname + safeUrlObj.search;
-          // deepcode ignore SSRF: L'URL est strictement validée contre les domaines Suno autorisés
-          const audioRes = await fetch(safeUrlStr); // NOSONAR
+          // deepcode ignore SSRF: L'URL est strictement validée par isValidMediaUrl
+          const audioRes = await fetch(audioUrl); // NOSONAR
           if (audioRes.ok) {
             const arrayBuffer = await audioRes.arrayBuffer();
             const fileName = `track_${taskId}_${Date.now()}.mp3`;
