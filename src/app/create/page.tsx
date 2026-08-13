@@ -44,11 +44,11 @@ const STYLE_CATEGORIES = [
     id: "afrique_ouest",
     title: "Afrique de l'Ouest 🇨🇮 🇳🇬 🇸🇳",
     styles: [
+      { id: "DRILL IVOIRE Gang", label: "DRILL IVOIRE Gang", desc: "Drill ivoirienne sombre & gang, sliding 808s, street US/FR (142 BPM)", icon: "🥷🔥" },
       { id: "Musique Rap Décalé Urban", label: "Rap Décalé Urban", desc: "Coupé-Décalé + Rap Ivoire + Musique Urbaine Abidjan", icon: "⚡🎤" },
       { id: "Musique Urbaine & Zouglou", label: "Musique Urbaine & Zouglou", desc: "Zouglou + Roseline Layo, Josey, VDA (102-114 BPM)", icon: "🥁✨" },
       { id: "Afro Zouk", label: "Afro Zouk Love", desc: "Monique Séka, Oliver N'Goma, Nelson Freitas (84-96 BPM)", icon: "🌴💖" },
       { id: "Afro Ambiance & Chœurs", label: "Afro Ambiance & Chœurs", desc: "Tim Storm (Suspendu), Joy Awu (Pour Toujours), Kano Choir", icon: "🔥" },
-      { id: "Rap Ivoire / Drill", label: "Rap Ivoire", desc: "Nouchi flow authentique", icon: "🎤" },
       { id: "Afrobeats", label: "Afrobeats", desc: "Naija groove Lagos", icon: "🇳🇬" },
       { id: "Afrobeats Nigeria", label: "Afrobeats Nigeria", desc: "Lagos club, heavy bass", icon: "🇳🇬" },
       { id: "Mbalax", label: "Mbalax", desc: "Sabar, kora, Dakar", icon: "🇸🇳" },

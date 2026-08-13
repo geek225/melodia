@@ -21,6 +21,22 @@ export interface MusicStyleKnowledge {
 // ─── Afrique de l'Ouest ──────────────────────────────────────────────
 const afriqueOuest: MusicStyleKnowledge[] = [
   {
+    name: "DRILL IVOIRE Gang",
+    country: "Côte d'Ivoire (Abidjan)",
+    bpm: "140-144",
+    languages: ["Français", "Nouchi"],
+    systemPrompt: `Generate a hard-hitting, dark, menacing Gangsta Rap & Drill Ivoire track inspired by Himra, Didi B, Gazo, Pop Smoke, Central Cee, and Chicago/UK Drill.
+Country: Côte d'Ivoire (Abidjan)
+Tempo: 140-144 BPM
+Languages: Français, Nouchi
+Production & Sound Guide:
+- Brutal sliding 808 sub bass glides with distortion, aggressive dark UK/US drill hi-hat rolls, syncopated snare rolls, gunshot impacts and punchy kicks.
+- Ominous minor-key dark piano arpeggios, cold eerie church bells, menacing brass stabs, dark ambient strings and vocal chops.
+- Aggressive, confident street flow with authentic Abidjan Nouchi gang cadence, street slang and raw gang ad-libs (grrr, pow pow, han, gang).
+- Heavy, crisp, modern gangsta drill studio mix with massive low-end sub-bass impact.`,
+    negativePrompt: "acoustic guitar, sweet ballad, cheerful pop, happy melody, slow tempo, smooth r&b, soft jazz, bad mix",
+  },
+  {
     name: "Musique Rap Décalé Urban",
     country: "Côte d'Ivoire",
     bpm: "128-135",
@@ -645,7 +661,11 @@ const ALIASES: Record<string, string> = {
   "Raï / Pop Urbaine": "Raï Moderne",
   "Pop / R&B": "Pop R&B",
   "Soul / Jazz France": "Soul Jazz",
-  "Rap Ivoire / Drill": "Rap Ivoire",
+  "Rap Ivoire / Drill": "DRILL IVOIRE Gang",
+  "Drill Ivoire": "DRILL IVOIRE Gang",
+  "Drill Ivoire Gang": "DRILL IVOIRE Gang",
+  "Rap Gang Ivoire": "DRILL IVOIRE Gang",
+  "Rap Gang": "DRILL IVOIRE Gang",
   "Afro Gospel Urbain": "Afro Ambiance & Chœurs",
   "Afrobeat Ambiance": "Afro Ambiance & Chœurs",
   // Anciens noms pouvant apparaître dans la BDD
@@ -703,7 +723,9 @@ export function buildEnrichedStyle(styleNames: string[], voiceOrTag: string = "H
   for (const name of styleNames) {
     const knowledge = getStyleKnowledge(name);
     if (knowledge) {
-      if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
+      if (knowledge.name === "DRILL IVOIRE Gang") {
+        parts.push(`Drill Ivoire Gang, 142 BPM, sliding 808 sub bass, dark drill piano, gunshot snare, menacing gang flow`);
+      } else if (knowledge.name === "Musique Rap Décalé Urban" || knowledge.name === "Coupé-Décalé") {
         parts.push(`Rap Ivoire, Coupe-Decale, 130 BPM, highly melodic sebene guitar solo, catchy synth lead, 808 bass`);
       } else if (knowledge.name === "Musique Urbaine & Zouglou" || knowledge.name === "Zouglou" || knowledge.name === "Musique Urbaine Ivoire") {
         parts.push(`Zouglou Ivoire, 108 BPM, highly melodic acoustic guitar, woyo choir, tam-tam, sebene`);

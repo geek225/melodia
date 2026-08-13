@@ -109,9 +109,13 @@ RÈGLES STRICTES DE COMPOSITION "HIT-MAKER" :
 ${structureGuide}
 
 6. DIRECTION ARTISTIQUE PAR GENRE :
-   - Reggae & Afro-Reggae (Bob Marley "One Love", Alpha Blondy "Sweet Fanta Diallo", Tiken Jah Fakoly, Lucky Dube) : Chanson poignante, consciente, engagée ou d'amour sincère (72-84 BPM). Rédige en Français, Anglais ou Bilingue avec une poésie spirituelle, de la résilience, de la dignité et de la fraternité ("One love", "Paix et unité", "Rise up", "Reste debout"), un refrain hymne chanté en chœur et des vocalises roots (yeah man, woah-oh, jah bless).
-   - Afro Zouk / Zouk Love (Monique Séka "First Love", Oliver N'Goma "Bane", Nelson Freitas, Kaysha, Fanny J, Princess Lover) : Chanson d'amour sensuelle, langoureuse et romantique (84-96 BPM). Rédige en Français, Anglais ou Bilingue (FR/EN) avec une vraie tendresse, des mots doux ("Doudou", "Mon amour", "Baby stay with me", "Bébé dis-moi que tu m'aimes"), un refrain ultra-mélodique qui invite à la danse à deux, et des ad-libs sensuels (hmm, yeah, oh-oh).
-   - Musique Rap Décalé Urban (Coupé-Décalé + Rap Ivoire + Urban Abidjan) : Flow Nouchi rythmé et percutant, punchlines de rue, ambiance club décalée, refrain obsédant et giga-ambiance (128-135 BPM).
+    - DRILL IVOIRE Gang (Gangsta Rap & Drill Ivoire sombre, inspiré de Himra, Didi B, Gazo, Pop Smoke, Central Cee - 140-144 BPM) :
+      * Écriture rue brute, flow percutant, punchlines nouchi affûtées, détermination, codes du quartier et de la loyauté ("On tient le pavé", "Règne sur la zone", "Respect et puissance", "Pas de traîtres").
+      * Utilise des gimmicks percutants et ad-libs en parenthèses : (Grrr), (Paw-paw), (Han), (Gang), (On est calés).
+      * Refrain obsédant et percutant qui frappe avec les 808 glides et le drill snare.
+    - Reggae & Afro-Reggae (Bob Marley "One Love", Alpha Blondy "Sweet Fanta Diallo", Tiken Jah Fakoly, Lucky Dube) : Chanson poignante, consciente, engagée ou d'amour sincère (72-84 BPM). Rédige en Français, Anglais ou Bilingue avec une poésie spirituelle, de la résilience, de la dignité et de la fraternité ("One love", "Paix et unité", "Rise up", "Reste debout"), un refrain hymne chanté en chœur et des vocalises roots (yeah man, woah-oh, jah bless).
+    - Afro Zouk / Zouk Love (Monique Séka "First Love", Oliver N'Goma "Bane", Nelson Freitas, Kaysha, Fanny J, Princess Lover) : Chanson d'amour sensuelle, langoureuse et romantique (84-96 BPM). Rédige en Français, Anglais ou Bilingue (FR/EN) avec une vraie tendresse, des mots doux ("Doudou", "Mon amour", "Baby stay with me", "Bébé dis-moi que tu m'aimes"), un refrain ultra-mélodique qui invite à la danse à deux, et des ad-libs sensuels (hmm, yeah, oh-oh).
+    - Musique Rap Décalé Urban (Coupé-Décalé + Rap Ivoire + Urban Abidjan) : Flow Nouchi rythmé et percutant, punchlines de rue, ambiance club décalée, refrain obsédant et giga-ambiance (128-135 BPM).
    - Musique Urbaine & Zouglou (Zouglou + Roseline Layo, Josey, VDA) : Philosophie du vécu, poésie sentimentale et urbaine, métaphores poignantes d'Abidjan, chœurs woyo polyphoniques harmonieux (102-114 BPM).
    - Rumba Congolaise / Afro Pop : Poésie sentimentale passionnée, métaphores riches, louanges amoureuses élégantes.
    - Gospel Adoration & Classique : Adoration et gratitude profondes, élévation spirituelle pure et vibrante.
