@@ -164,7 +164,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       if (error) throw error;
       
       router.push('/music');
-    } catch (error) {
+    } catch {
       alert("Erreur lors de la suppression de la piste.");
       setIsDeleting(false);
     }
@@ -229,7 +229,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
             body: `La génération de "${currentTrack.title}" est terminée.`,
             icon: coverUrl || "/favicon.ico"
           });
-        } catch (e) {
+        } catch {
           // Silencieux
         }
       }
@@ -262,7 +262,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
               router.refresh();
             }
           }
-        } catch (e) {
+        } catch {
           // Silencieux
         }
       }, 5000); // Polling toutes les 5 secondes
@@ -286,7 +286,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       if (playPromise !== undefined) {
         playPromise.then(() => {
           setIsPlaying(true);
-        }).catch((error) => {
+        }).catch(() => {
           setIsPlaying(false);
           // Fallback force reload on mobile
           if (audioRef.current) {
@@ -330,7 +330,7 @@ export default function MusicPlayerClient({ track, isPublic = false }: { track: 
       if (updateError) throw updateError;
 
       setCoverUrl(publicUrl);
-    } catch (error) {
+    } catch {
       alert("Erreur lors de l'upload de la pochette.");
     } finally {
       setIsUploading(false);
